@@ -1,4 +1,4 @@
-# mini-crm-pet
+# DiFY
 Just pet web-app.
 ## Main stack: 
 - .NET 5
