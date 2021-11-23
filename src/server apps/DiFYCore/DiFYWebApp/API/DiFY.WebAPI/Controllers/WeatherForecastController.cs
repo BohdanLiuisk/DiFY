@@ -4,7 +4,7 @@ using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-namespace CRMCore.WebAPI.Controllers
+namespace DiFY.WebAPI.Controllers
 {
     [ApiController]
     [Route("[controller]")]

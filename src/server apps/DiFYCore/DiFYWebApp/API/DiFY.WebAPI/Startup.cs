@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 
-namespace CRMCore.WebAPI
+namespace DiFY.WebAPI
 {
     public class Startup
     {
@@ -33,7 +33,7 @@ namespace CRMCore.WebAPI
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "CRMCore.WebAPI", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "DiFY.WebAPI", Version = "v1" });
             });
         }
         
@@ -43,7 +43,7 @@ namespace CRMCore.WebAPI
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "CRMCore.WebAPI v1"));
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "DiFY.WebAPI v1"));
             }
 
             app.UseHttpsRedirection();

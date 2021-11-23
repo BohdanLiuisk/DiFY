@@ -1,6 +1,6 @@
 using System;
 
-namespace CRMCore.WebAPI
+namespace DiFY.WebAPI
 {
     public class WeatherForecast
     {

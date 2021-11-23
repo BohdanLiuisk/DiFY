@@ -1,11 +1,12 @@
+using System;
+using Autofac.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Serilog;
 using Serilog.Sinks.Elasticsearch;
-using System;
 
-namespace CRMCore.WebAPI
+namespace DiFY.WebAPI
 {
     public class Program
     {
@@ -20,6 +21,7 @@ namespace CRMCore.WebAPI
         private static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
                 .UseSerilog()
+                .UseServiceProviderFactory(new AutofacServiceProviderFactory())
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
@@ -38,7 +40,7 @@ namespace CRMCore.WebAPI
                 .ReadFrom.Configuration(Configuration)
                 .CreateLogger();
 
-            Log.Logger.Information("Serilog configuration for CRMCore is finished.");
+            Log.Logger.Information("Serilog configuration for DiFY is finished.");
         }
         
         private static ElasticsearchSinkOptions ConfigureElasticSink(IConfigurationRoot configuration)

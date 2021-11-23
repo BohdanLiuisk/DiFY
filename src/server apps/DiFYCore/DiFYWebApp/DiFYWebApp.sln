@@ -1,0 +1,33 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "API", "API", "{1D6DBCE8-42C7-4FCA-8DC6-74845CFDE95D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Modules", "Modules", "{09C3A799-C13C-4E26-9A54-0E4B1DA8349C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiFY.WebAPI", "API\DiFY.WebAPI\DiFY.WebAPI.csproj", "{8BD6FF0E-5E5E-4A2D-9C0F-8C8256A468A9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UserAccess", "UserAccess", "{38A5B7C0-7635-49C6-8D79-00FB8E408314}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Modules\UserAccess\Domain\Domain.csproj", "{36317E9A-A289-412A-88FF-B681A5931044}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8BD6FF0E-5E5E-4A2D-9C0F-8C8256A468A9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8BD6FF0E-5E5E-4A2D-9C0F-8C8256A468A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8BD6FF0E-5E5E-4A2D-9C0F-8C8256A468A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8BD6FF0E-5E5E-4A2D-9C0F-8C8256A468A9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{36317E9A-A289-412A-88FF-B681A5931044}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{36317E9A-A289-412A-88FF-B681A5931044}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{36317E9A-A289-412A-88FF-B681A5931044}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{36317E9A-A289-412A-88FF-B681A5931044}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{8BD6FF0E-5E5E-4A2D-9C0F-8C8256A468A9} = {1D6DBCE8-42C7-4FCA-8DC6-74845CFDE95D}
+		{38A5B7C0-7635-49C6-8D79-00FB8E408314} = {09C3A799-C13C-4E26-9A54-0E4B1DA8349C}
+		{36317E9A-A289-412A-88FF-B681A5931044} = {38A5B7C0-7635-49C6-8D79-00FB8E408314}
+	EndGlobalSection
+EndGlobal
