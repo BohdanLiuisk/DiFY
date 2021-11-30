@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+          <TargetFramework>net5.0</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+          <ProjectReference Include="..\DiFY.BuildingBlocks.Application\DiFY.BuildingBlocks.Application.csproj" />
+          <ProjectReference Include="..\DiFY.BuildingBlocks.Domain\DiFY.BuildingBlocks.Domain.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Dapper" Version="2.0.123" />
+        <PackageReference Include="System.Data.SqlClient" Version="4.8.3" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.12" />
+    </ItemGroup>
+
+</Project>

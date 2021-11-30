@@ -1,9 +1,18 @@
+using Autofac;
+using Autofac.Extensions.DependencyInjection;
+using DiFY.Modules.UserAccess.Application.IdentityServer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using IdentityServer4.AccessTokenValidation;
+using IdentityServer4.Validation;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 
 namespace DiFY.WebAPI
 {
@@ -56,6 +65,19 @@ namespace DiFY.WebAPI
             {
                 endpoints.MapControllers();
             });
+        }
+
+        private void ConfigureIdentityServer(IServiceCollection services)
+        {
+            services.AddIdentityServer()
+                .AddInMemoryIdentityResources(IdentityServerConfig.GetIdentityResources())
+                .AddInMemoryApiResources(IdentityServerConfig.GetApis())
+                .AddInMemoryClients(IdentityServerConfig.GetClients())
+                .AddInMemoryPersistedGrants()
+                .AddProfileService<ProfileService>()
+                .AddDeveloperSigningCredential();
+            
+            
         }
     }
 }
