@@ -72,7 +72,7 @@ namespace DiFY.Modules.UserAccess.Domain.UserRegistrations
         {
             CheckRule(new UserCannotBeCreatedWhenRegistrationIsNotConfirmedRule(_status));
             
-            
+            return  User.CreateFromUserRegistration(Id, _login, _password, _email, _firstName, _lastName, _name);
         }
     }
 }

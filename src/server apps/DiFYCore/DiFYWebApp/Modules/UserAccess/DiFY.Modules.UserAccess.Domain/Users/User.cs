@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using DiFY.BuildingBlocks.Domain;
+using DiFY.Modules.UserAccess.Domain.UserRegistrations;
 
 namespace DiFY.Modules.UserAccess.Domain.Users
 {
@@ -27,7 +28,42 @@ namespace DiFY.Modules.UserAccess.Domain.Users
         {
             
         }
-        
-        internal static  User CreateFromUserRegistration()
+
+        internal static User CreateFromUserRegistration(
+            UserRegistrationId userRegistrationId,
+            string login,
+            string password,
+            string email,
+            string firstName,
+            string lastName,
+            string name)
+        {
+            return new User(userRegistrationId, login, password, email, firstName, lastName, name);
+        }
+
+        private User(
+            UserRegistrationId userRegistrationId,
+            string login,
+            string password,
+            string email,
+            string firstName,
+            string lastName,
+            string name)
+        {
+            Id = new UserId(userRegistrationId.Value);
+            _login = login;
+            _password = password;
+            _email = email;
+            _firstName = firstName;
+            _lastName = lastName;
+            _name = name;
+
+            _isActive = true;
+
+            _roles = new List<UserRole>()
+            {
+                UserRole.Member
+            };
+        }
     }
 }
