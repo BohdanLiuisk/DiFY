@@ -1,5 +1,6 @@
 ﻿using System;
 using DiFY.BuildingBlocks.Domain;
+using DiFY.Modules.UserAccess.Domain.UserRegistrations.Events;
 using DiFY.Modules.UserAccess.Domain.UserRegistrations.Interfaces;
 using DiFY.Modules.UserAccess.Domain.UserRegistrations.Rules;
 using DiFY.Modules.UserAccess.Domain.Users;
@@ -28,11 +29,8 @@ namespace DiFY.Modules.UserAccess.Domain.UserRegistrations
 
         private DateTime? _confirmedDate;
 
-        private UserRegistration()
-        {
-            
-        }
-        
+        private UserRegistration() { }
+
         private UserRegistration(
             string login,
             string password,
@@ -73,6 +71,19 @@ namespace DiFY.Modules.UserAccess.Domain.UserRegistrations
             CheckRule(new UserCannotBeCreatedWhenRegistrationIsNotConfirmedRule(_status));
             
             return  User.CreateFromUserRegistration(Id, _login, _password, _email, _firstName, _lastName, _name);
+        }
+
+        public void Confirm()
+        {
+            _status = UserRegistrationStatus.Confirmed;
+            _confirmedDate = DateTime.UtcNow;
+            
+            AddDomainEvent(new UserRegistrationConfirmedDomainEvent(Id));
+        }
+
+        public void Expire()
+        {
+            _status = UserRegistrationStatus.Expired;;
         }
     }
 }

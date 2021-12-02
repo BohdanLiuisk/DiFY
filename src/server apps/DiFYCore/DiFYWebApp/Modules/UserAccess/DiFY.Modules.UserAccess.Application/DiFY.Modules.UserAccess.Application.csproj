@@ -5,12 +5,14 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="Dapper" Version="2.0.123" />
       <PackageReference Include="IdentityServer4" Version="4.1.2" />
       <PackageReference Include="IdentityServer4.AccessTokenValidation" Version="3.0.1" />
       <PackageReference Include="MediatR" Version="9.0.0" />
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\..\BuildingBlocks\DiFY.BuildingBlocks.Application\DiFY.BuildingBlocks.Application.csproj" />
       <ProjectReference Include="..\DiFY.Modules.UserAccess.Domain\DiFY.Modules.UserAccess.Domain.csproj" />
     </ItemGroup>
 
