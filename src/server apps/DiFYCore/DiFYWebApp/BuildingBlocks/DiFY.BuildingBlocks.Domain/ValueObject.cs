@@ -14,17 +14,7 @@ namespace DiFY.BuildingBlocks.Domain
 
         public static bool operator ==(ValueObject obj1, ValueObject obj2)
         {
-            if (Equals(obj1, null))
-            {
-                if (Equals(obj2, null))
-                {
-                    return true;
-                }
-
-                return false;
-            }
-
-            return obj1.Equals(obj2);
+            return obj1?.Equals(obj2) ?? Equals(obj2, null);
         }
 
         public static bool operator !=(ValueObject obj1, ValueObject obj2)
@@ -52,20 +42,9 @@ namespace DiFY.BuildingBlocks.Domain
         {
             unchecked
             {
-                int hash = 17;
-                foreach (var prop in GetProperties())
-                {
-                    var value = prop.GetValue(this, null);
-                    hash = HashValue(hash, value);
-                }
+                var hash = GetProperties().Select(prop => prop.GetValue(this, null)).Aggregate(17, HashValue);
 
-                foreach (var field in GetFields())
-                {
-                    var value = field.GetValue(this);
-                    hash = HashValue(hash, value);
-                }
-
-                return hash;
+                return GetFields().Select(field => field.GetValue(this)).Aggregate(hash, HashValue);
             }
         }
 
