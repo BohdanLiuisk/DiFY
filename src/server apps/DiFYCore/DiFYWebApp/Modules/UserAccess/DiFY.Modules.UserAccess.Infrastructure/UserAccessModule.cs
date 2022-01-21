@@ -21,7 +21,7 @@ namespace DiFY.Modules.UserAccess.Infrastructure
 
         public async Task<TResult> ExecuteQueryAsync<TResult>(IQuery<TResult> query)
         {
-            await using var scope = UserAccessCompositionRoot.BeginLifetimeScope();
+            using var scope = UserAccessCompositionRoot.BeginLifetimeScope();
             var mediator = scope.Resolve<IMediator>();
             return await mediator.Send(query);
         }

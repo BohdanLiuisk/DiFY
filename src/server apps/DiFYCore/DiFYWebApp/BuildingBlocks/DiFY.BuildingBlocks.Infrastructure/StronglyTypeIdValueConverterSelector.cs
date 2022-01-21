@@ -9,13 +9,10 @@ namespace DiFY.BuildingBlocks.Infrastructure
     public class StronglyTypeIdValueConverterSelector : ValueConverterSelector
     {
         private readonly ConcurrentDictionary<(Type ModelClrType, Type ProviderClrType), ValueConverterInfo> _converters
-            = new ConcurrentDictionary<(Type ModelClrType, Type ProviderClrType), ValueConverterInfo>();
+            = new();
 
         public StronglyTypeIdValueConverterSelector(ValueConverterSelectorDependencies dependencies)
-            : base(dependencies)
-        {
-            
-        }
+            : base(dependencies) { }
 
         public override IEnumerable<ValueConverterInfo> Select(Type modelClrType, Type providerClrType = null)
         {

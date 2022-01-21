@@ -11,14 +11,14 @@ using Serilog.Events;
 
 namespace DiFY.Modules.UserAccess.Infrastructure.Configuration.Processing.Decorators
 {
-    public class LoggingCommandWithResultHandlerDecorator<T, TResult>
+    internal class LoggingCommandHandlerWithResultDecorator<T, TResult>
         : ICommandHandler<T, TResult> where T : ICommand<TResult>
     {
         private readonly ILogger _logger;
         private readonly IExecutionContextAccessor _executionContextAccessor;
         private readonly ICommandHandler<T, TResult> _decorated;
 
-        public LoggingCommandWithResultHandlerDecorator(
+        public LoggingCommandHandlerWithResultDecorator(
             ILogger logger,
             IExecutionContextAccessor executionContextAccessor,
             ICommandHandler<T, TResult> decorated)

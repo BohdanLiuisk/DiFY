@@ -4,6 +4,7 @@ using DiFY.Modules.UserAccess.Infrastructure.Configuration.DataAccess;
 using DiFY.Modules.UserAccess.Infrastructure.Configuration.Domain;
 using DiFY.Modules.UserAccess.Infrastructure.Configuration.Logging;
 using DiFY.Modules.UserAccess.Infrastructure.Configuration.Mediation;
+using DiFY.Modules.UserAccess.Infrastructure.Configuration.Processing;
 using Serilog;
 using Serilog.AspNetCore;
 
@@ -34,7 +35,7 @@ namespace DiFY.Modules.UserAccess.Infrastructure.Configuration
 
             containerBuilder.RegisterModule(new DataAccessModule(connectionString, loggerFactory));
             containerBuilder.RegisterModule(new DomainModule());
-            containerBuilder.RegisterModule(new )
+            containerBuilder.RegisterModule(new ProcessingModule());
             containerBuilder.RegisterModule(new MediatorModule());
 
             containerBuilder.RegisterInstance(executionContextAccessor);

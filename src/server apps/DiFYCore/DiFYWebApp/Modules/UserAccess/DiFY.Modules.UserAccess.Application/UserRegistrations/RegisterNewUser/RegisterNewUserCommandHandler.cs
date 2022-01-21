@@ -8,7 +8,7 @@ using DiFY.Modules.UserAccess.Domain.UserRegistrations.Interfaces;
 
 namespace DiFY.Modules.UserAccess.Application.UserRegistrations.RegisterNewUser
 {
-    public class RegisterNewUserCommandHandler : ICommandHandler<RegisterNewUserCommand, Guid>
+    internal class RegisterNewUserCommandHandler : ICommandHandler<RegisterNewUserCommand, Guid>
     {
         private readonly IUserRegistrationRepository _userRegistrationRepository;
         private readonly IUsersCounter _usersCounter;

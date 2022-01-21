@@ -15,7 +15,7 @@ namespace DiFY.Modules.UserAccess.Infrastructure.Domain.Users
             builder.Property<string>("_login").HasColumnName("Login");
             builder.Property<string>("_email").HasColumnName("Email");
             builder.Property<string>("_password").HasColumnName("Password");
-            builder.Property<string>("_isActive").HasColumnName("IsActive");
+            builder.Property<bool>("_isActive").HasColumnName("IsActive");
             builder.Property<string>("_firstName").HasColumnName("FirstName");
             builder.Property<string>("_lastName").HasColumnName("LastName");
             builder.Property<string>("_name").HasColumnName("Name");

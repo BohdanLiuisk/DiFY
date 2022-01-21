@@ -21,7 +21,7 @@ namespace DiFY.Modules.UserAccess.Application.UserRegistrations.Services
                                "COUNT(*) " +
                                "FROM [users].[Users] as [User] " +
                                "WHERE [User].[Login] = @Login";
-            
+
             return connection.QuerySingle<int>(sql, new { login });
         }
     }

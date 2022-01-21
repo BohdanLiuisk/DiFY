@@ -19,7 +19,7 @@ namespace DiFY.WebAPI.Modules.UserAccess
         {
             var authenticationResult = await _userAccessModule.ExecuteCommandAsync(
                 new AuthenticateCommand(context.UserName, context.Password));
-
+            
             if (!authenticationResult.IsAuthenticated)
             {
                 context.Result = new GrantValidationResult(
@@ -27,7 +27,7 @@ namespace DiFY.WebAPI.Modules.UserAccess
                 
                 return;
             }
-
+            
             context.Result = new GrantValidationResult(
                 authenticationResult.User.Id.ToString(),
                 "forms",

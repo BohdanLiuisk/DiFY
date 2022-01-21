@@ -15,12 +15,12 @@ namespace DiFY.Modules.UserAccess.Infrastructure.Domain.UserRegistrations
 
             builder.Property<string>("_login").HasColumnName("Login");
             builder.Property<string>("_email").HasColumnName("Email");
-            builder.Property<string>("password").HasColumnName("Password");
+            builder.Property<string>("_password").HasColumnName("Password");
             builder.Property<string>("_firstName").HasColumnName("FirstName");
             builder.Property<string>("_lastName").HasColumnName("LastName");
             builder.Property<string>("_name").HasColumnName("Name");
             builder.Property<DateTime>("_registerDate").HasColumnName("RegisterDate");
-            builder.Property<DateTime>("_confirmedDate").HasColumnName("ConfirmedDate");
+            builder.Property<DateTime?>("_confirmedDate").HasColumnName("ConfirmedDate");
             
             builder.OwnsOne<UserRegistrationStatus>("_status", b =>
             {

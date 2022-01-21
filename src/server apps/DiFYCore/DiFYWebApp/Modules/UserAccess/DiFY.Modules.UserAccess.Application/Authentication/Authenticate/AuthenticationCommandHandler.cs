@@ -23,7 +23,7 @@ namespace DiFY.Modules.UserAccess.Application.Authentication.Authenticate
             var connection = _sqlConnectionFactory.GetOpenConnection();
 
             const string sql =
-                "SELECT [User].[Id], [User].[Login], [User].[Name], [User.Email], [User].[IsActive], [User].Password " +
+                "SELECT [User].[Id], [User].[Login], [User].[Name], [User].[Email], [User].[IsActive], [User].[Password] " +
                 "FROM [users].[Users] AS [User] " +
                 "WHERE [User].[Login] = @Login";
 

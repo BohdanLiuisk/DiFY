@@ -11,7 +11,7 @@ namespace DiFY.Modules.UserAccess.Application.IdentityServer
         {
             return new List<ApiResource>()
             {
-                new ApiResource("DiFYCoreAPI", "DiFY Core API")
+                new ("DiFYCoreAPI", "DiFY Core API")
             };
         }
 
@@ -21,7 +21,7 @@ namespace DiFY.Modules.UserAccess.Application.IdentityServer
             {
                 new IdentityResources.OpenId(),
                 new IdentityResources.Profile(),
-                new IdentityResource(CustomClaimTypes.Roles, new List<string>
+                new (CustomClaimTypes.Roles, new List<string>
                 {
                     CustomClaimTypes.Roles
                 })
@@ -32,7 +32,7 @@ namespace DiFY.Modules.UserAccess.Application.IdentityServer
         {
             return new List<Client>
             {
-                new Client()
+                new ()
                 {
                     ClientId = "ro.client",
                     AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,

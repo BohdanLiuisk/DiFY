@@ -47,7 +47,7 @@ namespace DiFY.Modules.UserAccess.Domain.UserRegistrations
             _password = password;
             _email = email;
             _firstName = firstName;
-            _lastName = _lastName;
+            _lastName = lastName;
             _name = $"{firstName} {lastName}";
             _registerDate = DateTime.UtcNow;
             _status = UserRegistrationStatus.WaitingForConfirmation;

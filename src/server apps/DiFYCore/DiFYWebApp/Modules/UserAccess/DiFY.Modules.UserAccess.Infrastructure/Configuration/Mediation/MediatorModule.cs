@@ -45,8 +45,8 @@ namespace DiFY.Modules.UserAccess.Infrastructure.Configuration.Mediation
 
             builder.Register<ServiceFactory>(ctx =>
             {
-                var componentContext = ctx.Resolve<IComponentContext>();
-                return type => componentContext.Resolve(type);
+                var c = ctx.Resolve<IComponentContext>();
+                return t => c.Resolve(t);
             }).InstancePerLifetimeScope();
         }
         
@@ -59,31 +59,29 @@ namespace DiFY.Modules.UserAccess.Infrastructure.Configuration.Mediation
             {
                 if (types == null)
                 {
-                    throw new ArgumentException(nameof(types));
+                    throw new ArgumentNullException(nameof(types));
                 }
 
                 if (!types.All(x => x.IsGenericTypeDefinition))
                 {
-                    throw new AggregateException("Supplied types should be generic type definitions.");
+                    throw new ArgumentException("Supplied types should be generic type definitions");
                 }
-            
+
                 _types.AddRange(types);
             }
 
-            public IEnumerable<IComponentRegistration> RegistrationsFor
-                (Service service, Func<Service, IEnumerable<ServiceRegistration>> registrationAccessor)
+            public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<IComponentRegistration>> registrationAccessor)
             {
                 var components = _source.RegistrationsFor(service, registrationAccessor);
-
-                foreach (var component in components)
+                foreach (var c in components)
                 {
-                    var defs = component.Target.Services
+                    var defs = c.Target.Services
                         .OfType<TypedService>()
                         .Select(x => x.ServiceType.GetGenericTypeDefinition());
 
                     if (defs.Any(_types.Contains))
                     {
-                        yield return component;
+                        yield return c;
                     }
                 }
             }

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Autofac;
 using Autofac.Core;
@@ -18,18 +17,14 @@ namespace DiFY.BuildingBlocks.Infrastructure.DomainEventDispatching
 
         private readonly IDomainEventsAccessor _domainEventsProvider;
 
-        private readonly IDomainNotificationsMapper _domainNotificationsMapper;
-
         public DomainEventsDispatcher(
             IMediator mediator,
             ILifetimeScope scope,
-            IDomainEventsAccessor domainEventsProvider,
-            IDomainNotificationsMapper domainNotificationsMapper)
+            IDomainEventsAccessor domainEventsProvider)
         {
             _mediator = mediator;
             _scope = scope;
             _domainEventsProvider = domainEventsProvider;
-            _domainNotificationsMapper = domainNotificationsMapper;
         }
         
         public async Task DispatchEventsAsync()
@@ -40,7 +35,7 @@ namespace DiFY.BuildingBlocks.Infrastructure.DomainEventDispatching
 
             foreach (var domainEvent in domainEvents)
             {
-                Type domainEventNotificationType = typeof(IDomainEventNotification<>);
+                var domainEventNotificationType = typeof(IDomainEventNotification<>);
 
                 var domainNotificationWithGenericType =
                     domainEventNotificationType.MakeGenericType(domainEvent.GetType());

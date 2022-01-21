@@ -8,7 +8,7 @@ using DiFY.Modules.UserAccess.Application.Users.DTOs;
 
 namespace DiFY.Modules.UserAccess.Application.Users.GetAuthenticatedUser
 {
-    public class GetAuthenticatedUerQueryHandler : IQueryHandler<GetAuthenticatedUserQuery, UserDto>
+    internal class GetAuthenticatedUerQueryHandler : IQueryHandler<GetAuthenticatedUserQuery, UserDto>
     {
         private readonly ISqlConnectionFactory _sqlConnectionFactory;
 
