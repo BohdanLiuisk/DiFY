@@ -24,6 +24,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiFY.Modules.UserAccess.Dom
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiFY.BuildingBlocks.RabbitMQEventBus", "BuildingBlocks\DiFY.BuildingBlocks.RabbitMQEventBus\DiFY.BuildingBlocks.RabbitMQEventBus.csproj", "{A90E86A8-17F5-42AC-A855-9E4B053F3586}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiFY.Modules.UserAccess.IntegrationEvents", "Modules\UserAccess\DiFY.Modules.UserAccess.IntegrationEvents\DiFY.Modules.UserAccess.IntegrationEvents.csproj", "{BBBD742B-DCA6-4B5B-972C-F8BC76097FFC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -62,6 +64,10 @@ Global
 		{A90E86A8-17F5-42AC-A855-9E4B053F3586}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A90E86A8-17F5-42AC-A855-9E4B053F3586}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A90E86A8-17F5-42AC-A855-9E4B053F3586}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BBBD742B-DCA6-4B5B-972C-F8BC76097FFC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BBBD742B-DCA6-4B5B-972C-F8BC76097FFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BBBD742B-DCA6-4B5B-972C-F8BC76097FFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BBBD742B-DCA6-4B5B-972C-F8BC76097FFC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{8BD6FF0E-5E5E-4A2D-9C0F-8C8256A468A9} = {1D6DBCE8-42C7-4FCA-8DC6-74845CFDE95D}
@@ -73,5 +79,6 @@ Global
 		{9BD1DE9C-7405-4026-AE6B-0F6297300BC8} = {42628CB0-CC47-4AD1-8425-1E330A296DD9}
 		{5DBB6D9E-AB8F-4117-A624-4DE635F2D39F} = {42628CB0-CC47-4AD1-8425-1E330A296DD9}
 		{A90E86A8-17F5-42AC-A855-9E4B053F3586} = {3A76E5DF-E05F-439D-8B2D-AC5732FBC912}
+		{BBBD742B-DCA6-4B5B-972C-F8BC76097FFC} = {42628CB0-CC47-4AD1-8425-1E330A296DD9}
 	EndGlobalSection
 EndGlobal

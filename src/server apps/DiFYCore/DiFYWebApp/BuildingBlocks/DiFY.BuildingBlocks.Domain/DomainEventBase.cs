@@ -6,12 +6,12 @@ namespace DiFY.BuildingBlocks.Domain
     {
         public Guid Id { get; }
         
-        public DateTime OccuredOn { get;  }
+        public DateTime OccurredOn { get;  }
 
         public DomainEventBase()
         {
             Id = Guid.NewGuid();
-            OccuredOn = DateTime.UtcNow;
+            OccurredOn = DateTime.UtcNow;
         }
     }
 }

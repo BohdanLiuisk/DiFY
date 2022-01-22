@@ -52,6 +52,7 @@ namespace DiFY.Modules.UserAccess.Domain.UserRegistrations
             _registerDate = DateTime.UtcNow;
             _status = UserRegistrationStatus.WaitingForConfirmation;
             
+            AddDomainEvent(new NewUserRegisteredDomainEvent(Id, _login, _email, _firstName, _lastName, _name, _registerDate, confirmLink));
         }
 
         public static UserRegistration RegisterNewUser(

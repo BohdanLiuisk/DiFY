@@ -7,6 +7,6 @@ namespace DiFY.BuildingBlocks.Domain
     {
         Guid Id { get; }
         
-        DateTime OccuredOn { get; }
+        DateTime OccurredOn { get; }
     }
 }

@@ -2,6 +2,7 @@
 using DiFY.BuildingBlocks.Application;
 using DiFY.Modules.UserAccess.Infrastructure.Configuration.DataAccess;
 using DiFY.Modules.UserAccess.Infrastructure.Configuration.Domain;
+using DiFY.Modules.UserAccess.Infrastructure.Configuration.EventBus;
 using DiFY.Modules.UserAccess.Infrastructure.Configuration.Logging;
 using DiFY.Modules.UserAccess.Infrastructure.Configuration.Mediation;
 using DiFY.Modules.UserAccess.Infrastructure.Configuration.Processing;
@@ -16,14 +17,22 @@ namespace DiFY.Modules.UserAccess.Infrastructure.Configuration
 
         public static void Initialize(
             string connectionString,
+            string eventBusConnection,
+            string userAccessQueue,
             IExecutionContextAccessor executionContextAccessor,
             ILogger logger)
         {
-            ConfigureCompositionRoot(connectionString, executionContextAccessor, logger);
+            var moduleLogger = logger.ForContext("Module", "UserAccess");
+            
+            ConfigureCompositionRoot(connectionString, eventBusConnection, userAccessQueue, executionContextAccessor, logger);
+            
+            EventsBusStartup.Initialize(moduleLogger);
         }
 
         private static void ConfigureCompositionRoot(
             string connectionString,
+            string eventBusConnection,
+            string userAccessQueue,
             IExecutionContextAccessor executionContextAccessor,
             ILogger logger)
         {
@@ -36,8 +45,9 @@ namespace DiFY.Modules.UserAccess.Infrastructure.Configuration
             containerBuilder.RegisterModule(new DataAccessModule(connectionString, loggerFactory));
             containerBuilder.RegisterModule(new DomainModule());
             containerBuilder.RegisterModule(new ProcessingModule());
+            containerBuilder.RegisterModule(new EventsBusModule(eventBusConnection, userAccessQueue));
             containerBuilder.RegisterModule(new MediatorModule());
-
+            
             containerBuilder.RegisterInstance(executionContextAccessor);
 
             _container = containerBuilder.Build();

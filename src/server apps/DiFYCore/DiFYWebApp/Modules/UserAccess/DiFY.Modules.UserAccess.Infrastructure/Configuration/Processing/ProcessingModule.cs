@@ -1,6 +1,4 @@
-﻿using System.Linq;
-using Autofac;
-using DiFY.BuildingBlocks.Application.Events;
+﻿using Autofac;
 using DiFY.BuildingBlocks.Infrastructure;
 using DiFY.BuildingBlocks.Infrastructure.DomainEventDispatching;
 using DiFY.BuildingBlocks.Infrastructure.Interfaces;
@@ -10,16 +8,12 @@ using MediatR;
 
 namespace DiFY.Modules.UserAccess.Infrastructure.Configuration.Processing
 {
-    internal class ProcessingModule : Autofac.Module
+    internal class ProcessingModule : Module
     {
         protected override void Load(ContainerBuilder builder)
         {
             builder.RegisterType<DomainEventsDispatcher>()
                 .As<IDomainEventsDispatcher>()
-                .InstancePerLifetimeScope();
-
-            builder.RegisterType<DomainNotificationsMapper>()
-                .As<IDomainNotificationsMapper>()
                 .InstancePerLifetimeScope();
 
             builder.RegisterType<DomainEventsAccessor>()
@@ -57,11 +51,6 @@ namespace DiFY.Modules.UserAccess.Infrastructure.Configuration.Processing
             builder.RegisterGenericDecorator(
                 typeof(DomainEventsDispatcherNotificationHandlerDecorator<>),
                 typeof(INotificationHandler<>));
-
-            builder.RegisterAssemblyTypes(Assemblies.Application)
-                .AsClosedTypesOf(typeof(IDomainEventNotification<>))
-                .InstancePerDependency()
-                .FindConstructorsWith(new AllConstructorFinder());
         }
     }
 }

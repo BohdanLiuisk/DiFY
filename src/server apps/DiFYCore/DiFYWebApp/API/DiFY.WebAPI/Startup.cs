@@ -27,8 +27,15 @@ namespace DiFY.WebAPI
     public class Startup
     {
         private const string DiFyConnectionString = "ConnectionStrings:DiFYConnectionString";
+        
+        private const string EventBusConnection = "RabbitMQConfiguration:Uri";
+
+        private const string UserAccessQueue = "RabbitMQConfiguration:Queues:UserAccess";
+        
         private static ILogger _logger;
+        
         private static ILogger _loggerForApi;
+        
         private readonly IConfiguration _configuration;
         
         public Startup(IConfiguration _, IHostEnvironment env)
@@ -156,7 +163,12 @@ namespace DiFY.WebAPI
             var httpContextAccessor = container.Resolve<IHttpContextAccessor>();
             var executionContextAccessor = new ExecutionContextAccessor(httpContextAccessor);
 
-            UserAccessStartup.Initialize(_configuration[DiFyConnectionString], executionContextAccessor, _logger);
+            UserAccessStartup.Initialize(
+                _configuration[DiFyConnectionString],
+                _configuration[EventBusConnection],
+                _configuration[UserAccessQueue],
+                executionContextAccessor,
+                _logger);
         }
     }
 }

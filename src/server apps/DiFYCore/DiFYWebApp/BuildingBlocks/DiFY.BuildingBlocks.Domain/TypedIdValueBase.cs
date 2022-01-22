@@ -38,15 +38,7 @@ namespace DiFY.BuildingBlocks.Domain
 
         public static bool operator ==(TypedIdValueBase obj1, TypedIdValueBase obj2)
         {
-            if (Equals(obj1, null))
-            {
-                if (Equals(obj2, null))
-                {
-                    return true;
-                }
-                return false;
-            }
-            return obj1.Equals(obj2);
+            return obj1?.Equals(obj2) ?? Equals(obj2, null);
         }
 
         public static bool operator !=(TypedIdValueBase obj1, TypedIdValueBase obj2)
