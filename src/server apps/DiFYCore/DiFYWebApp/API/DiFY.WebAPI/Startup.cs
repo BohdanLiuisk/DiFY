@@ -33,6 +33,8 @@ namespace DiFY.WebAPI
         private const string EventBusConnection = "RabbitMQConfiguration:Uri";
 
         private const string UserAccessQueue = "RabbitMQConfiguration:Queues:UserAccess";
+
+        private const string AdministrationQueue = "RabbitMQConfiguration:Queues:Administration";
         
         private static ILogger _logger;
         
@@ -165,9 +167,11 @@ namespace DiFY.WebAPI
         {
             var httpContextAccessor = container.Resolve<IHttpContextAccessor>();
             var executionContextAccessor = new ExecutionContextAccessor(httpContextAccessor);
-            
+
             AdministrationStartup.Initialize(
                 _configuration[DiFyConnectionString],
+                _configuration[EventBusConnection],
+                _configuration[AdministrationQueue],
                 executionContextAccessor,
                 _logger);
 

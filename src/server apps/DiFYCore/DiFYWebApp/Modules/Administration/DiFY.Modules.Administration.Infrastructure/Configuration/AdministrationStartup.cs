@@ -2,6 +2,7 @@
 using DiFY.BuildingBlocks.Application;
 using DiFY.Modules.Administration.Infrastructure.Configuration.Authentication;
 using DiFY.Modules.Administration.Infrastructure.Configuration.DataAccess;
+using DiFY.Modules.Administration.Infrastructure.Configuration.EventBus;
 using DiFY.Modules.Administration.Infrastructure.Configuration.Logging;
 using DiFY.Modules.Administration.Infrastructure.Configuration.Mediation;
 using DiFY.Modules.Administration.Infrastructure.Configuration.Processing;
@@ -16,16 +17,22 @@ namespace DiFY.Modules.Administration.Infrastructure.Configuration
         
         public static void Initialize(
             string connectionString, 
+            string eventBusConnection,
+            string administrationQueue,
             IExecutionContextAccessor executionContextAccessor,
             ILogger logger)
         {
             var moduleLogger = logger.ForContext("Module", "Administration");
 
-            ConfigureContainer(connectionString, executionContextAccessor, moduleLogger);
+            ConfigureContainer(connectionString, eventBusConnection, administrationQueue, executionContextAccessor, moduleLogger);
+            
+            EventsBusStartup.Initialize(moduleLogger);
         }
         
         private static void ConfigureContainer(
             string connectionString,
+            string eventBusConnection,
+            string administrationQueue,
             IExecutionContextAccessor executionContextAccessor,
             ILogger logger)
         {
@@ -38,6 +45,8 @@ namespace DiFY.Modules.Administration.Infrastructure.Configuration
             containerBuilder.RegisterModule(new DataAccessModule(connectionString, loggerFactory));
             
             containerBuilder.RegisterModule(new ProcessingModule());
+            
+            containerBuilder.RegisterModule(new EventsBusModule(eventBusConnection, administrationQueue));
             
             containerBuilder.RegisterModule(new MediatorModule());
             
