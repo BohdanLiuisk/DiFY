@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net5.0</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\..\BuildingBlocks\DiFY.BuildingBlocks.Application\DiFY.BuildingBlocks.Application.csproj" />
+      <ProjectReference Include="..\DiFY.Modules.Administration.Domain\DiFY.Modules.Administration.Domain.csproj" />
+    </ItemGroup>
+
+</Project>
