@@ -8,7 +8,7 @@ using DiFY.Modules.UserAccess.Application.Configuration.Queries;
 
 namespace DiFY.Modules.UserAccess.Application.Authorization.GetUserPermissions
 {
-    public class GetUserPermissionsQueryHandler : IQueryHandler<GetUserPermissionsQuery, List<UserPermissionDto>>
+    internal class GetUserPermissionsQueryHandler : IQueryHandler<GetUserPermissionsQuery, List<UserPermissionDto>>
     {
         private readonly ISqlConnectionFactory _sqlConnectionFactory;
 
