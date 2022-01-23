@@ -6,6 +6,6 @@ namespace DiFY.Modules.Administration.Domain.Members.Interfaces
     {
         Task AddAsync(Member member);
 
-        Member GetByIdAsync(MemberId memberId);
+        Task<Member> GetByIdAsync(MemberId memberId);
     }
 }

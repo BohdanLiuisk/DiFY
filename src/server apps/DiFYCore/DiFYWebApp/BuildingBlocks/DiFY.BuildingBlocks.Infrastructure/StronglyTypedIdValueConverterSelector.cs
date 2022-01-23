@@ -6,12 +6,12 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace DiFY.BuildingBlocks.Infrastructure
 {
-    public class StronglyTypeIdValueConverterSelector : ValueConverterSelector
+    public class StronglyTypedIdValueConverterSelector : ValueConverterSelector
     {
         private readonly ConcurrentDictionary<(Type ModelClrType, Type ProviderClrType), ValueConverterInfo> _converters
             = new();
 
-        public StronglyTypeIdValueConverterSelector(ValueConverterSelectorDependencies dependencies)
+        public StronglyTypedIdValueConverterSelector(ValueConverterSelectorDependencies dependencies)
             : base(dependencies) { }
 
         public override IEnumerable<ValueConverterInfo> Select(Type modelClrType, Type providerClrType = null)

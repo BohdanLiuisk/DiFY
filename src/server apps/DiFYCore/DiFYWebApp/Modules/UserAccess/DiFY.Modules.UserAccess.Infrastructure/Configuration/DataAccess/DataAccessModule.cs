@@ -31,7 +31,7 @@ namespace DiFY.Modules.UserAccess.Infrastructure.Configuration.DataAccess
                 dbContextOptionsBuilder.UseSqlServer(_dbConnectionString);
 
                 dbContextOptionsBuilder
-                    .ReplaceService<IValueConverterSelector, StronglyTypeIdValueConverterSelector>();
+                    .ReplaceService<IValueConverterSelector, StronglyTypedIdValueConverterSelector>();
 
                 return new UserAccessContext(dbContextOptionsBuilder.Options, _loggerFactory);
 
