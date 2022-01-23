@@ -8,12 +8,12 @@ namespace DiFY.Modules.UserAccess.Application.Contracts
 
         protected CommandBase()
         {
-            this.Id = Guid.NewGuid();
+            Id = Guid.NewGuid();
         }
 
         protected CommandBase(Guid id)
         {
-            this.Id = id;
+            Id = id;
         }
     }
 
@@ -23,12 +23,12 @@ namespace DiFY.Modules.UserAccess.Application.Contracts
 
         protected CommandBase()
         {
-            this.Id = Guid.NewGuid();
+            Id = Guid.NewGuid();
         }
 
         protected CommandBase(Guid id)
         {
-            this.Id = id;
+            Id = id;
         }
     }
 }
