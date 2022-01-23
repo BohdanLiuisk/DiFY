@@ -30,6 +30,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Administration", "Administr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiFY.Modules.Administration.Domain", "Modules\Administration\DiFY.Modules.Administration.Domain\DiFY.Modules.Administration.Domain.csproj", "{E0B002A9-C1A5-4F6E-9101-2E52CD985086}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiFY.Modules.Administration.Application", "Modules\Administration\DiFY.Modules.Administration.Application\DiFY.Modules.Administration.Application.csproj", "{91470FA8-AD02-4436-A022-7952F1F21BAD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -76,6 +78,10 @@ Global
 		{E0B002A9-C1A5-4F6E-9101-2E52CD985086}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E0B002A9-C1A5-4F6E-9101-2E52CD985086}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E0B002A9-C1A5-4F6E-9101-2E52CD985086}.Release|Any CPU.Build.0 = Release|Any CPU
+		{91470FA8-AD02-4436-A022-7952F1F21BAD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{91470FA8-AD02-4436-A022-7952F1F21BAD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{91470FA8-AD02-4436-A022-7952F1F21BAD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{91470FA8-AD02-4436-A022-7952F1F21BAD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{8BD6FF0E-5E5E-4A2D-9C0F-8C8256A468A9} = {1D6DBCE8-42C7-4FCA-8DC6-74845CFDE95D}
@@ -90,5 +96,6 @@ Global
 		{BBBD742B-DCA6-4B5B-972C-F8BC76097FFC} = {42628CB0-CC47-4AD1-8425-1E330A296DD9}
 		{65A6F468-A889-410D-BFF6-E8A63B762ED7} = {09C3A799-C13C-4E26-9A54-0E4B1DA8349C}
 		{E0B002A9-C1A5-4F6E-9101-2E52CD985086} = {65A6F468-A889-410D-BFF6-E8A63B762ED7}
+		{91470FA8-AD02-4436-A022-7952F1F21BAD} = {65A6F468-A889-410D-BFF6-E8A63B762ED7}
 	EndGlobalSection
 EndGlobal
