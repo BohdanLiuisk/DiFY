@@ -2,12 +2,14 @@ using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using DiFY.BuildingBlocks.Application;
 using DiFY.BuildingBlocks.Domain.Exceptions;
+using DiFY.Modules.Administration.Infrastructure.Configuration;
 using DiFY.Modules.UserAccess.Application.IdentityServer;
 using DiFY.Modules.UserAccess.Infrastructure.Configuration;
 using DiFY.WebAPI.Configuration.Authorization;
 using DiFY.WebAPI.Configuration.ExecutionContext;
 using DiFY.WebAPI.Configuration.Extensions;
 using DiFY.WebAPI.Configuration.Validation;
+using DiFY.WebAPI.Modules.Administration;
 using DiFY.WebAPI.Modules.UserAccess;
 using Hellang.Middleware.ProblemDetails;
 using IdentityServer4.AccessTokenValidation;
@@ -86,6 +88,7 @@ namespace DiFY.WebAPI
         
         public void ConfigureContainer(ContainerBuilder containerBuilder)
         {
+            containerBuilder.RegisterModule(new AdministrationAutofacModule());
             containerBuilder.RegisterModule(new UserAccessAutofacModule());
         }
         
@@ -162,6 +165,11 @@ namespace DiFY.WebAPI
         {
             var httpContextAccessor = container.Resolve<IHttpContextAccessor>();
             var executionContextAccessor = new ExecutionContextAccessor(httpContextAccessor);
+            
+            AdministrationStartup.Initialize(
+                _configuration[DiFyConnectionString],
+                executionContextAccessor,
+                _logger);
 
             UserAccessStartup.Initialize(
                 _configuration[DiFyConnectionString],
