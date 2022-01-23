@@ -15,13 +15,12 @@ namespace DiFY.Modules.UserAccess.Infrastructure.Configuration.Processing.Decora
     internal class LoggingCommandHandlerDecorator<T> : ICommandHandler<T> where T : ICommand
     {
         private readonly ILogger _logger;
+        
         private readonly IExecutionContextAccessor _executionContextAccessor;
+        
         private readonly ICommandHandler<T> _decorated;
 
-        public LoggingCommandHandlerDecorator(
-            ILogger logger,
-            IExecutionContextAccessor executionContextAccessor,
-            ICommandHandler<T> decorated)
+        public LoggingCommandHandlerDecorator(ILogger logger, IExecutionContextAccessor executionContextAccessor, ICommandHandler<T> decorated)
         {
             _logger = logger;
             _executionContextAccessor = executionContextAccessor;

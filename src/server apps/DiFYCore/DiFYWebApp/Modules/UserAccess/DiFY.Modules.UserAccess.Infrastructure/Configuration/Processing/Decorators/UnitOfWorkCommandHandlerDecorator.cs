@@ -13,16 +13,10 @@ namespace DiFY.Modules.UserAccess.Infrastructure.Configuration.Processing.Decora
 
         private readonly IUnitOfWork _unitOfWork;
 
-        private readonly UserAccessContext _userAccessContext;
-
-        public UnitOfWorkCommandHandlerDecorator(
-            ICommandHandler<T> decorated,
-            IUnitOfWork unitOfWork,
-            UserAccessContext userAccessContext)
+        public UnitOfWorkCommandHandlerDecorator(ICommandHandler<T> decorated, IUnitOfWork unitOfWork)
         {
             _decorated = decorated;
             _unitOfWork = unitOfWork;
-            _userAccessContext = userAccessContext;
         }
             
         

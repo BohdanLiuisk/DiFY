@@ -9,16 +9,13 @@ using FluentValidation;
 
 namespace DiFY.Modules.UserAccess.Infrastructure.Configuration.Processing.Decorators
 {
-    internal class ValidationCommandHandlerWithResultDecorator<T, TResult> : ICommandHandler<T, TResult>
-        where T : ICommand<TResult>
+    internal class ValidationCommandHandlerWithResultDecorator<T, TResult> : ICommandHandler<T, TResult> where T : ICommand<TResult>
     {
         private readonly IList<IValidator<T>> _validators;
 
         private readonly ICommandHandler<T, TResult> _decorated;
 
-        public ValidationCommandHandlerWithResultDecorator(
-            IList<IValidator<T>> validators,
-            ICommandHandler<T, TResult> decorated)
+        public ValidationCommandHandlerWithResultDecorator(IList<IValidator<T>> validators, ICommandHandler<T, TResult> decorated)
         {
             _validators = validators;
             _decorated = decorated;

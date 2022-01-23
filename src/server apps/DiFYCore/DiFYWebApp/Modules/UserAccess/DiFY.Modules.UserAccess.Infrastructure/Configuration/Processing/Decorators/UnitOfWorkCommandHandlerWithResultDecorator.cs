@@ -9,17 +9,13 @@ namespace DiFY.Modules.UserAccess.Infrastructure.Configuration.Processing.Decora
     internal class UnitOfWorkCommandHandlerWithResultDecorator<T, TResult> : ICommandHandler<T, TResult> where T : ICommand<TResult>
     {
         private readonly ICommandHandler<T, TResult> _decorated;
+        
         private readonly IUnitOfWork _unitOfWork;
-        private readonly UserAccessContext _userAccessContext;
 
-        public UnitOfWorkCommandHandlerWithResultDecorator(
-            ICommandHandler<T, TResult> decorated,
-            IUnitOfWork unitOfWork,
-            UserAccessContext userAccessContext)
+        public UnitOfWorkCommandHandlerWithResultDecorator(ICommandHandler<T, TResult> decorated, IUnitOfWork unitOfWork)
         {
             _decorated = decorated;
             _unitOfWork = unitOfWork;
-            _userAccessContext = userAccessContext;
         }
 
         public async Task<TResult> Handle(T command, CancellationToken cancellationToken)
