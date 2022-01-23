@@ -4,6 +4,7 @@ using DiFY.Modules.Administration.Infrastructure.Configuration.Authentication;
 using DiFY.Modules.Administration.Infrastructure.Configuration.DataAccess;
 using DiFY.Modules.Administration.Infrastructure.Configuration.Logging;
 using DiFY.Modules.Administration.Infrastructure.Configuration.Mediation;
+using DiFY.Modules.Administration.Infrastructure.Configuration.Processing;
 using Serilog;
 using Serilog.AspNetCore;
 
@@ -35,6 +36,8 @@ namespace DiFY.Modules.Administration.Infrastructure.Configuration
             var loggerFactory = new SerilogLoggerFactory(logger);
             
             containerBuilder.RegisterModule(new DataAccessModule(connectionString, loggerFactory));
+            
+            containerBuilder.RegisterModule(new ProcessingModule());
             
             containerBuilder.RegisterModule(new MediatorModule());
             

@@ -1,37 +1,30 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using DiFY.BuildingBlocks.Infrastructure.Interfaces;
-using DiFY.Modules.UserAccess.Application.Configuration.Commands;
-using DiFY.Modules.UserAccess.Application.Contracts;
+using DiFY.Modules.Administration.Application.Configuration.Commands;
+using DiFY.Modules.Administration.Application.Contracts;
 using MediatR;
 
-namespace DiFY.Modules.UserAccess.Infrastructure.Configuration.Processing.Decorators
+namespace DiFY.Modules.Administration.Infrastructure.Configuration.Processing.Decorators
 {
     internal class UnitOfWorkCommandHandlerDecorator<T> : ICommandHandler<T> where T : ICommand
     {
         private readonly ICommandHandler<T> _decorated;
-
+        
         private readonly IUnitOfWork _unitOfWork;
 
-        private readonly UserAccessContext _userAccessContext;
-
-        public UnitOfWorkCommandHandlerDecorator(
-            ICommandHandler<T> decorated,
-            IUnitOfWork unitOfWork,
-            UserAccessContext userAccessContext)
+        public UnitOfWorkCommandHandlerDecorator(ICommandHandler<T> decorated, IUnitOfWork unitOfWork)
         {
             _decorated = decorated;
             _unitOfWork = unitOfWork;
-            _userAccessContext = userAccessContext;
         }
-            
-        
+
         public async Task<Unit> Handle(T command, CancellationToken cancellationToken)
         {
             await _decorated.Handle(command, cancellationToken);
-
-            await _unitOfWork.CommitAsync(cancellationToken);
             
+            await _unitOfWork.CommitAsync(cancellationToken);
+
             return Unit.Value;
         }
     }
