@@ -91,6 +91,7 @@ namespace DiFY.WebAPI
         public void ConfigureContainer(ContainerBuilder containerBuilder)
         {
             containerBuilder.RegisterModule(new AdministrationAutofacModule());
+
             containerBuilder.RegisterModule(new UserAccessAutofacModule());
         }
         
@@ -166,6 +167,7 @@ namespace DiFY.WebAPI
         private void InitializeModules(ILifetimeScope container)
         {
             var httpContextAccessor = container.Resolve<IHttpContextAccessor>();
+
             var executionContextAccessor = new ExecutionContextAccessor(httpContextAccessor);
 
             AdministrationStartup.Initialize(

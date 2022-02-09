@@ -7,6 +7,7 @@ namespace DiFY.WebAPI.Configuration.ExecutionContext
     internal class CorrelationMiddleware
     {
         internal const string CorrelationHeaderKey = "CorrelationId";
+
         private readonly RequestDelegate _next;
 
         public CorrelationMiddleware(RequestDelegate next)

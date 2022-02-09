@@ -11,6 +11,7 @@ namespace DiFY.WebAPI.Configuration.Authorization
         public static void CheckAllEndpoints()
         {
             var assembly = typeof(Startup).Assembly;
+
             var allControllerTypes = assembly.GetTypes().Where(x => x.IsSubclassOf(typeof(ControllerBase)));
 
             var notProtectedActionMethods = (from controllerType in allControllerTypes
@@ -27,7 +28,9 @@ namespace DiFY.WebAPI.Configuration.Authorization
                 select $"{controllerType.Name}.{publicMethod.Name}").ToList();
 
             if (!notProtectedActionMethods.Any()) return;
+
             var errorBuilder = new StringBuilder();
+
             errorBuilder.AppendLine("Invalid authorization configuration: ");
 
             foreach (var notProtectedActionMethod in notProtectedActionMethods)
