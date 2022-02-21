@@ -1,7 +1,7 @@
 ﻿using DiFY.BuildingBlocks.Domain;
 using System;
 
-namespace DiFY.Modules.Social.Domain.FriendshipRequest.Rules
+namespace DiFY.Modules.Social.Domain.FriendshipRequests.Rules
 {
     public class FriendshipCantBeCreatedWhenRequestIsNotConfirmedRule : IBusinessRule
     {

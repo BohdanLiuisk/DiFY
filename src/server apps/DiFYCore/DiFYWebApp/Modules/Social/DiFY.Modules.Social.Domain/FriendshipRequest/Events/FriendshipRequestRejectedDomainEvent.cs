@@ -1,6 +1,6 @@
 ﻿using DiFY.BuildingBlocks.Domain;
 
-namespace DiFY.Modules.Social.Domain.FriendshipRequest.Events
+namespace DiFY.Modules.Social.Domain.FriendshipRequests.Events
 {
     public class FriendshipRequestRejectedDomainEvent : DomainEventBase
     {

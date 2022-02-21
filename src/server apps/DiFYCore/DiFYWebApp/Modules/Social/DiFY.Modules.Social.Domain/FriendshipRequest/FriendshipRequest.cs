@@ -1,11 +1,11 @@
 ﻿using DiFY.BuildingBlocks.Domain;
-using DiFY.Modules.Social.Domain.FriendshipRequest.Events;
-using DiFY.Modules.Social.Domain.FriendshipRequest.Interfaces;
-using DiFY.Modules.Social.Domain.FriendshipRequest.Rules;
+using DiFY.Modules.Social.Domain.FriendshipRequests.Events;
+using DiFY.Modules.Social.Domain.FriendshipRequests.Interfaces;
+using DiFY.Modules.Social.Domain.FriendshipRequests.Rules;
 using DiFY.Modules.Social.Domain.Friendships;
 using System;
 
-namespace DiFY.Modules.Social.Domain.FriendshipRequest
+namespace DiFY.Modules.Social.Domain.FriendshipRequests
 {
     public class FriendshipRequest : Entity, IAggregateRoot
     {

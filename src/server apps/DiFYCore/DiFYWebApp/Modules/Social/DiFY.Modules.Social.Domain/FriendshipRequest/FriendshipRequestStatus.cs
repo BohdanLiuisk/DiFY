@@ -1,6 +1,6 @@
 ﻿using DiFY.BuildingBlocks.Domain;
 
-namespace DiFY.Modules.Social.Domain.FriendshipRequest
+namespace DiFY.Modules.Social.Domain.FriendshipRequests
 {
     public class FriendshipRequestStatus : ValueObject
     {

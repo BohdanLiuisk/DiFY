@@ -1,6 +1,6 @@
 ﻿using System;
 using DiFY.BuildingBlocks.Domain;
-using DiFY.Modules.Social.Domain.FriendshipRequest;
+using DiFY.Modules.Social.Domain.FriendshipRequests;
 
 namespace DiFY.Modules.Social.Domain.Friendships
 {

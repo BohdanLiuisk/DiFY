@@ -1,7 +1,7 @@
 ﻿using DiFY.BuildingBlocks.Domain;
 using System;
 
-namespace DiFY.Modules.Social.Domain.FriendshipRequest
+namespace DiFY.Modules.Social.Domain.FriendshipRequests
 {
     public class FriendshipRequestId : TypedIdValueBase
     {

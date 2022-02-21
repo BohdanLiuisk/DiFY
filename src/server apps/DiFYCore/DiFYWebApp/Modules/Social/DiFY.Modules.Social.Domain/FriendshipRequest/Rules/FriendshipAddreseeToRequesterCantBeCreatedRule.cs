@@ -1,7 +1,7 @@
 ﻿using DiFY.BuildingBlocks.Domain;
-using DiFY.Modules.Social.Domain.FriendshipRequest.Interfaces;
+using DiFY.Modules.Social.Domain.FriendshipRequests.Interfaces;
 
-namespace DiFY.Modules.Social.Domain.FriendshipRequest.Rules
+namespace DiFY.Modules.Social.Domain.FriendshipRequests.Rules
 {
     public class FriendshipAddreseeToRequesterCantBeCreatedRule : IBusinessRule
     {

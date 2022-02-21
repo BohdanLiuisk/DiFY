@@ -1,4 +1,4 @@
-﻿namespace DiFY.Modules.Social.Domain.FriendshipRequest.Interfaces
+﻿namespace DiFY.Modules.Social.Domain.FriendshipRequests.Interfaces
 {
     public interface IFriendshipRequestService
     {
