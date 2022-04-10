@@ -4,4 +4,14 @@
     <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Dapper" Version="2.0.123" />
+    <PackageReference Include="MediatR" Version="10.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\BuildingBlocks\DiFY.BuildingBlocks.Application\DiFY.BuildingBlocks.Application.csproj" />
+    <ProjectReference Include="..\DiFY.Modules.Social.Domain\DiFY.Modules.Social.Domain.csproj" />
+  </ItemGroup>
+
 </Project>

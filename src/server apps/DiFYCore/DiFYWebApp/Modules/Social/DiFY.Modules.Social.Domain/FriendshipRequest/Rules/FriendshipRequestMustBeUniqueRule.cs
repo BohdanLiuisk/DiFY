@@ -22,6 +22,6 @@ namespace DiFY.Modules.Social.Domain.FriendshipRequests.Rules
 
         public string Message => "You have already sent friendship request.";
 
-        public bool IsBroken() => _friendshipRequestService.FriendshipRequestExists(_requesterId, _addreseeId);
+        public bool IsBroken() => _friendshipRequestService.GetFriendshipRequestsCount(_requesterId.Value, _addreseeId.Value) > 1;
     }
 }
