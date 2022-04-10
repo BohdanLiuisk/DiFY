@@ -1,5 +1,4 @@
 ﻿using DiFY.Modules.Social.Application.Configuration.Commands;
-using DiFY.Modules.Social.Domain.FriendshipRequests;
 using DiFY.Modules.Social.Domain.FriendshipRequests.Interfaces;
 using System;
 using System.Threading;
@@ -7,6 +6,8 @@ using System.Threading.Tasks;
 
 namespace DiFY.Modules.Social.Application.FriendshipRequests.CreateFriendshipRequest
 {
+    using DiFY.Modules.Social.Domain.FriendshipRequests;
+
     internal class CreateFriendshipRequestCommandHandler : ICommandHandler<CreateFriendshipRequestCommand, Guid>
     {
         private readonly IFriendshipRequestRepository _friendshipRequestRepository;
