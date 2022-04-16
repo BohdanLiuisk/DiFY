@@ -143,7 +143,7 @@ namespace DiFY.WebAPI
             services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
                 .AddIdentityServerAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme, x =>
                 {
-                    x.Authority = "http://localhost:5000";
+                    x.Authority = "http://localhost:5050";
                     x.ApiName = "DiFYCoreAPI";
                     x.RequireHttpsMetadata = false;
                 });
