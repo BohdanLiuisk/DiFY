@@ -17,11 +17,11 @@ namespace DiFY.Modules.Social.Domain.FriendshipRequests
 
         private FriendshipRequestStatus _status;
 
-        private DateTime _createdDate;
+        private DateTime _createdOn;
 
-        private DateTime? _confirmedDate;
+        private DateTime? _confirmedOn;
 
-        private DateTime? _rejectedDate;
+        private DateTime? _rejectedOn;
 
         private FriendshipRequest() { }
 
@@ -41,7 +41,7 @@ namespace DiFY.Modules.Social.Domain.FriendshipRequests
 
             _addresseeId = addresseeId;
 
-            _createdDate = createdDate;
+            _createdOn = createdDate;
         }
 
         public static FriendshipRequest CreateNewFriendshipRequest(
@@ -57,19 +57,19 @@ namespace DiFY.Modules.Social.Domain.FriendshipRequests
         {
             CheckRule(new FriendshipCantBeCreatedWhenRequestIsNotConfirmedRule(_status));
 
-            return Friendship.CreateFriendshipFromRequest(Id, _requesterId, _addresseeId, DateTime.Now);
+            return Friendship.CreateFriendshipFromRequest(Id, _requesterId, _addresseeId, DateTime.UtcNow);
         }
 
         public void Confirm(DateTime confirmedDate)
         {
-            _confirmedDate = confirmedDate;
+            _confirmedOn = confirmedDate;
 
             AddDomainEvent(new FriendshipRequestConfirmedDomainEvent(Id));
         }
 
         public void Reject(DateTime rejectedDate)
         {
-            _rejectedDate = rejectedDate;
+            _rejectedOn = rejectedDate;
 
             AddDomainEvent(new FriendshipRequestRejectedDomainEvent(Id));
         }

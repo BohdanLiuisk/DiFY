@@ -12,7 +12,7 @@ namespace DiFY.Modules.Social.Domain.Friendships
 
         private AddresseeId _addresseeId;
 
-        private DateTime _createdDate;
+        private DateTime _createdOn;
 
         private Friendship() { }
 
@@ -20,7 +20,7 @@ namespace DiFY.Modules.Social.Domain.Friendships
             FriendshipRequestId friendshipRequestId, 
             RequesterId requesterId,
             AddresseeId addresseeId, 
-            DateTime createdDate)
+            DateTime createdOn)
         {
             Id = new FriendshipId(friendshipRequestId.Value);
 
@@ -28,7 +28,7 @@ namespace DiFY.Modules.Social.Domain.Friendships
 
             _addresseeId = addresseeId;
 
-            _createdDate = createdDate;
+            _createdOn = createdOn;
         }
 
         public static Friendship CreateFriendshipFromRequest(
