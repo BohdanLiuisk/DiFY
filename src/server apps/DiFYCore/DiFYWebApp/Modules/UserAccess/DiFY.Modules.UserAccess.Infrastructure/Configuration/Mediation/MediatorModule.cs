@@ -53,7 +53,8 @@ namespace DiFY.Modules.UserAccess.Infrastructure.Configuration.Mediation
         private class ScopedContravariantRegistrationSource : IRegistrationSource
         {
             private readonly IRegistrationSource _source = new ContravariantRegistrationSource();
-            private readonly List<Type> _types = new List<Type>();
+
+            private readonly List<Type> _types = new();
 
             public ScopedContravariantRegistrationSource(params Type[] types)
             {
@@ -61,12 +62,10 @@ namespace DiFY.Modules.UserAccess.Infrastructure.Configuration.Mediation
                 {
                     throw new ArgumentNullException(nameof(types));
                 }
-
                 if (!types.All(x => x.IsGenericTypeDefinition))
                 {
                     throw new ArgumentException("Supplied types should be generic type definitions");
                 }
-
                 _types.AddRange(types);
             }
 
@@ -78,7 +77,6 @@ namespace DiFY.Modules.UserAccess.Infrastructure.Configuration.Mediation
                     var defs = c.Target.Services
                         .OfType<TypedService>()
                         .Select(x => x.ServiceType.GetGenericTypeDefinition());
-
                     if (defs.Any(_types.Contains))
                     {
                         yield return c;

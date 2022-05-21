@@ -27,7 +27,7 @@ namespace DiFY.Modules.UserAccess.Application.Authentication.Authenticate
                 "FROM [users].[Users] AS [User] " +
                 "WHERE [User].[Login] = @Login";
 
-            var user = await connection.QuerySingleOrDefaultAsync<UserDto>(sql, new  { request.Login });
+            var user = await connection.QuerySingleOrDefaultAsync<AuthenticateUserDto>(sql, new  { request.Login });
 
             if (user == null)
             {

@@ -8,23 +8,19 @@ namespace DiFY.BuildingBlocks.Infrastructure.EventBus
         bool IsEmpty { get; }
         
         event EventHandler<string> OnEventRemoved;
+
+        string GetEventKey<T>();
+
+        void AddSubscription<T>(IIntegrationEventHandler<T> handler) where T : IntegrationEvent;
         
-        void AddSubscription<T, TH>(TH eventHandler) where T : IntegrationEvent where TH : IIntegrationEventHandler<T>;
-        
-        void RemoveSubscription<T, TH>() where TH : IIntegrationEventHandler<T> where T : IntegrationEvent;
-        
-        bool HasSubscriptionsForEvent<T>() where T : IntegrationEvent;
+        void RemoveSubscription<T>() where T : IntegrationEvent;
         
         bool HasSubscriptionsForEvent(string eventName);
         
-        Type GetEventTypeByName(string eventName);
-        
+        IEnumerable<IIntegrationEventHandler> GetHandlersForEvent(string eventName);
+
+        Type GetEventType(string eventName);
+
         void Clear();
-        
-        IEnumerable<IntegrationEventSubscription> GetHandlersForEvent<T>() where T : IntegrationEvent;
-        
-        IEnumerable<IntegrationEventSubscription> GetHandlersForEvent(string eventName);
-        
-        string GetEventKey<T>();
     }
 }

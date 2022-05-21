@@ -1,8 +1,6 @@
 ﻿using Autofac;
 using DiFY.BuildingBlocks.Infrastructure.EventBus;
-using DiFY.Modules.Administration.Application.Members;
 using DiFY.Modules.UserAccess.IntegrationEvents;
-using MediatR;
 using Serilog;
 
 namespace DiFY.Modules.Administration.Infrastructure.Configuration.EventBus
@@ -17,9 +15,13 @@ namespace DiFY.Modules.Administration.Infrastructure.Configuration.EventBus
         private static void SubscribeToIntegrationEvents(ILogger logger)
         {
             var eventBus = AdministrationCompositionRoot.BeginLifetimeScope().Resolve<IEventsBus>();
-            var mediator = AdministrationCompositionRoot.BeginLifetimeScope().Resolve<IMediator>();
-            
-            eventBus.Subscribe<NewUserRegisteredIntegrationEvent, NewUserRegisteredIntegrationEventHandler>(new NewUserRegisteredIntegrationEventHandler(mediator));
+            SubscribeToIntegrationEvent<NewUserRegisteredIntegrationEvent>(eventBus, logger);
+        }
+
+        private static void SubscribeToIntegrationEvent<T>(IEventsBus eventBus, ILogger logger) where T : IntegrationEvent
+        {
+            logger.Information("Subscribe to {@IntegrationEvent}", typeof(T).FullName);
+            eventBus.Subscribe(new IntegrationEventGenericHandler<T>());
         }
     }
 }

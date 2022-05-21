@@ -33,7 +33,6 @@ namespace DiFY.BuildingBlocks.Domain
             {
                 return false;
             }
-
             return GetProperties().All(p => PropertiesAreEqual(obj, p))
                 && GetFields().All(f => FieldsAreEqual(obj, f));
         }
@@ -43,7 +42,6 @@ namespace DiFY.BuildingBlocks.Domain
             unchecked
             {
                 var hash = GetProperties().Select(prop => prop.GetValue(this, null)).Aggregate(17, HashValue);
-
                 return GetFields().Select(field => field.GetValue(this)).Aggregate(hash, HashValue);
             }
         }
@@ -85,7 +83,6 @@ namespace DiFY.BuildingBlocks.Domain
         private int HashValue(int seed, object value)
         {
             var currentHash = value?.GetHashCode() ?? 0;
-
             return (seed * 23) + currentHash;
         }
     }

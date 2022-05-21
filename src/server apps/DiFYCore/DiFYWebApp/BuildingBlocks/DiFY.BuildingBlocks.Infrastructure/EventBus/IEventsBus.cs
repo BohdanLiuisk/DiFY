@@ -3,10 +3,9 @@
     public interface IEventsBus
     {
         void Publish(IntegrationEvent @event);
-        
 
-        void Subscribe<T, TH>(TH eventHandler) where T : IntegrationEvent where TH : IIntegrationEventHandler<T>;
+        void Subscribe<T>(IIntegrationEventHandler<T> handler) where T : IntegrationEvent;
 
-        void Unsubscribe<T, TH>() where TH : IIntegrationEventHandler<T> where T : IntegrationEvent;
+        void Unsubscribe<T>() where T : IntegrationEvent;
     }
 }

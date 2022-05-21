@@ -5,7 +5,6 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using DiFY.BuildingBlocks.Infrastructure.EventBus;
 using Polly;
-using Polly.Retry;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using RabbitMQ.Client.Exceptions;
@@ -48,7 +47,7 @@ namespace DiFY.BuildingBlocks.EventBus
                 _persistentConnection.TryConnect();
             }
 
-            var policy = RetryPolicy.Handle<BrokerUnreachableException>()
+            var policy = Policy.Handle<BrokerUnreachableException>()
                 .Or<SocketException>()
                 .WaitAndRetry(_retryCount, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)), (ex, time) =>
                 {
@@ -87,32 +86,25 @@ namespace DiFY.BuildingBlocks.EventBus
             });
         }
 
-        public void Subscribe<T, TH>(TH eventHandler) where T : IntegrationEvent where TH : IIntegrationEventHandler<T>
+        public void Subscribe<T>(IIntegrationEventHandler<T> handler) where T : IntegrationEvent
         {
             var eventName = _subsManager.GetEventKey<T>();
-            
             SubscribeInternal(eventName);
-
-            _logger.Information("Subscribing to event {EventName} with {EventHandler}", eventName, typeof(TH).FullName);
-
-            _subsManager.AddSubscription<T, TH>(eventHandler);
-            
+            _logger.Information($"RabbitMQ subscribing to event {eventName}.");
+            _subsManager.AddSubscription(handler);
             StartBasicConsume();
         }
-        
-        public void Unsubscribe<T, TH>() where T : IntegrationEvent where TH : IIntegrationEventHandler<T>
+
+        public void Unsubscribe<T>() where T : IntegrationEvent
         {
             var eventName = _subsManager.GetEventKey<T>();
-
-            _logger.Information("Unsubscribing from event {EventName}", eventName);
-
-            _subsManager.RemoveSubscription<T, TH>();
+            _logger.Information($"Unsubscribing from event {eventName}");
+            _subsManager.RemoveSubscription<T>();
         }
             
         public void Dispose()
         {
             _consumerChannel?.Dispose();
-
             _subsManager.Clear();
         }
         
@@ -138,18 +130,13 @@ namespace DiFY.BuildingBlocks.EventBus
             {
                 _persistentConnection.TryConnect();
             }
-
             using var channel = _persistentConnection.CreateModel();
-            
             channel.QueueUnbind(
                 queue: _queueName,
                 exchange: BrokerName,
                 routingKey: eventName);
-
             if (!_subsManager.IsEmpty) return;
-            
             _queueName = string.Empty;
-            
             _consumerChannel.Close();
         }
         
@@ -233,24 +220,16 @@ namespace DiFY.BuildingBlocks.EventBus
         private async Task ProcessEvent(string eventName, string message)
         {
             _logger.Information("Processing RabbitMQ event: {EventName}", eventName);
-
             if (_subsManager.HasSubscriptionsForEvent(eventName))
             {
-                var subscriptions = _subsManager.GetHandlersForEvent(eventName);
-                
-                foreach (var subscription in subscriptions)
+                var integrationEventHandlers = _subsManager.GetHandlersForEvent(eventName);
+                foreach (var integrationEventHandler in integrationEventHandlers)
                 {
-                    if (subscription.Handler == null) continue;
-                    
-                    var eventType = _subsManager.GetEventTypeByName(eventName);
-                    
-                    var integrationEvent = JsonSerializer.Deserialize(message, eventType, new JsonSerializerOptions() { PropertyNameCaseInsensitive= true});
-                    
+                    var eventType = _subsManager.GetEventType(eventName);
+                    var @event = JsonSerializer.Deserialize(message, eventType, new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
                     var concreteType = typeof(IIntegrationEventHandler<>).MakeGenericType(eventType);
-
                     await Task.Yield();
-                    
-                    await (Task)concreteType.GetMethod("Handle")?.Invoke(subscription.Handler, new object[] { integrationEvent });
+                    await (Task)concreteType.GetMethod("Handle")?.Invoke(integrationEventHandler, new object[] { @event });
                 }
             }
             else

@@ -17,7 +17,9 @@ namespace DiFY.Modules.UserAccess.IntegrationEvents
 
         public string Name { get; }
 
-        public NewUserRegisteredIntegrationEvent(Guid id, DateTime occurredOn, Guid userId, string login, string email, string firstName, string lastName, string name)
+        public NewUserRegisteredIntegrationEvent(
+            Guid id, DateTime occurredOn, Guid userId, string login, 
+            string email, string firstName, string lastName, string name) 
             : base(id, occurredOn)
         {
             UserId = userId;

@@ -4,7 +4,7 @@ using System.Security.Claims;
 
 namespace DiFY.Modules.UserAccess.Application.Authentication.Authenticate
 {
-    public class UserDto
+    public class AuthenticateUserDto
     {
         public Guid Id { get; set; }
         

@@ -3,7 +3,7 @@ Host: localhost:5050
 Content-Type: application/x-www-form-urlencoded
 
 grant_type=password
-&username=bogdan_liusik
-&password=bogdan_liusik
+&username=billyherrington
+&password=testAdminPass
 &client_id=ro.client
 &client_secret=secret

@@ -22,7 +22,7 @@ INSERT INTO users.Users VALUES
 	1,
 	'Billy',
 	'Herrington',
-	'Billy Herrington',
+	'Billy Herrington'
 )
 
 INSERT INTO users.UserRoles VALUES

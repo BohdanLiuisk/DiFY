@@ -16,7 +16,7 @@ namespace DiFY.Modules.UserAccess.Application.UserRegistrations.RegisterNewUser
             _eventsBus = eventsBus;
         }
 
-        public async Task Handle(NewUserRegisteredDomainEvent notification, CancellationToken cancellationToken)
+        public Task Handle(NewUserRegisteredDomainEvent notification, CancellationToken cancellationToken)
         {
             _eventsBus.Publish(new NewUserRegisteredIntegrationEvent(
                 notification.Id,
@@ -27,6 +27,7 @@ namespace DiFY.Modules.UserAccess.Application.UserRegistrations.RegisterNewUser
                 notification.FirstName,
                 notification.LastName,
                 notification.Name));
+            return Task.CompletedTask;
         }
     }
 }

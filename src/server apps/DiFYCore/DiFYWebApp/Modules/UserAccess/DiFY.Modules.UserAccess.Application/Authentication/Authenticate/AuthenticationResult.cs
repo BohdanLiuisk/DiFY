@@ -8,7 +8,7 @@
             AuthenticationError = authenticationError;
         }
 
-        public AuthenticationResult(UserDto user)
+        public AuthenticationResult(AuthenticateUserDto user)
         {
             IsAuthenticated = true;
             User = user;
@@ -18,6 +18,6 @@
 
         public string AuthenticationError { get; }
         
-        public UserDto User { get; }
+        public AuthenticateUserDto User { get; }
     }
 }
