@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace DiFY.Modules.Social.Infrastructure
 {
-    internal class SocialModule : ISocialModule
+    public class SocialModule : ISocialModule
     {
         public async Task<TResult> ExecuteCommandAsync<TResult>(ICommand<TResult> command)
         {

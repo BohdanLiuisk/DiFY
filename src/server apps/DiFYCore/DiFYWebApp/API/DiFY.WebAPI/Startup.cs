@@ -3,6 +3,7 @@ using Autofac.Extensions.DependencyInjection;
 using DiFY.BuildingBlocks.Application;
 using DiFY.BuildingBlocks.Domain.Exceptions;
 using DiFY.Modules.Administration.Infrastructure.Configuration;
+using DiFY.Modules.Social.Infrastructure.Configuration;
 using DiFY.Modules.UserAccess.Application.IdentityServer;
 using DiFY.Modules.UserAccess.Infrastructure.Configuration;
 using DiFY.WebAPI.Configuration.Authorization;
@@ -10,6 +11,7 @@ using DiFY.WebAPI.Configuration.ExecutionContext;
 using DiFY.WebAPI.Configuration.Extensions;
 using DiFY.WebAPI.Configuration.Validation;
 using DiFY.WebAPI.Modules.Administration;
+using DiFY.WebAPI.Modules.Social;
 using DiFY.WebAPI.Modules.UserAccess;
 using Hellang.Middleware.ProblemDetails;
 using IdentityServer4.AccessTokenValidation;
@@ -33,6 +35,8 @@ namespace DiFY.WebAPI
         private const string EventBusConnection = "RabbitMQConfiguration:Uri";
 
         private const string UserAccessQueue = "RabbitMQConfiguration:Queues:UserAccess";
+
+        private const string SocialQueue = "RabbitMQConfiguration:Queues:Social";
 
         private const string AdministrationQueue = "RabbitMQConfiguration:Queues:Administration";
         
@@ -91,8 +95,8 @@ namespace DiFY.WebAPI
         public void ConfigureContainer(ContainerBuilder containerBuilder)
         {
             containerBuilder.RegisterModule(new AdministrationAutofacModule());
-
             containerBuilder.RegisterModule(new UserAccessAutofacModule());
+            containerBuilder.RegisterModule(new SocialAutofacModule());
         }
         
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -167,20 +171,23 @@ namespace DiFY.WebAPI
         private void InitializeModules(ILifetimeScope container)
         {
             var httpContextAccessor = container.Resolve<IHttpContextAccessor>();
-
             var executionContextAccessor = new ExecutionContextAccessor(httpContextAccessor);
-
             AdministrationStartup.Initialize(
                 _configuration[DiFyConnectionString],
                 _configuration[EventBusConnection],
                 _configuration[AdministrationQueue],
                 executionContextAccessor,
                 _logger);
-
             UserAccessStartup.Initialize(
                 _configuration[DiFyConnectionString],
                 _configuration[EventBusConnection],
                 _configuration[UserAccessQueue],
+                executionContextAccessor,
+                _logger);
+            SocialStartup.Initialize(
+                _configuration[DiFyConnectionString],
+                _configuration[EventBusConnection],
+                _configuration[SocialQueue],
                 executionContextAccessor,
                 _logger);
         }
