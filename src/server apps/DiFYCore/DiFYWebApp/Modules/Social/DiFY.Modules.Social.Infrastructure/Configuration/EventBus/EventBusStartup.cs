@@ -2,9 +2,9 @@
 using DiFY.BuildingBlocks.Infrastructure.EventBus;
 using Serilog;
 
-namespace DiFY.Modules.UserAccess.Infrastructure.Configuration.EventBus
+namespace DiFY.Modules.Social.Infrastructure.Configuration.EventBus
 {
-    public class EventsBusStartup
+    internal class EventBusStartup
     {
         public static void Initialize(ILogger logger)
         {
@@ -13,7 +13,7 @@ namespace DiFY.Modules.UserAccess.Infrastructure.Configuration.EventBus
 
         private static void SubscribeToIntegrationEvents(ILogger logger)
         {
-            var eventBus = UserAccessCompositionRoot.BeginLifetimeScope().Resolve<IEventsBus>();
+            var eventBus = SocialCompositionRoot.BeginLifetimeScope().Resolve<IEventsBus>();
         }
 
         private static void SubscribeToIntegrationEvent<T>(IEventsBus eventBus, ILogger logger) where T : IntegrationEvent

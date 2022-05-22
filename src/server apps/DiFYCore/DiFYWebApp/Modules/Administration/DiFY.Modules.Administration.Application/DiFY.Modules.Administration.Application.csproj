@@ -9,7 +9,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\..\BuildingBlocks\DiFY.BuildingBlocks.Infrastructure\DiFY.BuildingBlocks.Infrastructure.csproj" />
       <ProjectReference Include="..\..\UserAccess\DiFY.Modules.UserAccess.IntegrationEvents\DiFY.Modules.UserAccess.IntegrationEvents.csproj" />
       <ProjectReference Include="..\DiFY.Modules.Administration.Domain\DiFY.Modules.Administration.Domain.csproj" />
     </ItemGroup>
