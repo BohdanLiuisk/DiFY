@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace DiFY.WebAPI.Modules.UserAccess.Controllers
 {
     [ApiController]
-    [Route("userAccess/[controller]")]
+    [Route("userAccess/userRegistrations")]
     public class UserRegistrationsController : ControllerBase
     {
         private readonly IUserAccessModule _userAccessModule;
@@ -30,24 +30,22 @@ namespace DiFY.WebAPI.Modules.UserAccess.Controllers
         public async Task<IActionResult> RegisterNewUser(RegisterNewUserRequest request)
         {
             await _userAccessModule.ExecuteCommandAsync(new RegisterNewUserCommand(
-                request.Login,
+                request.Login, 
                 request.Password,
                 request.Email,
                 request.FirstName,
                 request.LastName,
                 request.ConfirmLink));
-
             return Ok();
         }
 
         [NoPermissionRequired]
         [AllowAnonymous]
-        [HttpPatch("{userRegistrationId}/confirm")]
+        [HttpPatch("{userRegistrationId:guid}/confirm")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> ConfirmRegistration(Guid userRegistrationId)
         {
             await _userAccessModule.ExecuteCommandAsync(new ConfirmUserRegistrationCommand(userRegistrationId));
-
             return Ok();
         }
     }

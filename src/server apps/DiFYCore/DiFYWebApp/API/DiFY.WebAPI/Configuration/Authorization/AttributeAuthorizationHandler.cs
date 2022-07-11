@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Routing;
+using Microsoft.AspNetCore.Http;
 
 namespace DiFY.WebAPI.Configuration.Authorization
 {
@@ -12,8 +12,7 @@ namespace DiFY.WebAPI.Configuration.Authorization
     {
         protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, TRequirement requirement)
         {
-            var attribute = (context.Resource as RouteEndpoint)?.Metadata.GetMetadata<TAttribute>();
-
+            var attribute = (context.Resource as Endpoint)?.Metadata.GetMetadata<TAttribute>();
             return HandleRequirementAsync(context, requirement, attribute);
         }
 

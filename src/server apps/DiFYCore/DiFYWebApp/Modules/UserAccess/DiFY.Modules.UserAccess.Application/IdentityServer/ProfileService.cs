@@ -13,7 +13,6 @@ namespace DiFY.Modules.UserAccess.Application.IdentityServer
             context.IssuedClaims.AddRange(context.Subject.Claims.Where(claim => claim.Type == CustomClaimTypes.Roles).ToList());
             context.IssuedClaims.Add(context.Subject.Claims.Single(claim => claim.Type == CustomClaimTypes.Name));
             context.IssuedClaims.Add(context.Subject.Claims.Single(claim => claim.Type == CustomClaimTypes.Email));
-            
             return Task.CompletedTask;
         }
 

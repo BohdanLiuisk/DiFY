@@ -22,8 +22,7 @@ namespace DiFY.WebAPI.Configuration.ExecutionContext
                 {
                     return Guid.Parse(_httpContextAccessor.HttpContext.User.Claims.Single(x => x.Type == "sub").Value);
                 }
-
-                throw new ApplicationException("User context is not available.");
+                throw new UnauthorizedAccessException("User context is not available.");
             }
         }
 
@@ -31,12 +30,13 @@ namespace DiFY.WebAPI.Configuration.ExecutionContext
         {
             get
             {
-                if (_httpContextAccessor.HttpContext != null && IsAvailable && _httpContextAccessor.HttpContext.Request.Headers.Keys
+                if (_httpContextAccessor.HttpContext != null && 
+                    IsAvailable && _httpContextAccessor.HttpContext.Request.Headers.Keys
                     .Any(key => key == CorrelationMiddleware.CorrelationHeaderKey))
                 {
-                    return Guid.Parse(_httpContextAccessor.HttpContext.Request.Headers[CorrelationMiddleware.CorrelationHeaderKey]);
+                    return Guid.Parse(
+                        _httpContextAccessor.HttpContext.Request.Headers[CorrelationMiddleware.CorrelationHeaderKey]);
                 }
-
                 throw new ApplicationException("Http context and correlation id is not available.");
             }
         }

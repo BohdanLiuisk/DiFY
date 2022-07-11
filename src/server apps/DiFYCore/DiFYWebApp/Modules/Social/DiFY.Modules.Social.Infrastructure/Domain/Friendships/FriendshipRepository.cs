@@ -8,12 +8,12 @@ namespace DiFY.Modules.Social.Infrastructure.Domain.Friendships
     {
         private readonly SocialContext _socialContext;
 
-        public FriendshipRepository(SocialContext socialContext)
+        public FriendshipRepository(SocialContext socialContext) 
         {
             _socialContext = socialContext;
         }
 
-        public async Task AddAsync(Friendship friendship)
+        public async Task AddAsync(Friendship friendship) 
         {
             await _socialContext.Friendships.AddAsync(friendship);
         }

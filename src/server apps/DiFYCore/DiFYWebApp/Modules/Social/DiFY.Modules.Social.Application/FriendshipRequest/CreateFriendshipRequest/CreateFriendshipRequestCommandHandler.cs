@@ -3,6 +3,8 @@ using DiFY.Modules.Social.Domain.FriendshipRequests.Interfaces;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Dapper;
+using DiFY.BuildingBlocks.Application.Data;
 
 namespace DiFY.Modules.Social.Application.FriendshipRequests.CreateFriendshipRequest
 {
@@ -11,16 +13,14 @@ namespace DiFY.Modules.Social.Application.FriendshipRequests.CreateFriendshipReq
     internal class CreateFriendshipRequestCommandHandler : ICommandHandler<CreateFriendshipRequestCommand, Guid>
     {
         private readonly IFriendshipRequestRepository _friendshipRequestRepository;
-
-        private readonly IFriendshipRequestService _friendshipRequestService;
-
+        
+        private readonly ISqlConnectionFactory _sqlConnectionFactory;
+        
         public CreateFriendshipRequestCommandHandler(
-            IFriendshipRequestRepository friendshipRequestRepository,
-            IFriendshipRequestService friendshipRequestService)
+            IFriendshipRequestRepository friendshipRequestRepository, ISqlConnectionFactory sqlConnectionFactory)
         {
             _friendshipRequestRepository = friendshipRequestRepository;
-
-            _friendshipRequestService = friendshipRequestService;
+            _sqlConnectionFactory = sqlConnectionFactory;
         }
 
         public async Task<Guid> Handle(CreateFriendshipRequestCommand command, CancellationToken cancellationToken)
@@ -29,11 +29,23 @@ namespace DiFY.Modules.Social.Application.FriendshipRequests.CreateFriendshipReq
                 new RequesterId(command.RequesterId),
                 new AddresseeId(command.AddresseeId),
                 command.CreateDate,
-                _friendshipRequestService);
-
+                CountActiveFriendshipRequests);
             await _friendshipRequestRepository.AddAsync(friendshipRequest);
-
             return friendshipRequest.Id.Value;
+        }
+        
+        private int CountActiveFriendshipRequests(Guid firstParticipant, Guid secondParticipant)
+        {
+            var connection = _sqlConnectionFactory.GetOpenConnection();
+            const string query = "SELECT COUNT(*)" + 
+                                 "FROM [social].[FriendshipRequest] as [FriendshipRequest] " +
+                                 "WHERE [FriendshipRequest].[AddresseeId] = @AddresseeId " +
+                                 "AND [FriendshipRequest].[RequesterId] = @RequesterId";
+            return connection.QuerySingle<int>(query, new
+            {
+                AddresseeId = secondParticipant,
+                RequesterId = firstParticipant
+            });
         }
     }
 }

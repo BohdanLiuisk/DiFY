@@ -11,13 +11,9 @@ namespace DiFY.Modules.Social.Infrastructure.Domain.Friendships
         public void Configure(EntityTypeBuilder<Friendship> builder)
         {
             builder.ToTable("Friendship", "social");
-
             builder.HasKey(x => x.Id);
-
             builder.Property<RequesterId>("_requesterId").HasColumnName("RequesterId");
-
             builder.Property<AddresseeId>("_addresseeId").HasColumnName("AddresseeId");
-
             builder.Property<DateTime>("_createdOn").HasColumnName("CreatedOn");
         }
     }

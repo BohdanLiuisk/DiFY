@@ -10,9 +10,7 @@ namespace DiFY.Modules.UserAccess.Infrastructure.Domain.UserRegistrations
         public void Configure(EntityTypeBuilder<UserRegistration> builder)
         {
             builder.ToTable("UserRegistrations", "users");
-
             builder.HasKey(x => x.Id);
-
             builder.Property<string>("_login").HasColumnName("Login");
             builder.Property<string>("_email").HasColumnName("Email");
             builder.Property<string>("_password").HasColumnName("Password");
@@ -21,7 +19,6 @@ namespace DiFY.Modules.UserAccess.Infrastructure.Domain.UserRegistrations
             builder.Property<string>("_name").HasColumnName("Name");
             builder.Property<DateTime>("_registerDate").HasColumnName("RegisterDate");
             builder.Property<DateTime?>("_confirmedDate").HasColumnName("ConfirmedDate");
-            
             builder.OwnsOne<UserRegistrationStatus>("_status", b =>
             {
                 b.Property(x => x.Value).HasColumnName("StatusCode");

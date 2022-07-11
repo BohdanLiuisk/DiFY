@@ -19,10 +19,9 @@ namespace DiFY.Modules.Social.Application.FriendshipRequest.RejectFriendshipRequ
 
         public async Task<Unit> Handle(RejectFriendshipRequestCommand command, CancellationToken cancellationToken)
         {
-            var friendshipRequest = await _friendshipRequestRepository.GetByIdAsync(new FriendshipRequestId(command.FriendshipRequestId));
-
-            friendshipRequest.Reject(DateTime.Now);
-
+            var friendshipRequest = await _friendshipRequestRepository
+                .GetByIdAsync(new FriendshipRequestId(command.FriendshipRequestId));
+            friendshipRequest.Reject(DateTime.UtcNow);
             return Unit.Value;
         }
     }

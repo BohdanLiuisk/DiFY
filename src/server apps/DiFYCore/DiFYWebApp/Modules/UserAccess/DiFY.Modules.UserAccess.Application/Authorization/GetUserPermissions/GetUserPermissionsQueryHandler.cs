@@ -21,14 +21,11 @@ namespace DiFY.Modules.UserAccess.Application.Authorization.GetUserPermissions
             CancellationToken cancellationToken)
         {
             var connection = _sqlConnectionFactory.GetOpenConnection();
-
-            const string sql = "SELECT [UserPermission.[PermissionCode] AS [Code] " +
-                               "FROM [users].[UserPermissions] AS [UserPermission] " +
+            const string sql = "SELECT [UserPermission].[PermissionCode] AS [Code] " +
+                               "FROM [users].[v_UserPermissions] AS [UserPermission] " +
                                "WHERE [UserPermission].UserId = @UserId";
-            
             var permissions =
                 await connection.QueryAsync<UserPermissionDto>(sql, new { query.UserId });
-
             return permissions.AsList();
         }
     }

@@ -21,7 +21,6 @@ namespace DiFY.BuildingBlocks.Infrastructure.DomainEventDispatching
                 .ChangeTracker
                 .Entries<Entity>()
                 .Where(x => x.Entity.DomainEvents != null && x.Entity.DomainEvents.Any()).ToList();
-
             return domainEntities
                 .SelectMany(x => x.Entity.DomainEvents)
                 .ToList();
@@ -33,7 +32,6 @@ namespace DiFY.BuildingBlocks.Infrastructure.DomainEventDispatching
                 .ChangeTracker
                 .Entries<Entity>()
                 .Where(x => x.Entity.DomainEvents != null && x.Entity.DomainEvents.Any()).ToList();
-            
             domainEntities
                 .ForEach(entity => entity.Entity.ClearDomainEvents());
         }

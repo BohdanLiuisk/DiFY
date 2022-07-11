@@ -1,27 +1,28 @@
 ﻿using DiFY.BuildingBlocks.Domain;
-using DiFY.Modules.Social.Domain.FriendshipRequests.Interfaces;
+using DiFY.Modules.Social.Domain.FriendshipRequests.Delegates;
 
 namespace DiFY.Modules.Social.Domain.FriendshipRequests.Rules
 {
     public class FriendshipRequestMustBeUniqueRule : IBusinessRule
     {
-        private readonly IFriendshipRequestService _friendshipRequestService;
+        private readonly CountActiveFriendshipRequests _countActiveFriendshipRequests;
 
         private readonly RequesterId _requesterId;
 
-        private readonly AddresseeId _addreseeId;
+        private readonly AddresseeId _addresseeId;
 
-        public FriendshipRequestMustBeUniqueRule(IFriendshipRequestService friendshipRequestService, RequesterId requesterId, AddresseeId addresseeId)
+        public FriendshipRequestMustBeUniqueRule(
+            CountActiveFriendshipRequests countActiveFriendshipRequests, 
+            RequesterId requesterId, 
+            AddresseeId addresseeId) 
         {
-            _friendshipRequestService = friendshipRequestService;
-
+            _countActiveFriendshipRequests = countActiveFriendshipRequests;
             _requesterId = requesterId;
-
-            _addreseeId = addresseeId;
+            _addresseeId = addresseeId;
         }
-
+        
         public string Message => "You have already sent friendship request.";
 
-        public bool IsBroken() => _friendshipRequestService.GetFriendshipRequestsCount(_requesterId.Value, _addreseeId.Value) > 1;
+        public bool IsBroken() => _countActiveFriendshipRequests.Invoke(_requesterId.Value, _addresseeId.Value) >= 1;
     }
 }

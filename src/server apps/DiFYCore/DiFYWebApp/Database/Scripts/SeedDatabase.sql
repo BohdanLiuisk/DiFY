@@ -26,4 +26,10 @@ INSERT INTO users.Users VALUES
 )
 
 INSERT INTO users.UserRoles VALUES
-('4065630E-4A4C-4F01-9142-0BACF6B8C64D', 'Administrator')
+('4065630E-4A4C-4F01-9142-0BACF6B8C64D', 'Administrator'),
+('4065630E-4A4C-4F01-9142-0BACF6B8C64D', 'Member')
+
+INSERT INTO [users].[Permissions] ([Code], [Name])
+VALUES ('CanSendFriendshipRequest', 'CanSendFriendshipRequest')
+
+INSERT INTO [users].[RolesToPermissions] VALUES ('Member', 'CanSendFriendshipRequest')

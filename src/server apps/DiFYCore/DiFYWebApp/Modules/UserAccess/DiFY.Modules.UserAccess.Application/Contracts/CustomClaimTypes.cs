@@ -1,6 +1,6 @@
 ﻿namespace DiFY.Modules.UserAccess.Application.Contracts
 {
-    internal class CustomClaimTypes
+    internal static class CustomClaimTypes
     {
         internal const string Roles = "roles";
         internal const string Email = "email";

@@ -10,8 +10,8 @@ CREATE TABLE [social].[Friendship]
     [AddresseeId] UNIQUEIDENTIFIER NOT NULL,
     [CreatedOn] DATETIME NOT NULL,
     CONSTRAINT [PK_social_Friendship_Id] PRIMARY KEY ([Id] ASC),
-    CONSTRAINT [FK_social_Friendship_Requester] FOREIGN KEY ([RequesterId]) REFERENCES users.Users ([Id]),
-    CONSTRAINT [FK_social_Friendship_Addressee] FOREIGN KEY ([AddresseeId]) REFERENCES users.Users ([Id])
+    CONSTRAINT [FK_social_Friendship_Requester] FOREIGN KEY ([RequesterId]) REFERENCES administration.Members ([Id]),
+    CONSTRAINT [FK_social_Friendship_Addressee] FOREIGN KEY ([AddresseeId]) REFERENCES administration.Members ([Id])
 )
 
 GO
@@ -21,9 +21,9 @@ CREATE TABLE [social].[FriendshipRequest]
     [RequesterId]  UNIQUEIDENTIFIER NOT NULL,
     [AddresseeId] UNIQUEIDENTIFIER NOT NULL,
     [CreatedOn] DATETIME NOT NULL,
-    [СonfirmedOn] DATETIME NULL,
+    [ConfirmedOn] DATETIME NULL,
     [RejectedOn] DATETIME NULL,
     CONSTRAINT [PK_social_FriendshipRequest_Id] PRIMARY KEY ([Id] ASC),
-    CONSTRAINT [FK_social_FriendshipRequest_Requester] FOREIGN KEY ([RequesterId]) REFERENCES users.Users ([Id]),
-    CONSTRAINT [FK_social_FriendshipRequest_Addressee] FOREIGN KEY ([AddresseeId]) REFERENCES users.Users ([Id])
+    CONSTRAINT [FK_social_FriendshipRequest_Requester] FOREIGN KEY ([RequesterId]) REFERENCES administration.Members ([Id]),
+    CONSTRAINT [FK_social_FriendshipRequest_Addressee] FOREIGN KEY ([AddresseeId]) REFERENCES administration.Members ([Id])
 )

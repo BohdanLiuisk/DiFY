@@ -5,7 +5,7 @@ using IdentityServer4.Models;
 
 namespace DiFY.Modules.UserAccess.Application.IdentityServer
 {
-    public class IdentityServerConfig
+    public static class IdentityServerConfig
     {
         public static IEnumerable<ApiResource> GetApis()
         {
@@ -17,7 +17,7 @@ namespace DiFY.Modules.UserAccess.Application.IdentityServer
 
         public static IEnumerable<IdentityResource> GetIdentityResources()
         {
-            return new IdentityResource[]
+            return new IdentityResource[] 
             {
                 new IdentityResources.OpenId(),
                 new IdentityResources.Profile(),
@@ -45,7 +45,8 @@ namespace DiFY.Modules.UserAccess.Application.IdentityServer
                         "DiFYCoreAPI",
                         IdentityServerConstants.StandardScopes.OpenId,
                         IdentityServerConstants.StandardScopes.Profile
-                    }
+                    },
+                    AllowOfflineAccess = true
                 }
             };
         }

@@ -16,12 +16,10 @@ namespace DiFY.Modules.UserAccess.Application.UserRegistrations.Services
         public int CountUsersWithLogin(string login)
         {
             var connection = _sqlConnectionFactory.GetOpenConnection();
-            
             const string sql = "SELECT " +
                                "COUNT(*) " +
                                "FROM [users].[Users] as [User] " +
                                "WHERE [User].[Login] = @Login";
-
             return connection.QuerySingle<int>(sql, new { login });
         }
     }

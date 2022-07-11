@@ -9,6 +9,7 @@ namespace DiFY.BuildingBlocks.Infrastructure.DomainEventDispatching
         where T : INotification
     {
         private readonly INotificationHandler<T> _decorated;
+        
         private readonly IDomainEventsDispatcher _domainEventsDispatcher;
 
         public DomainEventsDispatcherNotificationHandlerDecorator(
@@ -22,7 +23,6 @@ namespace DiFY.BuildingBlocks.Infrastructure.DomainEventDispatching
         public async Task Handle(T notification, CancellationToken cancellationToken)
         {
             await _decorated.Handle(notification, cancellationToken);
-
             await _domainEventsDispatcher.DispatchEventsAsync();
         }
     }

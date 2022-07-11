@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 
 namespace DiFY.Modules.UserAccess.Infrastructure.Configuration.DataAccess
 {
-    internal class DataAccessModule : Autofac.Module
+    internal class DataAccessModule : Module
     {
         private readonly string _dbConnectionString;
         private readonly ILoggerFactory _loggerFactory;

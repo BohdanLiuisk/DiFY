@@ -23,11 +23,8 @@ namespace DiFY.Modules.Social.Domain.Friendships
             DateTime createdOn)
         {
             Id = new FriendshipId(friendshipRequestId.Value);
-
             _requesterId = requesterId;
-
             _addresseeId = addresseeId;
-
             _createdOn = createdOn;
         }
 

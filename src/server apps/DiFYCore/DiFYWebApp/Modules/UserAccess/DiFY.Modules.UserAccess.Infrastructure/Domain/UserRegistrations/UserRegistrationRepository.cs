@@ -21,7 +21,8 @@ namespace DiFY.Modules.UserAccess.Infrastructure.Domain.UserRegistrations
 
         public async Task<UserRegistration> GetByIdAsync(UserRegistrationId userRegistrationId)
         {
-            return await _userAccessContext.UserRegistrations.FirstOrDefaultAsync(ur => ur.Id == userRegistrationId);
+            return await _userAccessContext.UserRegistrations.FirstOrDefaultAsync(
+                ur => ur.Id == userRegistrationId);
         }
     }
 }

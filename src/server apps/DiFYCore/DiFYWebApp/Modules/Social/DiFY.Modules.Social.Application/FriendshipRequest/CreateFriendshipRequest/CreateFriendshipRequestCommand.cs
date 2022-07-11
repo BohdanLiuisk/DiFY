@@ -8,9 +8,7 @@ namespace DiFY.Modules.Social.Application.FriendshipRequests.CreateFriendshipReq
         public CreateFriendshipRequestCommand(Guid requesterId, Guid addresseeId, DateTime createdDate)
         {
             RequesterId = requesterId;
-
             AddresseeId = addresseeId;
-
             CreateDate = createdDate;
         }
 

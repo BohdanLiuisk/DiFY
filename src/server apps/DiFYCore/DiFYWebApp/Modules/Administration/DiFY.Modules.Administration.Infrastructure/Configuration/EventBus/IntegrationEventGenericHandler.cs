@@ -10,9 +10,9 @@ namespace DiFY.Modules.Administration.Infrastructure.Configuration.EventBus
     {
         public async Task Handle(T @event)
         {
-            var scope = AdministrationCompositionRoot.BeginLifetimeScope();
+            using var scope = AdministrationCompositionRoot.BeginLifetimeScope();
             var mediator = scope.Resolve<IMediator>();
-            await mediator.Publish((INotification)@event);
+            await mediator.Publish(@event as INotification);
         }
     }
 }

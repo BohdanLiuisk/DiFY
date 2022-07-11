@@ -23,7 +23,6 @@ namespace DiFY.Modules.UserAccess.Application.UserRegistrations.RegisterNewUser
         public async Task<Guid> Handle(RegisterNewUserCommand command, CancellationToken cancellationToken)
         {
             var password = PasswordHashManager.HashPassword(command.Password);
-
             var userRegistration = UserRegistration.RegisterNewUser(
                 command.Login,
                 password,
@@ -32,9 +31,7 @@ namespace DiFY.Modules.UserAccess.Application.UserRegistrations.RegisterNewUser
                 command.LastName,
                 _usersCounter,
                 command.ConfirmLink);
-
             await _userRegistrationRepository.AddAsync(userRegistration);
-
             return userRegistration.Id.Value;
         }
     }

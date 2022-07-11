@@ -18,16 +18,13 @@ namespace DiFY.Modules.Social.Application.Friendships
             IFriendshipRepository friendshipRepository)
         {
             _friendshipRepository = friendshipRepository;
-
             _friendshipRequestRepository = friendshipRequestRepository;
         }
 
         public async Task Handle(FriendshipRequestConfirmedDomainEvent @event, CancellationToken cancellationToken)
         {
             var friendshipRequest = await _friendshipRequestRepository.GetByIdAsync(@event.FriendshipRequestId);
-
             var friendship = friendshipRequest.CreateFriendship();
-
             await _friendshipRepository.AddAsync(friendship);
         }
     }

@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace DiFY.WebAPI.Modules.UserAccess.Controllers
 {
     [ApiController]
-    [Route("api/userAccess/authenticatedUser")]
+    [Route("api/userAccess/authUser")]
     public class AuthenticatedUserController : ControllerBase
     {
         private readonly IUserAccessModule _userAccessModule;
@@ -28,7 +28,6 @@ namespace DiFY.WebAPI.Modules.UserAccess.Controllers
         public async Task<IActionResult> GetAuthenticatedUser()
         {
             var user = await _userAccessModule.ExecuteQueryAsync(new GetAuthenticatedUserQuery());
-
             return Ok(user);
         }
 
@@ -37,8 +36,8 @@ namespace DiFY.WebAPI.Modules.UserAccess.Controllers
         [ProducesResponseType(typeof(List<UserPermissionDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAuthenticatedUserPermissions()
         {
-            var permissions = await _userAccessModule.ExecuteQueryAsync(new GetAuthenticatedUserPermissionsQuery());
-
+            var permissions = await _userAccessModule.ExecuteQueryAsync(
+                new GetAuthenticatedUserPermissionsQuery());
             return Ok(permissions);
         }
     }

@@ -11,7 +11,7 @@ using DiFY.Modules.Social.Infrastructure.Configuration.Mediation;
 
 namespace DiFY.Modules.Social.Infrastructure.Configuration
 {
-    public class SocialStartup
+    public static class SocialStartup
     {
         public static void Initialize(
            string connectionString,
@@ -20,7 +20,7 @@ namespace DiFY.Modules.Social.Infrastructure.Configuration
            IExecutionContextAccessor executionContextAccessor,
            ILogger logger)
         {
-            var moduleLogger = logger.ForContext("Module", "UserAccess");
+            var moduleLogger = logger.ForContext("Module", "Social");
             ConfigureCompositionRoot(connectionString, eventBusConnection, userAccessQueue, executionContextAccessor, logger);
             EventBusStartup.Initialize(moduleLogger);
         }

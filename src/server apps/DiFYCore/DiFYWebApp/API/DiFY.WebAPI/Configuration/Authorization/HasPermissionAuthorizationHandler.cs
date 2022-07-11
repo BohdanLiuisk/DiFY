@@ -24,22 +24,20 @@ namespace DiFY.WebAPI.Configuration.Authorization
             _userAccessModule = userAccessModule;
         }
         
-        protected override async Task HandleRequirementAsync(
-            AuthorizationHandlerContext context, HasPermissionAuthorizationRequirement requirement, HasPermissionAttribute attribute)
+        protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, 
+            HasPermissionAuthorizationRequirement requirement, HasPermissionAttribute attribute)
         {
             var permissions = await _userAccessModule
                 .ExecuteQueryAsync(new GetUserPermissionsQuery(_executionContextAccessor.UserId));
-
             if (!await AuthorizeAsync(attribute.Name, permissions))
             {
                 context.Fail();
                 return;
             }
-            
             context.Succeed(requirement);
         }
 
-        private Task<bool> AuthorizeAsync(string permission, List<UserPermissionDto> permissions)
+        private Task<bool> AuthorizeAsync(string permission, IEnumerable<UserPermissionDto> permissions)
         {
             return Task.FromResult(permissions.Any(x => x.Code == permission));
         }

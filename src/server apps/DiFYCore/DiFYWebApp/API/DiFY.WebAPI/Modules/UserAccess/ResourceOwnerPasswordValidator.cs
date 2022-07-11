@@ -19,19 +19,16 @@ namespace DiFY.WebAPI.Modules.UserAccess
         {
             var authenticationResult = await _userAccessModule.ExecuteCommandAsync(
                 new AuthenticateCommand(context.UserName, context.Password));
-            
             if (!authenticationResult.IsAuthenticated)
             {
                 context.Result = new GrantValidationResult(
                     TokenRequestErrors.InvalidGrant, authenticationResult.AuthenticationError);
-                
                 return;
             }
-            
             context.Result = new GrantValidationResult(
-                authenticationResult.User.Id.ToString(),
-                "forms",
-                authenticationResult.User.Claims);
+                subject: authenticationResult.User.Id.ToString(),
+                authenticationMethod: "forms",
+                claims: authenticationResult.User.Claims);
         }
     }
 }

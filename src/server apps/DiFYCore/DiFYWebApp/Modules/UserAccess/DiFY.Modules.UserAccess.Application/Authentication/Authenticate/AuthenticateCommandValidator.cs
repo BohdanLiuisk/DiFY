@@ -7,6 +7,7 @@ namespace DiFY.Modules.UserAccess.Application.Authentication.Authenticate
         public AuthenticateCommandValidator()
         {
             RuleFor(x => x.Login).NotEmpty().WithMessage("Login cannot be empty");
+            RuleFor(x => x.Login).MinimumLength(4);
             RuleFor(x => x.Password).NotEmpty().WithMessage("Password cannot be empty");
         }
     }

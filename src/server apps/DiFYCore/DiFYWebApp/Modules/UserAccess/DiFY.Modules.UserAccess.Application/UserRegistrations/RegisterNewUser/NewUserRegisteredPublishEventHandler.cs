@@ -7,7 +7,7 @@ using MediatR;
 
 namespace DiFY.Modules.UserAccess.Application.UserRegistrations.RegisterNewUser
 {
-    public class NewUserRegisteredPublishEventHandler : INotificationHandler<NewUserRegisteredDomainEvent>
+    internal class NewUserRegisteredPublishEventHandler : INotificationHandler<NewUserRegisteredDomainEvent>
     {
         private readonly IEventsBus _eventsBus;
 

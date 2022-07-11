@@ -8,6 +8,7 @@ namespace DiFY.BuildingBlocks.Infrastructure
     public class SqlConnectionFactory : ISqlConnectionFactory, IDisposable
     {
         private readonly string _connectionString;
+        
         private IDbConnection _connection;
 
         public SqlConnectionFactory(string connectionString)
@@ -18,11 +19,8 @@ namespace DiFY.BuildingBlocks.Infrastructure
         public IDbConnection GetOpenConnection()
         {
             if (_connection is { State: ConnectionState.Open }) return _connection;
-            
             _connection = new SqlConnection(_connectionString);
-            
             _connection.Open();
-
             return _connection;
         }
 
@@ -30,7 +28,6 @@ namespace DiFY.BuildingBlocks.Infrastructure
         {
             var connection = new SqlConnection(_connectionString);
             connection.Open();
-
             return connection;
         }
 

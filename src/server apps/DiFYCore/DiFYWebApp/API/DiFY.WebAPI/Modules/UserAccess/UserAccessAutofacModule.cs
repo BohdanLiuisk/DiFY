@@ -8,8 +8,7 @@ namespace DiFY.WebAPI.Modules.UserAccess
     {
         protected override void Load(ContainerBuilder builder)
         {
-            builder
-                .RegisterType<UserAccessModule>()
+            builder.RegisterType<UserAccessModule>()
                 .As<IUserAccessModule>()
                 .InstancePerLifetimeScope();
         }

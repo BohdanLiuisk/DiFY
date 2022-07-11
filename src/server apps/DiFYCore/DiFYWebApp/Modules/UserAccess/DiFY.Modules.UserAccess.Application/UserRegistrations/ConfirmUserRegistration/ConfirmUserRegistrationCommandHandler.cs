@@ -18,11 +18,9 @@ namespace DiFY.Modules.UserAccess.Application.UserRegistrations.ConfirmUserRegis
 
         public async Task<Unit> Handle(ConfirmUserRegistrationCommand command, CancellationToken cancellationToken)
         {
-            var userRegistration =
-                await _userRegistrationRepository.GetByIdAsync(new UserRegistrationId(command.UserRegistrationId));
-            
+            var userRegistration = await _userRegistrationRepository
+                .GetByIdAsync(new UserRegistrationId(command.UserRegistrationId));
             userRegistration.Confirm();
-            
             return Unit.Value;
         }
     }

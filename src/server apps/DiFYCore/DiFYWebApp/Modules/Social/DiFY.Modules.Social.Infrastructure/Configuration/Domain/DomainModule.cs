@@ -1,6 +1,4 @@
 ﻿using Autofac;
-using DiFY.Modules.Social.Application.FriendshipRequest;
-using DiFY.Modules.Social.Domain.FriendshipRequests.Interfaces;
 
 namespace DiFY.Modules.Social.Infrastructure.Configuration.Domain
 {
@@ -8,9 +6,7 @@ namespace DiFY.Modules.Social.Infrastructure.Configuration.Domain
     {
         protected override void Load(ContainerBuilder builder)
         {
-            builder.RegisterType<FriendshipRequestService>()
-                .As<IFriendshipRequestService>()
-                .InstancePerLifetimeScope();
+            
         }
     }
 }

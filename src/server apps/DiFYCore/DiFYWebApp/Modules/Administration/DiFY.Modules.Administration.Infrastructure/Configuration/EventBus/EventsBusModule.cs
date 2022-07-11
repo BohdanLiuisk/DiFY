@@ -22,18 +22,15 @@ namespace DiFY.Modules.Administration.Infrastructure.Configuration.EventBus
             builder.RegisterType<InMemoryEventBusSubscriptionsManager>()
                 .As<IEventBusSubscriptionsManager>()
                 .SingleInstance();
-            
             var connectionFactory = new ConnectionFactory()
             {
                 HostName = _eventBusConnection,
                 DispatchConsumersAsync = true
             };
-            
             builder.RegisterType<DefaultRabbitMqPersistentConnection>()
                 .As<IRabbitMqPersistentConnection>()
                 .WithParameter("connectionFactory", connectionFactory)
                 .SingleInstance();
-            
             builder.RegisterType<RabbitMqEventBus>()
                 .As<IEventsBus>()
                 .WithParameter("queueName", _queueName)

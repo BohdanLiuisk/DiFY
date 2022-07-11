@@ -33,36 +33,32 @@ namespace DiFY.BuildingBlocks.Infrastructure.EventBus
         public void AddSubscription<T>(IIntegrationEventHandler<T> handler) where T : IntegrationEvent
         {
             var eventName = GetEventKey<T>();
-            if (eventName != null)
+            if (eventName == null) return;
+            if (_handlers.ContainsKey(eventName))
             {
-                if (_handlers.ContainsKey(eventName))
-                {
-                    var handlers = _handlers[eventName];
-                    handlers.Add(handler);
-                }
-                else
-                {
-                    _handlers.Add(eventName, new List<IIntegrationEventHandler> { handler });
-                }
-                if (!_eventTypes.Contains(typeof(T)))
-                {
-                    _eventTypes.Add(typeof(T));
-                }
+                var handlers = _handlers[eventName];
+                handlers.Add(handler);
+            }
+            else
+            {
+                _handlers.Add(eventName, new List<IIntegrationEventHandler> { handler });
+            }
+            if (!_eventTypes.Contains(typeof(T)))
+            {
+                _eventTypes.Add(typeof(T));
             }
         }
 
         public void RemoveSubscription<T>() where T : IntegrationEvent
         {
             var eventName = GetEventKey<IntegrationEvent>();
-            if (eventName != null &&  _handlers.ContainsKey(eventName))
+            if (eventName == null || !_handlers.ContainsKey(eventName)) return;
+            _handlers.Remove(eventName);
+            RaiseOnEventRemoved(eventName);
+            var eventType = _eventTypes.SingleOrDefault(e => e.Name == eventName);
+            if (eventType != null)
             {
-                _handlers.Remove(eventName);
-                RaiseOnEventRemoved(eventName);
-                var eventType = _eventTypes.SingleOrDefault(e => e.Name == eventName);
-                if (eventType != null)
-                {
-                    _eventTypes.Remove(eventType);
-                }
+                _eventTypes.Remove(eventType);
             }
         }
         

@@ -1,3 +1,5 @@
+using System;
+using System.Reflection;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using DiFY.BuildingBlocks.Application;
@@ -15,11 +17,14 @@ using DiFY.WebAPI.Modules.Social;
 using DiFY.WebAPI.Modules.UserAccess;
 using Hellang.Middleware.ProblemDetails;
 using IdentityServer4.AccessTokenValidation;
+using IdentityServer4.EntityFramework.DbContexts;
+using IdentityServer4.EntityFramework.Storage;
 using IdentityServer4.Validation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -49,37 +54,33 @@ namespace DiFY.WebAPI
         public Startup(IConfiguration _, IHostEnvironment env)
         {
             ConfigureLogger();
-            
             _configuration = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", reloadOnChange: true, optional: true)
                 .AddEnvironmentVariables()
                 .Build();
-            
             _loggerForApi.Information("Connection string:" + _configuration[DiFyConnectionString]);
-            
             AuthorizationChecker.CheckAllEndpoints();
         }
 
         public void ConfigureServices(IServiceCollection services)
         {
+            AppContext.SetSwitch(
+                "Microsoft.AspNetCore.Authorization.SuppressUseHttpContextAsAuthorizationResource",
+                isEnabled: true);
             services.AddControllers();
-            
             services.AddSwaggerDocumentation();
-            
             ConfigureIdentityServer(services);
-            
             services.AddHttpContextAccessor();
-            
-            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            
+            services.AddSingleton<IExecutionContextAccessor, ExecutionContextAccessor>();
             services.AddProblemDetails(x =>
             {
-                x.Map<InvalidCommandException>(ex => new InvalidCommandProblemDetails(ex));
-                x.Map<BusinessRuleValidationException>(ex => new BusinessRuleValidationExceptionProblemDetails(ex));
+                x.Map<InvalidCommandException>(ex => 
+                    new InvalidCommandProblemDetails(ex));
+                x.Map<BusinessRuleValidationException>(ex =>
+                    new BusinessRuleValidationExceptionProblemDetails(ex));
             });
-            
             services.AddAuthorization(options =>
             {
                 options.AddPolicy(HasPermissionAttribute.HasPermissionPolicyName, policyBuilder =>
@@ -88,7 +89,6 @@ namespace DiFY.WebAPI
                     policyBuilder.AddAuthenticationSchemes(IdentityServerAuthenticationDefaults.AuthenticationScheme);
                 });
             });
-
             services.AddScoped<IAuthorizationHandler, HasPermissionAuthorizationHandler>();
         }
         
@@ -101,49 +101,42 @@ namespace DiFY.WebAPI
         
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            InitializeIdentityDb(app);
             var container = app.ApplicationServices.GetAutofacRoot();
-            
             app.UseCors(builder =>
                 builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
-            
             InitializeModules(container);
-            
             app.UseMiddleware<CorrelationMiddleware>();
-            
             app.UseSwaggerDocumentation();
-            
             app.UseIdentityServer();
-            
             if (env.IsDevelopment())
             {
                 app.UseProblemDetails();
             }
-            else
+            else 
             {
                 app.UseHsts();
             }
-
             app.UseHttpsRedirection();
-
             app.UseRouting();
-
             app.UseAuthorization();
-
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
         }
 
         private void ConfigureIdentityServer(IServiceCollection services)
         {
+            var identityMigrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
             services.AddIdentityServer()
                 .AddInMemoryIdentityResources(IdentityServerConfig.GetIdentityResources())
                 .AddInMemoryApiResources(IdentityServerConfig.GetApis())
                 .AddInMemoryClients(IdentityServerConfig.GetClients())
-                .AddInMemoryPersistedGrants()
+                .AddOperationalStore(options => 
+                    options.ConfigureDbContext = b => 
+                        b.UseSqlServer(_configuration[DiFyConnectionString],
+                        sql => sql.MigrationsAssembly(identityMigrationsAssembly)))
                 .AddProfileService<ProfileService>()
                 .AddDeveloperSigningCredential();
-
             services.AddTransient<IResourceOwnerPasswordValidator, ResourceOwnerPasswordValidator>();
-
             services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
                 .AddIdentityServerAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme, x =>
                 {
@@ -151,6 +144,12 @@ namespace DiFY.WebAPI
                     x.ApiName = "DiFYCoreAPI";
                     x.RequireHttpsMetadata = false;
                 });
+        }
+
+        private static void InitializeIdentityDb(IApplicationBuilder app)
+        {
+            using var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>()?.CreateScope();
+            serviceScope?.ServiceProvider.GetRequiredService<PersistedGrantDbContext>().Database.Migrate();
         }
         
         private static void ConfigureLogger()
@@ -162,9 +161,7 @@ namespace DiFY.WebAPI
                     "[{Timestamp:HH:mm:ss} {Level:u3}] [{Module}] [{Context}] {Message:lj}{NewLine}{Exception}")
                 .WriteTo.RollingFile(new CompactJsonFormatter(), "logs/logs")
                 .CreateLogger();
-
             _loggerForApi = _logger.ForContext("Module", "API");
-
             _loggerForApi.Information("Logger configured");
         }
         

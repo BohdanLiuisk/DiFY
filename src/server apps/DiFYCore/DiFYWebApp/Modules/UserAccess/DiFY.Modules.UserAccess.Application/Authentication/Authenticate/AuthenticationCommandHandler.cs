@@ -21,35 +21,28 @@ namespace DiFY.Modules.UserAccess.Application.Authentication.Authenticate
         public async Task<AuthenticationResult> Handle(AuthenticateCommand request, CancellationToken cancellationToken)
         {
             var connection = _sqlConnectionFactory.GetOpenConnection();
-
             const string sql =
                 "SELECT [User].[Id], [User].[Login], [User].[Name], [User].[Email], [User].[IsActive], [User].[Password] " +
                 "FROM [users].[Users] AS [User] " +
                 "WHERE [User].[Login] = @Login";
-
             var user = await connection.QuerySingleOrDefaultAsync<AuthenticateUserDto>(sql, new  { request.Login });
-
             if (user == null)
             {
                 return new AuthenticationResult("Incorrect login.");
             }
-
             if (!user.IsActive)
             {
                 return new AuthenticationResult("User id not active.");
             }
-
             if (!PasswordHashManager.VerifyHashedPassword(user.Password, request.Password))
             {
                 return new AuthenticationResult("Incorrect password.");
             }
-
             user.Claims = new List<Claim>()
             {
                 new(CustomClaimTypes.Name, user.Name),
                 new(CustomClaimTypes.Email, user.Email)
             };
-
             return new AuthenticationResult(user);
         }
     }

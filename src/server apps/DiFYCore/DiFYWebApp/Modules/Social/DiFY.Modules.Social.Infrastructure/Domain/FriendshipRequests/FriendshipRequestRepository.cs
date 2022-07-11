@@ -21,7 +21,8 @@ namespace DiFY.Modules.Social.Infrastructure.Domain.FriendshipRequests
 
         public async Task<FriendshipRequest> GetByIdAsync(FriendshipRequestId friendshipRequestId)
         {
-            return await _socialContext.FriendshipRequests.FirstOrDefaultAsync(fr => fr.Id == friendshipRequestId);
+            return await _socialContext.FriendshipRequests.FirstOrDefaultAsync(
+                fr => fr.Id == friendshipRequestId);
         }
     }
 }

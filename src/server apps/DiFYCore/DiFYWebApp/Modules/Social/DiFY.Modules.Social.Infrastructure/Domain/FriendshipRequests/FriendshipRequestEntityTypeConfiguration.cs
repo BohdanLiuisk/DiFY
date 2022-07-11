@@ -10,17 +10,11 @@ namespace DiFY.Modules.Social.Infrastructure.Domain.FriendshipRequests
         public void Configure(EntityTypeBuilder<FriendshipRequest> builder)
         {
             builder.ToTable("FriendshipRequest", "social");
-
             builder.HasKey(x => x.Id);
-
             builder.Property<RequesterId>("_requesterId").HasColumnName("RequesterId");
-
             builder.Property<AddresseeId>("_addresseeId").HasColumnName("AddresseeId");
-
             builder.Property<DateTime>("_createdOn").HasColumnName("CreatedOn");
-
-            builder.Property<DateTime?>("_confirmedOn").HasColumnName("СonfirmedOn");
-
+            builder.Property<DateTime?>("_confirmedOn").HasColumnName("ConfirmedOn");
             builder.Property<DateTime?>("_rejectedOn").HasColumnName("RejectedOn");
         }
     }

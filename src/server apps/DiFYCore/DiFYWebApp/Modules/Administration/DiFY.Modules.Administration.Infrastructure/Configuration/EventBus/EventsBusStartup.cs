@@ -5,7 +5,7 @@ using Serilog;
 
 namespace DiFY.Modules.Administration.Infrastructure.Configuration.EventBus
 {
-    public class EventsBusStartup
+    public static class EventsBusStartup
     {
         public static void Initialize(ILogger logger)
         {

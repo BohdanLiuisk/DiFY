@@ -24,10 +24,7 @@ namespace DiFY.Modules.UserAccess.Domain.Users
 
         private List<UserRole> _roles;
 
-        private User()
-        {
-            
-        }
+        private User() { }
 
         internal static User CreateFromUserRegistration(
             UserRegistrationId userRegistrationId,
@@ -36,7 +33,7 @@ namespace DiFY.Modules.UserAccess.Domain.Users
             string email,
             string firstName,
             string lastName,
-            string name)
+            string name)  
         {
             return new User(userRegistrationId, login, password, email, firstName, lastName, name);
         }
@@ -57,9 +54,7 @@ namespace DiFY.Modules.UserAccess.Domain.Users
             _firstName = firstName;
             _lastName = lastName;
             _name = name;
-
             _isActive = true;
-
             _roles = new List<UserRole>()
             {
                 UserRole.Member
