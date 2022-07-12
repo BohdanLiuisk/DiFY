@@ -11,7 +11,7 @@ using Serilog.AspNetCore;
 
 namespace DiFY.Modules.Administration.Infrastructure.Configuration
 {
-    public class AdministrationStartup
+    public static class AdministrationStartup
     {
         private static IContainer _container;
         
@@ -23,9 +23,7 @@ namespace DiFY.Modules.Administration.Infrastructure.Configuration
             ILogger logger)
         {
             var moduleLogger = logger.ForContext("Module", "Administration");
-
             ConfigureContainer(connectionString, eventBusConnection, administrationQueue, executionContextAccessor, moduleLogger);
-            
             EventsBusStartup.Initialize(moduleLogger);
         }
         

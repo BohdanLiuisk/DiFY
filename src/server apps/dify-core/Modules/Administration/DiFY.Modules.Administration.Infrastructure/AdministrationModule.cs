@@ -22,9 +22,7 @@ namespace DiFY.Modules.Administration.Infrastructure
         public async Task<TResult> ExecuteQueryAsync<TResult>(IQuery<TResult> query)
         {
             using var scope = AdministrationCompositionRoot.BeginLifetimeScope();
-            
             var mediator = scope.Resolve<IMediator>();
-
             return await mediator.Send(query);
         }
     }

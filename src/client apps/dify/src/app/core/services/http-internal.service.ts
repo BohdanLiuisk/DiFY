@@ -16,7 +16,7 @@ export class HttpInternalService {
     return this.http.put<T>(this.buildUrl(url), payload, { headers: headers, params: httpParams });
   }
 
-  public patchRequest<T>(url: string, payload: object, headers?: HttpHeaders,) {
+  public patchRequest<T>(url: string, payload?: object, headers?: HttpHeaders,) {
     return this.http.patch<T>(this.buildUrl(url), payload, { headers: headers});
   }
 

@@ -29,14 +29,14 @@ namespace DiFY.WebAPI.Modules.UserAccess.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> RegisterNewUser(RegisterNewUserRequest request)
         {
-            await _userAccessModule.ExecuteCommandAsync(new RegisterNewUserCommand(
+            var registeredId = await _userAccessModule.ExecuteCommandAsync(new RegisterNewUserCommand(
                 request.Login, 
                 request.Password,
                 request.Email,
                 request.FirstName,
                 request.LastName,
                 request.ConfirmLink));
-            return Ok();
+            return Ok(new NewUserRegistrationResponse() { NewUserId = registeredId });
         }
 
         [NoPermissionRequired]
