@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '@core/services/auth/auth.service';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
 import { dify } from '@shared/constans/app-settings';
 
 @Component({
@@ -17,9 +17,13 @@ export class SignInComponent implements OnInit {
     this.setUpLoginForm();
   }
 
-  public get username() { return this.loginForm.get('username')!; }
+  public get username(): AbstractControl {
+    return this.loginForm.get('username')!;
+  }
 
-  public get password() { return this.loginForm.get('password')!; }
+  public get password(): AbstractControl {
+    return this.loginForm.get('password')!;
+  }
 
   public submit(): void {
     if(this.loginForm.valid) {
