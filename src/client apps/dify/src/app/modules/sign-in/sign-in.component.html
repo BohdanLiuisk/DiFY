@@ -1,4 +1,21 @@
-<p>sign-in works!</p>
-<input type="text" [(ngModel)]="username">
-<input type="text" [(ngModel)]="password">
-<button (click)="this.submit()">Submit</button>
+<form [formGroup]="loginForm" (ngSubmit)="submit()">
+  <div class="control">
+    <label for="username" class="control-label">Username</label>
+    <input id="username" type="text" formControlName="username" required class="control-input">
+    <div *ngIf="username.invalid && (username.dirty || username.touched)" class="control-invalid">
+      <div *ngIf="username.errors?.['required']">Name is required.</div>
+      <div *ngIf="username.errors?.['minLength']">Min length is 4.</div>
+      <div *ngIf="username.errors?.['maxLength']">Max length is 15.</div>
+    </div>
+  </div>
+  <div class="control">
+    <label for="password" class="control-label">Password</label>
+    <input id="password" type="password" formControlName="password" required class="control-input">
+    <div *ngIf="password.invalid && (password.dirty || password.touched)" class="control-invalid">
+      <div *ngIf="password.errors?.['required']">Password is required.</div>
+      <div *ngIf="password.errors?.['minLength']">Min length is 4.</div>
+      <div *ngIf="password.errors?.['maxLength']">Max length is 15.</div>
+    </div>
+    <button type="submit" class="control-submit">Submit</button>
+  </div>
+</form>

@@ -1,0 +1,31 @@
+.control {
+  display: block;
+  width: 250px;
+  border-radius: 0;
+  margin: 5px;
+  &-label {
+    display: inline-block;
+    margin-bottom: 3px;
+  }
+  &-input {
+    padding: 5px;
+    width: 100%;
+    border: 1px solid #750c70;
+    border-radius: 2px;
+    &:focus {
+      outline: none;
+    }
+  }
+  &-invalid {
+    padding: 5px;
+    background-color: #fed3d3;
+    border-radius: 2px;
+  }
+  &-submit {
+    padding: 5px;
+    margin-top: 5px;
+    height: 30px;
+    width: 100%;
+  }
+}
+
