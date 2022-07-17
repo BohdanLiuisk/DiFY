@@ -17,6 +17,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\BuildingBlocks\DiFY.BuildingBlocks.Infrastructure\DiFY.BuildingBlocks.Infrastructure.csproj" />
     <ProjectReference Include="..\..\..\BuildingBlocks\DiFY.BuildingBlocks.RabbitMQEventBus\DiFY.BuildingBlocks.RabbitMQEventBus.csproj" />
+    <ProjectReference Include="..\..\UserAccess\DiFY.Modules.UserAccess.IntegrationEvents\DiFY.Modules.UserAccess.IntegrationEvents.csproj" />
     <ProjectReference Include="..\DiFY.Modules.Social.Application\DiFY.Modules.Social.Application.csproj" />
     <ProjectReference Include="..\DiFY.Modules.Social.Domain\DiFY.Modules.Social.Domain.csproj" />
   </ItemGroup>

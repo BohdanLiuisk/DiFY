@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\BuildingBlocks\DiFY.BuildingBlocks.Application\DiFY.BuildingBlocks.Application.csproj" />
+    <ProjectReference Include="..\..\UserAccess\DiFY.Modules.UserAccess.IntegrationEvents\DiFY.Modules.UserAccess.IntegrationEvents.csproj" />
     <ProjectReference Include="..\DiFY.Modules.Social.Domain\DiFY.Modules.Social.Domain.csproj" />
   </ItemGroup>
 

@@ -5,5 +5,5 @@ namespace DiFY.Modules.Social.Domain.Calling;
 
 public class CallId : TypedIdValueBase
 {
-    protected CallId(Guid value) : base(value) { }
+    public CallId(Guid value) : base(value) { }
 }

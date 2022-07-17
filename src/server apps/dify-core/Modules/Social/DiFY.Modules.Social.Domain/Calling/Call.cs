@@ -1,49 +1,53 @@
 ﻿using System;
 using System.Collections.Generic;
 using DiFY.BuildingBlocks.Domain;
-using DiFY.Modules.Social.Domain.Participating;
+using DiFY.Modules.Social.Domain.Membership;
 
 namespace DiFY.Modules.Social.Domain.Calling;
 
 public class Call : Entity, IAggregateRoot
 {
     public CallId Id { get; private set; }
+    
+    private readonly List<CallParticipant> _participants;
+    
+    public IReadOnlyList<CallParticipant> Participants => _participants.AsReadOnly();
 
-    private readonly List<Participant> _participants;
-
-    public IReadOnlyList<Participant> Participants => _participants.AsReadOnly();
-
-    private readonly Participant _caller;
+    private readonly MemberId _initiatorId;
     
     private readonly DateTime _startDate;
 
-    private DateTime _endDate;
+    private DateTime? _endDate;
 
     private Duration _duration;
 
     private Call() { }
 
-    private Call(DateTime startDate, Participant caller)
+    private Call(DateTime startDate, MemberId initiatorId)
     {
+        Id = new CallId(Guid.NewGuid());
         _startDate = startDate;
-        _caller = caller;
-        _participants = new List<Participant> { _caller };
+        _initiatorId = initiatorId;
+        _participants = new List<CallParticipant>
+        {
+            CallParticipant.CreateNew(Id, _initiatorId, startDate)
+        };
     }
 
-    public static Call CreateNewCall(DateTime startDate, Participant caller)
+    public static Call CreateNew(MemberId initiatorId, DateTime startDate)
     {
-        return new Call(startDate, caller);
+        return new Call(startDate, initiatorId);
     }
 
-    public void AddParticipant(Participant participant)
+    public void JoinCall(MemberId participantId, DateTime joinDate)
     {
-        _participants.Add(participant);
+        _participants.Add(CallParticipant.CreateNew(Id, participantId, joinDate));
     }
-
+    
     public void EndCall(DateTime endDate)
     {
         _endDate = endDate;
-        var duration = (_endDate - _startDate).TotalMinutes;
+        var duration = (_endDate - _startDate)?.TotalMinutes;
         _duration = Duration.Of(duration);
     }
 }

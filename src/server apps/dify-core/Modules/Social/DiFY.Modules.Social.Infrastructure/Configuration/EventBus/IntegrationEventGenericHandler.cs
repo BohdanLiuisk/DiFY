@@ -10,8 +10,7 @@ namespace DiFY.Modules.Social.Infrastructure.Configuration.EventBus
     {
         public async Task Handle(T @event)
         {
-            using var scope = SocialCompositionRoot.BeginLifetimeScope();
-            var mediator = scope.Resolve<IMediator>();
+            var mediator = SocialCompositionRoot.BeginLifetimeScope().Resolve<IMediator>();
             await mediator.Publish(@event as INotification);
         }
     }
