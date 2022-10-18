@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthService } from '@core/services/auth/auth.service';
-import { User } from '@core/models/user/user.model';
+import { AuthUser } from '@core/auth/store/auth.models';
 import { Router } from '@angular/router';
+import { AuthFacade } from '@core/auth/store/auth.facade';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-home',
@@ -9,17 +10,19 @@ import { Router } from '@angular/router';
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit {
-  public currentUser: User;
+  public currentUser$: Observable<AuthUser | undefined>;
 
-  constructor(private authService: AuthService, private router: Router) { }
+  constructor(private authFacade: AuthFacade, private router: Router) { }
 
   ngOnInit(): void {
-    this.authService.getAuthUser().subscribe(user => {
-        this.currentUser = user;
-    });
+    this.currentUser$ = this.authFacade.user$;
   }
 
   public async back(): Promise<void> {
     await this.router.navigate(['start']);
+  }
+
+  public logout(): void {
+    this.authFacade.logout();
   }
 }

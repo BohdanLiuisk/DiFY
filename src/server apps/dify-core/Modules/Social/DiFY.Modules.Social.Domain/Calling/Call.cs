@@ -39,12 +39,12 @@ public class Call : Entity, IAggregateRoot
         return new Call(startDate, initiatorId);
     }
 
-    public void JoinCall(MemberId participantId, DateTime joinDate)
+    public void Join(MemberId participantId, DateTime joinDate)
     {
         _participants.Add(CallParticipant.CreateNew(Id, participantId, joinDate));
     }
     
-    public void EndCall(DateTime endDate)
+    public void End(DateTime endDate)
     {
         _endDate = endDate;
         var duration = (_endDate - _startDate)?.TotalMinutes;

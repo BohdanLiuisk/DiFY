@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { SignUpService } from '@core/services/auth/sign-up.service';
+import { AuthFacade } from '@core/auth/store/auth.facade';
 
 @Component({
   selector: 'app-sign-up',
@@ -13,17 +13,17 @@ export class SignUpComponent implements OnInit {
   public firstName: string;
   public lastName: string;
 
-  constructor(private signUpService: SignUpService) { }
+  constructor(private authFacade: AuthFacade) { }
 
   ngOnInit(): void { }
 
   submit(): void {
-    this.signUpService.signUp({
+    this.authFacade.signUp({
       login: this.username,
       password: this.password,
       email: this.email,
       firstName: this.firstName,
       lastName: this.lastName
-    }).subscribe(() => { });
+    });
   }
 }

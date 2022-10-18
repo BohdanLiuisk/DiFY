@@ -1,5 +1,8 @@
 <p>home works!</p>
-<p>{{currentUser?.id}}</p>
-<p>{{currentUser?.name}}</p>
-<p>{{currentUser?.email}}</p>
+<div *ngIf="(currentUser$ | async) as currentUser">
+  <p>{{currentUser?.id}}</p>
+  <p>{{currentUser?.name}}</p>
+  <p>{{currentUser?.email}}</p>
+</div>
 <button (click)="back()">Back</button>
+<button (click)="logout()">Logout</button>

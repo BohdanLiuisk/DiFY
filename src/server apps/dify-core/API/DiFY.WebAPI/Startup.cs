@@ -18,7 +18,6 @@ using DiFY.WebAPI.Modules.UserAccess;
 using Hellang.Middleware.ProblemDetails;
 using IdentityServer4.AccessTokenValidation;
 using IdentityServer4.EntityFramework.DbContexts;
-using IdentityServer4.EntityFramework.Storage;
 using IdentityServer4.Validation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -120,7 +119,10 @@ namespace DiFY.WebAPI
             app.UseHttpsRedirection();
             app.UseRouting();
             app.UseAuthorization();
-            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
         }
 
         private void ConfigureIdentityServer(IServiceCollection services)

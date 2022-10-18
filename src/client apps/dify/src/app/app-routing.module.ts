@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { AuthGuard } from '@core/guards/auth.guard';
+import { AuthGuard } from '@core/auth/guards/auth.guard';
 
 const routes: Routes = [
   {
@@ -16,6 +16,10 @@ const routes: Routes = [
     path: '',
     redirectTo: 'home',
     pathMatch: 'full'
+  },
+  {
+    path: '**',
+    redirectTo: 'home',
   }
 ];
 

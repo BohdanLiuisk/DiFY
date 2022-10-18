@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthService } from '@core/services/auth/auth.service';
 import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
 import { dify } from '@shared/constans/app-settings';
+import { AuthFacade } from '@core/auth/store/auth.facade';
 
 @Component({
   selector: 'app-sign-in',
@@ -11,7 +11,7 @@ import { dify } from '@shared/constans/app-settings';
 export class SignInComponent implements OnInit {
   public loginForm: FormGroup;
 
-  constructor(private authService: AuthService) { }
+  constructor(private authFacade: AuthFacade) { }
 
   public ngOnInit(): void {
     this.setUpLoginForm();
@@ -28,8 +28,7 @@ export class SignInComponent implements OnInit {
   public submit(): void {
     if(this.loginForm.valid) {
       const { username, password } = this.loginForm.value;
-      this.authService.signIn({ username, password })
-        .subscribe(() => { });
+      this.authFacade.login(username, password);
     } else {
       this.loginForm.markAllAsTouched();
     }
