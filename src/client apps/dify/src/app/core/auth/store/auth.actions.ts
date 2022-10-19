@@ -1,6 +1,6 @@
 import { createAction, props } from '@ngrx/store';
 import { AuthUser, LoginCredentials, NewUser, NewUserRegistered } from '@core/auth/store/auth.models';
-import { GUID } from '@shared/custom-types';
+import { HttpErrorResponse } from '@angular/common/http';
 
 export const loginRequest = createAction(
   '[Auth] Login Request',
@@ -25,7 +25,7 @@ export const newUserConfirmed = createAction(
 export const loginSuccess = createAction('[Auth] Login Success');
 export const loginFailure = createAction(
   '[Auth] Login Failure',
-  props<{ error: Error }>()
+  props<{ error: HttpErrorResponse }>()
 );
 export const logout = createAction('[Auth] Logout');
 export const getAuthUserRequest = createAction('[Auth] Auth User Request');

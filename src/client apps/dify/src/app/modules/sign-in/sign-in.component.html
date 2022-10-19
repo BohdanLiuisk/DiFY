@@ -1,21 +1,29 @@
-<form [formGroup]="loginForm" (ngSubmit)="submit()">
-  <div class="control">
-    <label for="username" class="control-label">Username</label>
-    <input id="username" type="text" formControlName="username" required class="control-input">
-    <div *ngIf="username.invalid && (username.dirty || username.touched)" class="control-invalid">
-      <small *ngIf="username.errors?.['required']">Name is required.</small>
-      <small *ngIf="username.errors?.['minlength']">Min length is 4.</small>
-      <small *ngIf="username.errors?.['maxlength']">Max length is 15.</small>
-    </div>
-  </div>
-  <div class="control">
-    <label for="password" class="control-label">Password</label>
-    <input id="password" type="password" formControlName="password" required class="control-input">
-    <div *ngIf="password.invalid && (password.dirty || password.touched)" class="control-invalid">
-      <small *ngIf="password.errors?.['required']">Password is required.</small>
-      <small *ngIf="password.errors?.['minlength']">Min length is 4.</small>
-      <small *ngIf="password.errors?.['maxlength']">Max length is 15.</small>
-    </div>
-    <button type="submit" class="control-submit">Submit</button>
-  </div>
+<form [formGroup]="loginForm" (ngSubmit)="submit()" class="login-form">
+  <tui-input
+    formControlName="username"
+    tuiHintContent="Min length 4"
+    [tuiTextfieldCleaner]="true"
+    [tuiTextfieldCustomContent]="username.valid ? success : ''"
+    [tuiTextfieldLabelOutside]="true"
+    class="tui-space_top-3">
+    Login
+  </tui-input>
+  <tui-input-password
+    formControlName="password"
+    [tuiTextfieldCleaner]="true"
+    [tuiTextfieldCustomContent]="password.valid ? success : ''"
+    [tuiTextfieldLabelOutside]="true"
+    class="tui-space_top-3">
+    Password
+  </tui-input-password>
+  <button
+    tuiButton
+    type="submit"
+    appearance="primary"
+    class="tui-space_right-3 tui-space_bottom-3 tui-space_top-3 login-form-submit">
+    Submit
+  </button>
 </form>
+<ng-template #success>
+  <tui-svg src="tuiIconCheckLarge" class="success tui-space_left-3"></tui-svg>
+</ng-template>

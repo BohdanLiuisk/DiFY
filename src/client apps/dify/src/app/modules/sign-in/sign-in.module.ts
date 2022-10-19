@@ -1,8 +1,9 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { SignInComponent } from './sign-in.component';
 import { SignInRoutingModule } from './sign-in-routing.module';
 import { SharedModule } from '@shared/shared.module';
+import { TuiButtonModule, TuiHintModule, TuiSvgModule } from '@taiga-ui/core';
+import { TuiInputPasswordModule } from '@taiga-ui/kit';
 
 @NgModule({
   declarations: [
@@ -10,7 +11,11 @@ import { SharedModule } from '@shared/shared.module';
   ],
   imports: [
     SignInRoutingModule,
-    SharedModule
+    SharedModule,
+    TuiHintModule,
+    TuiSvgModule,
+    TuiInputPasswordModule,
+    TuiButtonModule
   ]
 })
 export class SignInModule { }

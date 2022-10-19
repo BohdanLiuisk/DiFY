@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import * as AuthActions from './auth.actions';
 import { AuthService } from '../auth.service';
 import { JwtStorageService } from '@core/auth/jwt-storage.service';
@@ -6,6 +6,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { catchError, exhaustMap, map, of, tap } from 'rxjs';
 import { JwtToken } from '@core/auth/store/auth.models';
+import { TuiAlertService } from '@taiga-ui/core/components/alert';
+import { TuiNotification } from '@taiga-ui/core/enums/notification';
 
 @Injectable()
 export class AuthEffects {
@@ -14,7 +16,9 @@ export class AuthEffects {
     private actions$: Actions,
     private authService: AuthService,
     private activatedRoute: ActivatedRoute,
-    private jwtStorage: JwtStorageService
+    private jwtStorage: JwtStorageService,
+    @Inject(TuiAlertService)
+    private readonly alertService: TuiAlertService,
   ) { }
 
   signUp$ = createEffect(() => {
@@ -108,9 +112,21 @@ export class AuthEffects {
     );
   });
 
-  loginOrRefreshTokenFailure$ = createEffect(() => {
+  loginTokenFailure$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(AuthActions.loginFailure),
+      tap(({ error: { error: { error_description }} }) => {
+        this.alertService.open(`Login failure`, {
+          label: error_description,
+          status: TuiNotification.Error }).subscribe();
+      }));
+    },
+    { dispatch: false }
+  );
+
+  refreshTokenFailureOrLogout$ = createEffect(() => {
       return this.actions$.pipe(
-        ofType(AuthActions.loginFailure, AuthActions.refreshTokenFailure, AuthActions.logout),
+        ofType(AuthActions.refreshTokenFailure, AuthActions.logout),
         tap(() => {
           this.jwtStorage.removeToken('access_token');
           this.jwtStorage.removeToken('refresh_token');

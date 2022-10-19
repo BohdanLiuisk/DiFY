@@ -18,11 +18,11 @@ export class SignInComponent implements OnInit {
   }
 
   public get username(): AbstractControl {
-    return this.loginForm.get('username')!;
+    return this.loginForm.get('username');
   }
 
   public get password(): AbstractControl {
-    return this.loginForm.get('password')!;
+    return this.loginForm.get('password');
   }
 
   public submit(): void {
