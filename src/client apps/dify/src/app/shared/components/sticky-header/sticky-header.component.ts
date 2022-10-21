@@ -1,5 +1,13 @@
-import { AfterViewInit, Component, OnInit } from '@angular/core';
-import { distinctUntilChanged, filter, fromEvent, map, pairwise, share, tap, throttleTime } from 'rxjs';
+import { AfterViewInit, Component, EventEmitter, OnInit, Output } from '@angular/core';
+import {
+  distinctUntilChanged,
+  filter,
+  fromEvent,
+  map,
+  pairwise,
+  share, tap,
+  throttleTime
+} from 'rxjs';
 
 const scrollDirection = {
   up: 'up',
@@ -14,6 +22,9 @@ const scrollDirection = {
 export class StickyHeaderComponent implements OnInit, AfterViewInit {
   public shrink: boolean = false;
 
+  @Output()
+  public shrank: EventEmitter<boolean> = new EventEmitter<boolean>();
+
   constructor() { }
 
   ngOnInit(): void { }
@@ -22,9 +33,7 @@ export class StickyHeaderComponent implements OnInit, AfterViewInit {
     const scroll$ = fromEvent(window, 'scroll').pipe(
       throttleTime(100),
       map(() => window.scrollY),
-      filter((y) => y > 200),
-      pairwise(),
-      map(([y1, y2]) => (y2 < y1 ? scrollDirection.up : scrollDirection.down)),
+      map((y) => (y > 200 ? scrollDirection.down : scrollDirection.up)),
       distinctUntilChanged(),
       share()
     );
@@ -34,11 +43,13 @@ export class StickyHeaderComponent implements OnInit, AfterViewInit {
     const scrollDown$ = scroll$.pipe(
       filter(direction => direction === 'down')
     );
-    scrollUp$.subscribe(() => {
+    scrollUp$.subscribe((value) => {
       this.shrink = false;
+      this.shrank.emit(false);
     });
-    scrollDown$.subscribe(() => {
+    scrollDown$.subscribe((value) => {
       this.shrink = true;
+      this.shrank.emit(true);
     });
   }
 }
