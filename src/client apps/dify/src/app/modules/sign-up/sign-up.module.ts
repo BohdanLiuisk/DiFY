@@ -11,8 +11,6 @@ import { SharedModule } from '@shared/shared.module';
     SignUpRoutingModule,
     SharedModule
   ],
-  providers: [
-
-  ]
+  providers: [ ]
 })
 export class SignUpModule { }

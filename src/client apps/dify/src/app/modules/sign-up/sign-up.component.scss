@@ -1,0 +1,12 @@
+.sign-up-form {
+  width: 400px;
+  padding: 20px;
+  &-submit {
+    width: 100%;
+  }
+}
+
+.success {
+  position: relative;
+  color: var(--tui-success-fill);
+}

@@ -1,8 +1,16 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { TuiAlertModule, TuiDialogModule, TuiRootModule, TuiTextfieldControllerModule } from '@taiga-ui/core';
-import { TuiInputModule } from '@taiga-ui/kit';
+import {
+  TuiAlertModule, TuiButtonModule,
+  TuiDialogModule,
+  TuiHintModule,
+  TuiRootModule, TuiSvgModule,
+  TuiTextfieldControllerModule
+} from '@taiga-ui/core';
+import { TuiInputModule, TuiInputPasswordModule } from '@taiga-ui/kit';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { StickyHeaderComponent } from './components/sticky-header/sticky-header.component';
 
 @NgModule({
   imports: [
@@ -13,16 +21,28 @@ import { TuiInputModule } from '@taiga-ui/kit';
     TuiDialogModule,
     TuiAlertModule,
     TuiInputModule,
-    TuiTextfieldControllerModule
+    TuiTextfieldControllerModule,
+    TuiHintModule,
+    TuiInputPasswordModule,
+    FontAwesomeModule,
+    TuiButtonModule,
+    TuiSvgModule
   ],
   declarations: [
+    StickyHeaderComponent
   ],
   exports: [
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
     TuiInputModule,
-    TuiTextfieldControllerModule
+    TuiTextfieldControllerModule,
+    FontAwesomeModule,
+    TuiHintModule,
+    TuiInputPasswordModule,
+    TuiButtonModule,
+    StickyHeaderComponent,
+    TuiSvgModule
   ]
 })
 export class SharedModule { }

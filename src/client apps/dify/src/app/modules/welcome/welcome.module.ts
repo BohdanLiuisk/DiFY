@@ -5,19 +5,20 @@ import { RouterModule } from '@angular/router';
 import { WelcomeRoutingModule } from './welcome-routing.module';
 import { SharedModule } from '@shared/shared.module';
 import { TuiTabsModule } from '@taiga-ui/kit';
-import { TuiSvgModule } from '@taiga-ui/core';
+import { TuiButtonModule, TuiSvgModule } from '@taiga-ui/core';
 
 @NgModule({
   declarations: [
     WelcomeComponent
   ],
-  imports: [
-    CommonModule,
-    RouterModule,
-    WelcomeRoutingModule,
-    SharedModule,
-    TuiTabsModule,
-    TuiSvgModule
-  ]
+    imports: [
+        CommonModule,
+        RouterModule,
+        WelcomeRoutingModule,
+        SharedModule,
+        TuiTabsModule,
+        TuiSvgModule,
+        TuiButtonModule
+    ]
 })
 export class WelcomeModule { }

@@ -1,16 +1,23 @@
-<p>Welcome!</p>
-<div class="center-page">
-  <tui-tabs>
-    <button tuiTab routerLink="sign-in" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">
-      <tui-svg src="tuiIconChevronRight" class="tui-space_right-2"></tui-svg>
-      Sign in
+<df-sticky-header>
+  <div class="info-block">
+    <h1>Dify app</h1>
+  </div>
+  <div class="actions-block">
+    <button
+      tuiButton
+      appearance="login-button"
+      routerLink="sign-in">
+      Login
     </button>
-    <button tuiTab routerLink="sign-up" [routerLinkActive]="['active']">
-      <tui-svg src="tuiIconChevronRight" class="tui-space_right-2"></tui-svg>
+    <button
+      tuiButton
+      appearance="login-button"
+      routerLink="sign-up"
+      class="tui-space_left-4">
       Sign up
     </button>
-  </tui-tabs>
-</div>
+  </div>
+</df-sticky-header>
 <div class="center-page">
   <router-outlet></router-outlet>
 </div>

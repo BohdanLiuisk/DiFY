@@ -1,4 +1,33 @@
+@import '~@taiga-ui/core/styles/taiga-ui-local';
+[tuiWrapper][data-appearance='login-button'] {
+  background: rgb(238, 126, 146);;
+  color: #fff;
+  font-weight: normal;
+  height: 50px;
+  border-radius: 7px;
+  @include wrapper-hover {
+    background: rgb(238, 126, 146, 0.8);
+  }
+  @include wrapper-active {
+    background: rgb(238, 126, 146, 0.6);
+  }
+}
+
 .center-page {
   display: flex;
   justify-content: center;
+}
+
+.info-block {
+  flex: 1 1 0;
+  padding: 5px;
+  margin: auto 0 auto 0;
+}
+
+.actions-block {
+  display: flex;
+  justify-content: flex-end;
+  flex: 1 1 0;
+  padding: 5px;
+  margin: auto 0 auto 0;
 }

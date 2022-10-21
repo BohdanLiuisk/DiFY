@@ -22,7 +22,7 @@ import { EffectsModule } from '@ngrx/effects';
     TuiRootModule,
     CoreModule,
     StoreModule.forRoot({}, {}),
-    EffectsModule.forRoot([]),
+    EffectsModule.forRoot([])
 ],
   providers: [{provide: TUI_SANITIZER, useClass: NgDompurifySanitizer}],
   bootstrap: [AppComponent]
