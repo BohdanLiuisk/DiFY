@@ -16,9 +16,7 @@ CREATE TABLE [social].[Calls] (
     [InitiatorId] UNIQUEIDENTIFIER NOT NULL,
     [StartDate] DATETIME NOT NULL,
     [EndDate] DATETIME NULL,
-    [Duration] FLOAT(2) NULL,
-    [Name] NVARCHAR (255) NOT NULL,
-    [CreatedOn] DATETIME NOT NULL,
+    [Duration] FLOAT(2) NULL
     CONSTRAINT [PK_social_Calls_Id] PRIMARY KEY CLUSTERED ([Id] ASC),
     CONSTRAINT [FK_social_Calls_InitiatorId] FOREIGN KEY ([InitiatorId]) REFERENCES [social].[Members]([Id])
 );

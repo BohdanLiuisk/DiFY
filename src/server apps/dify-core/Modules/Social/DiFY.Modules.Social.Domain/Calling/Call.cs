@@ -14,6 +14,10 @@ public class Call : Entity, IAggregateRoot
     public IReadOnlyList<CallParticipant> Participants => _participants.AsReadOnly();
 
     private readonly MemberId _initiatorId;
+
+    private MemberId _dropperId;
+
+    private  bool _ended;
     
     private readonly DateTime _startDate;
 
@@ -44,10 +48,14 @@ public class Call : Entity, IAggregateRoot
         _participants.Add(CallParticipant.CreateNew(Id, participantId, joinDate));
     }
     
-    public void End(DateTime endDate)
+    public void End(DateTime endDate, MemberId dropperId)
     {
+        _dropperId = dropperId;
+        _ended = true;
         _endDate = endDate;
         var duration = (_endDate - _startDate)?.TotalMinutes;
         _duration = Duration.Of(duration);
     }
+
+    public double GetDuration() => _duration.Value;
 }
