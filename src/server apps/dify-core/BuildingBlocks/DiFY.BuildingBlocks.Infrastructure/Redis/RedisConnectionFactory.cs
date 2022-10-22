@@ -11,9 +11,12 @@ public class RedisConnectionFactory : IRedisConnectionFactory, IDisposable
 
     private readonly string _redisHost;
 
-    public RedisConnectionFactory(string redisHost)
+    private readonly int _db;
+
+    public RedisConnectionFactory(string redisHost, int db = 1)
     {
         _redisHost = redisHost;
+        _db = db;
     }
     
     public IRedisDb GetConnection()
@@ -21,7 +24,7 @@ public class RedisConnectionFactory : IRedisConnectionFactory, IDisposable
         var configString = $"{_redisHost}";
         if (_redis is { IsConnected: true }) return new RedisDb(_redis.GetDatabase());
         _redis = ConnectionMultiplexer.Connect(configString);
-        return new RedisDb(_redis.GetDatabase());
+        return new RedisDb(_redis.GetDatabase(_db));
     }
     
     public async Task<IRedisDb> GetConnectionAsync()
@@ -29,7 +32,7 @@ public class RedisConnectionFactory : IRedisConnectionFactory, IDisposable
         var configString = $"{_redisHost}";
         if (_redis is { IsConnected: true }) return new RedisDb(_redis.GetDatabase());
         _redis = await ConnectionMultiplexer.ConnectAsync(configString);
-        return new RedisDb(_redis.GetDatabase());
+        return new RedisDb(_redis.GetDatabase(_db));
     }
 
     public void Dispose()

@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using DiFY.BuildingBlocks.Application.Data;
 using DiFY.BuildingBlocks.Infrastructure;
+using DiFY.BuildingBlocks.Infrastructure.Redis;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Microsoft.Extensions.Logging;
@@ -11,11 +12,14 @@ namespace DiFY.Modules.Social.Infrastructure.Configuration.DataAccess
     {
         private readonly string _dbConnectionString;
 
+        private readonly string _redisHost;
+
         private readonly ILoggerFactory _loggerFactory;
 
-        internal DataAccessModule(string dbConnectionString, ILoggerFactory loggerFactory)
+        internal DataAccessModule(string dbConnectionString, string redisHost, ILoggerFactory loggerFactory)
         {
             _dbConnectionString = dbConnectionString;
+            _redisHost = redisHost;
             _loggerFactory = loggerFactory;
         }
 
@@ -32,7 +36,6 @@ namespace DiFY.Modules.Social.Infrastructure.Configuration.DataAccess
                 dbContextOptionsBuilder
                     .ReplaceService<IValueConverterSelector, StronglyTypedIdValueConverterSelector>();
                 return new SocialContext(dbContextOptionsBuilder.Options, _loggerFactory);
-
             })
             .AsSelf()
             .As<DbContext>()
@@ -43,6 +46,11 @@ namespace DiFY.Modules.Social.Infrastructure.Configuration.DataAccess
                 .AsImplementedInterfaces()
                 .InstancePerLifetimeScope()
                 .FindConstructorsWith(new AllConstructorFinder());
+            builder.RegisterType<RedisConnectionFactory>()
+                .As<IRedisConnectionFactory>()
+                .WithParameter("redisHost", _redisHost)
+                .WithParameter("db", 1)
+                .InstancePerLifetimeScope();
         }
     }
 }

@@ -30,7 +30,7 @@ public class CallController : ControllerBase
         return Ok(new NewCallDto() { CallId = callId });
     }
     
-    [HttpPost("endCall/{callId:guid}")]
+    [HttpPut("endCall/{callId:guid}")]
     [HasPermission(CallPermission.CanEndCall)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<ActionResult<CallSummary>> EndCall([FromQuery] Guid callId)

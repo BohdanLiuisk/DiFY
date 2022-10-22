@@ -17,7 +17,7 @@ public class Call : Entity, IAggregateRoot
 
     private MemberId _dropperId;
 
-    private  bool _ended;
+    private bool _active;
     
     private readonly DateTime _startDate;
 
@@ -31,6 +31,7 @@ public class Call : Entity, IAggregateRoot
     {
         Id = new CallId(Guid.NewGuid());
         _startDate = startDate;
+        _active = true;
         _initiatorId = initiatorId;
         _participants = new List<CallParticipant>
         {
@@ -51,7 +52,7 @@ public class Call : Entity, IAggregateRoot
     public void End(DateTime endDate, MemberId dropperId)
     {
         _dropperId = dropperId;
-        _ended = true;
+        _active = false;
         _endDate = endDate;
         var duration = (_endDate - _startDate)?.TotalMinutes;
         _duration = Duration.Of(duration);

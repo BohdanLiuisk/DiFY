@@ -36,6 +36,10 @@ namespace DiFY.WebAPI
     {
         private const string DiFyConnectionString = "ConnectionStrings:DiFYConnectionString";
         
+        private const string RedisHostConnectionString = "ConnectionStrings:RedisHost";
+        
+        private const string SignalRConnectionString = "ConnectionStrings:SignalR";
+        
         private const string EventBusConnection = "RabbitMQConfiguration:Uri";
 
         private const string UserAccessQueue = "RabbitMQConfiguration:Queues:UserAccess";
@@ -185,6 +189,8 @@ namespace DiFY.WebAPI
                 _logger);
             SocialStartup.Initialize(
                 _configuration[DiFyConnectionString],
+                _configuration[RedisHostConnectionString],
+                _configuration[SignalRConnectionString],
                 _configuration[EventBusConnection],
                 _configuration[SocialQueue],
                 executionContextAccessor,

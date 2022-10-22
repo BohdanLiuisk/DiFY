@@ -8,6 +8,7 @@ using Serilog.AspNetCore;
 using DiFY.Modules.Social.Infrastructure.Configuration.Domain;
 using DiFY.Modules.Social.Infrastructure.Configuration.Processing;
 using DiFY.Modules.Social.Infrastructure.Configuration.Mediation;
+using DiFY.Modules.Social.Infrastructure.Configuration.SignalR;
 
 namespace DiFY.Modules.Social.Infrastructure.Configuration
 {
@@ -15,18 +16,23 @@ namespace DiFY.Modules.Social.Infrastructure.Configuration
     {
         public static void Initialize(
            string connectionString,
+           string redisHost,
+           string signalRConnection,
            string eventBusConnection,
            string userAccessQueue,
            IExecutionContextAccessor executionContextAccessor,
            ILogger logger)
         {
             var moduleLogger = logger.ForContext("Module", "Social");
-            ConfigureCompositionRoot(connectionString, eventBusConnection, userAccessQueue, executionContextAccessor, logger);
+            ConfigureCompositionRoot(connectionString, redisHost, signalRConnection, eventBusConnection, 
+                userAccessQueue, executionContextAccessor, logger);
             EventBusStartup.Initialize(moduleLogger);
         }
 
         private static void ConfigureCompositionRoot(
             string connectionString,
+            string redisHost,
+            string signalRConnection,
             string eventBusConnection,
             string userAccessQueue,
             IExecutionContextAccessor executionContextAccessor,
@@ -35,8 +41,9 @@ namespace DiFY.Modules.Social.Infrastructure.Configuration
             var containerBuilder = new ContainerBuilder();
             containerBuilder.RegisterModule(new LoggingModule(logger.ForContext("Module", "Social")));
             var loggerFactory = new SerilogLoggerFactory(logger);
-            containerBuilder.RegisterModule(new DataAccessModule(connectionString, loggerFactory));
+            containerBuilder.RegisterModule(new DataAccessModule(connectionString, redisHost, loggerFactory));
             containerBuilder.RegisterModule(new DomainModule());
+            containerBuilder.RegisterModule(new SignalRModule(signalRConnection));
             containerBuilder.RegisterModule(new ProcessingModule());
             containerBuilder.RegisterModule(new EventsBusModule(eventBusConnection, userAccessQueue));
             containerBuilder.RegisterModule(new MediatorModule());

@@ -7,12 +7,3 @@ grant_type=password
 &password=Supervisor
 &client_id=ro.client
 &client_secret=secret
-
-# POST /connect/token HTTP/1.1
-# Host: localhost:5050
-# Content-Type: application/x-www-form-urlencoded
-
-# client_id=ro.client
-# &client_secret=secret
-# &grant_type=refresh_token
-# &refresh_token=EisGDGFwh6BMl0z6OW2uq430hLFmAeJGxuVjAAnV_-8
