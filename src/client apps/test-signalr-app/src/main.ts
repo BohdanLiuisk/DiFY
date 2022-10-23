@@ -1,7 +1,7 @@
 import { HubConnectionBuilder }  from '@microsoft/signalr';
 
 const connection = new HubConnectionBuilder()
-  .withUrl('https://localhost:7225/difyHub', {
+  .withUrl('http://localhost:5050/hubs/social', {
     accessTokenFactory: () => getAuthToken()
   })
   .build();

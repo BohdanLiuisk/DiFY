@@ -12,6 +12,7 @@
 		<PackageReference Include="IdentityServer4" Version="3.1.2" />
 		<PackageReference Include="IdentityServer4.EntityFramework" Version="3.1.2" />
 		<PackageReference Include="Microsoft.AspNet.Identity.Core" Version="2.2.3" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.0.0" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.6">
 		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		  <PrivateAssets>all</PrivateAssets>

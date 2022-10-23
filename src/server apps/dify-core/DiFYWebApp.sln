@@ -47,8 +47,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DatabaseMigrator", "Databas
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiFY.Modules.Social.Infrastructure", "Modules\Social\DiFY.Modules.Social.Infrastructure\DiFY.Modules.Social.Infrastructure.csproj", "{6D4F3643-7DEE-483B-A1D2-CFEA1B98C373}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiFY.SignalR", "API\DiFY.SignalR\DiFY.SignalR.csproj", "{1553D1F7-CD15-4568-BB28-E048A911AF42}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -119,10 +117,6 @@ Global
 		{6D4F3643-7DEE-483B-A1D2-CFEA1B98C373}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6D4F3643-7DEE-483B-A1D2-CFEA1B98C373}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6D4F3643-7DEE-483B-A1D2-CFEA1B98C373}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1553D1F7-CD15-4568-BB28-E048A911AF42}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1553D1F7-CD15-4568-BB28-E048A911AF42}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1553D1F7-CD15-4568-BB28-E048A911AF42}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1553D1F7-CD15-4568-BB28-E048A911AF42}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -146,7 +140,6 @@ Global
 		{F34E7712-06A7-4B17-82D1-F05FD126C4E0} = {CF35AB5C-F56D-424E-98BA-CA230F8AE095}
 		{99F06DF1-19C1-4D3F-B79A-6160392F7461} = {CF35AB5C-F56D-424E-98BA-CA230F8AE095}
 		{6D4F3643-7DEE-483B-A1D2-CFEA1B98C373} = {CF35AB5C-F56D-424E-98BA-CA230F8AE095}
-		{1553D1F7-CD15-4568-BB28-E048A911AF42} = {1D6DBCE8-42C7-4FCA-8DC6-74845CFDE95D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {86C59352-647A-45CB-9139-F4E301F9F53B}

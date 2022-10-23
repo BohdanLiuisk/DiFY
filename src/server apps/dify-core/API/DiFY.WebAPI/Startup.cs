@@ -18,6 +18,7 @@ using DiFY.WebAPI.Modules.UserAccess;
 using Hellang.Middleware.ProblemDetails;
 using IdentityServer4.AccessTokenValidation;
 using IdentityServer4.EntityFramework.DbContexts;
+using IdentityServer4.Services;
 using IdentityServer4.Validation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -27,8 +28,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Serilog;
 using Serilog.Formatting.Compact;
+using ILogger = Serilog.ILogger;
 
 namespace DiFY.WebAPI
 {
@@ -47,6 +50,10 @@ namespace DiFY.WebAPI
         private const string SocialQueue = "RabbitMQConfiguration:Queues:Social";
 
         private const string AdministrationQueue = "RabbitMQConfiguration:Queues:Administration";
+        
+        private const string TestOrigin = "TestOrigin";
+        
+        private const string ClientAppOrigin = "ClientAppOrigin";
         
         private static ILogger _logger;
         
@@ -73,9 +80,23 @@ namespace DiFY.WebAPI
                 "Microsoft.AspNetCore.Authorization.SuppressUseHttpContextAsAuthorizationResource",
                 isEnabled: true);
             services.AddControllers();
+            services.AddCors(o => o.AddPolicy("CorsPolicy", b =>
+            {
+                b.AllowAnyMethod().AllowAnyHeader().AllowCredentials().WithOrigins(
+                    _configuration[TestOrigin],
+                    _configuration[ClientAppOrigin]);
+            }));
+            services.AddSingleton<ICorsPolicyService>((container) => {
+                var logger = container.GetRequiredService<ILogger<DefaultCorsPolicyService>>();
+                return new DefaultCorsPolicyService(logger)
+                {
+                    AllowAll = true
+                };
+            });
             services.AddSwaggerDocumentation();
             ConfigureIdentityServer(services);
             services.AddHttpContextAccessor();
+            services.AddSignalR();
             services.AddSingleton<IExecutionContextAccessor, ExecutionContextAccessor>();
             services.AddProblemDetails(x =>
             {
@@ -106,8 +127,7 @@ namespace DiFY.WebAPI
         {
             InitializeIdentityDb(app);
             var container = app.ApplicationServices.GetAutofacRoot();
-            app.UseCors(builder =>
-                builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+            app.UseCors("CorsPolicy");
             InitializeModules(container);
             app.UseMiddleware<CorrelationMiddleware>();
             app.UseSwaggerDocumentation();
@@ -126,6 +146,7 @@ namespace DiFY.WebAPI
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHub<SocialHub>("/hubs/social");
             });
         }
 
