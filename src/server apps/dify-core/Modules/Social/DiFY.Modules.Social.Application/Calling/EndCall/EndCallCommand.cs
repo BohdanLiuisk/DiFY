@@ -1,5 +1,6 @@
 ﻿using System;
 using DiFY.Modules.Social.Application.Contracts;
+using DiFY.Modules.Social.Domain.Calling;
 
 namespace DiFY.Modules.Social.Application.Calling.EndCall;
 

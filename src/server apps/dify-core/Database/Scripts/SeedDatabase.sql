@@ -1,5 +1,5 @@
 ﻿-- Add Test Administrator
-INSERT INTO users.UserRegistrations VALUES 
+INSERT INTO [users].[UserRegistrations] VALUES 
 (
 	'4065630E-4A4C-4F01-9142-0BACF6B8C64D',
 	'billyherrington',
@@ -13,7 +13,7 @@ INSERT INTO users.UserRegistrations VALUES
 	GETDATE()
 )
 
-INSERT INTO users.Users VALUES
+INSERT INTO [users].[Users] VALUES
 (
 	'4065630E-4A4C-4F01-9142-0BACF6B8C64D',
 	'billyherrington',
@@ -25,11 +25,19 @@ INSERT INTO users.Users VALUES
 	'Billy Herrington'
 )
 
-INSERT INTO users.UserRoles VALUES
+INSERT INTO [users].[UserRoles] VALUES
 ('4065630E-4A4C-4F01-9142-0BACF6B8C64D', 'Administrator'),
 ('4065630E-4A4C-4F01-9142-0BACF6B8C64D', 'Member')
 
 INSERT INTO [users].[Permissions] ([Code], [Name])
-VALUES ('CanSendFriendshipRequest', 'CanSendFriendshipRequest')
+VALUES 
+	('CanSendFriendshipRequest', 'CanSendFriendshipRequest'),
+	('CanCreateCall', 'CanCreateCall'),
+	('CanEndCall', 'CanEndCall'),
+	('CanJoinCall', 'CanJoinCall')
 
-INSERT INTO [users].[RolesToPermissions] VALUES ('Member', 'CanSendFriendshipRequest')
+INSERT INTO [users].[RolesToPermissions] VALUES 
+	('Member', 'CanSendFriendshipRequest'),
+	('Member', 'CanCreateCall'),
+	('Member', 'CanEndCall'),
+	('Member', 'CanJoinCall')

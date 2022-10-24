@@ -14,11 +14,13 @@ public class CallEntityTypeConfiguration : IEntityTypeConfiguration<Call>
         builder.ToTable("Calls", "social");
         builder.HasKey(c => c.Id);
         builder.Property<MemberId>("_initiatorId").HasColumnName("InitiatorId");
+        builder.Property<MemberId>("_dropperId").HasColumnName("DropperId");
         builder.Property<DateTime>("_startDate").HasColumnName("StartDate");
         builder.Property<DateTime?>("_endDate").HasColumnName("EndDate");
+        builder.Property<bool>("_active").HasColumnName("Active");
         builder.OwnsOne<Duration>("_duration", b =>
         {
-            b.Property(d => d.Value).HasColumnName("Duration");
+            b.Property<double>(d => d.Value).HasColumnName("Duration");
         });
         builder.OwnsMany<CallParticipant>("_participants", b =>
         {
@@ -28,6 +30,7 @@ public class CallEntityTypeConfiguration : IEntityTypeConfiguration<Call>
             b.Property<MemberId>("ParticipantId").HasColumnName("ParticipantId");
             b.Property<CallId>("CallId").HasColumnName("CallId");
             b.Property<DateTime>("_joinDate").HasColumnName("JoinOn");
+            b.Property<bool>("_active").HasColumnName("Active");
         });
     }
 }

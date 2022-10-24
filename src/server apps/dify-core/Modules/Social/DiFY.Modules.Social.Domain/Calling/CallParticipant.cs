@@ -13,6 +13,8 @@ public class CallParticipant : Entity
     public MemberId ParticipantId { get; private set; }
 
     private readonly DateTime _joinDate;
+
+    private bool _active;
     
     private CallParticipant() { }
 
@@ -27,5 +29,10 @@ public class CallParticipant : Entity
     public static CallParticipant CreateNew(CallId callId, MemberId participantId, DateTime joinDate)
     {
         return new CallParticipant(callId, participantId, joinDate);
+    }
+
+    internal void MarkAsNotActive()
+    {
+        _active = false;
     }
 }

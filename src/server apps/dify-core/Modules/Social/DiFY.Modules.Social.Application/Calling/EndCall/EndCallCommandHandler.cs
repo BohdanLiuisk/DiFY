@@ -22,11 +22,6 @@ public class EndCallCommandHandler : ICommandHandler<EndCallCommand, CallSummary
     public async Task<CallSummary> Handle(EndCallCommand command, CancellationToken cancellationToken)
     {
         var call = await _callRepository.GetByIdAsync(new CallId(command.CallId));
-        call.End(command.EndDate, _memberContext.MemberId);
-        return new CallSummary
-        {
-            Duration = call.GetDuration(),
-            ParticipantsCount = call.Participants.Count
-        };
+        return call.End(command.EndDate, _memberContext.MemberId);
     }
 }

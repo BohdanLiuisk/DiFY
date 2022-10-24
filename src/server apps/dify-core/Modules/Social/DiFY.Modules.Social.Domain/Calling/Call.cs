@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using DiFY.BuildingBlocks.Domain;
+using DiFY.Modules.Social.Domain.Calling.Events;
+using DiFY.Modules.Social.Domain.Calling.Rules;
 using DiFY.Modules.Social.Domain.Membership;
 
 namespace DiFY.Modules.Social.Domain.Calling;
@@ -46,17 +48,25 @@ public class Call : Entity, IAggregateRoot
 
     public void Join(MemberId participantId, DateTime joinDate)
     {
+        CheckRule(new CantEndLeftOrJoinNotActiveCallRule(_active));
         _participants.Add(CallParticipant.CreateNew(Id, participantId, joinDate));
     }
-    
-    public void End(DateTime endDate, MemberId dropperId)
+
+    public void Left(MemberId memberId)
     {
+        CheckRule(new CantEndLeftOrJoinNotActiveCallRule(_active));
+        CheckRule(new ParticipantExistsInCallRule(Participants, memberId));
+        AddDomainEvent(new ParticipantLeftCallDomainEvent(memberId));
+    }
+
+    public CallSummary End(DateTime endDate, MemberId dropperId)
+    {
+        CheckRule(new CantEndLeftOrJoinNotActiveCallRule(_active));
         _dropperId = dropperId;
         _active = false;
         _endDate = endDate;
         var duration = (_endDate - _startDate)?.TotalMinutes;
         _duration = Duration.Of(duration);
+        return CallSummary.CreateNew(Duration.Of(duration), Participants.Count);
     }
-
-    public double GetDuration() => _duration.Value;
 }
