@@ -1,6 +1,6 @@
 GO
 ALTER TABLE [social].[Calls]
-    ADD [Active] BIT;
+    ADD [Active] BIT DEFAULT 0;
 
 GO
 ALTER TABLE [social].[Calls]
@@ -9,7 +9,7 @@ ALTER TABLE [social].[Calls]
 
 GO
 ALTER TABLE [social].[CallParticipants]
-    ADD [Active] BIT;
+    ADD [Active] BIT DEFAULT 0;
 
 GO
 ALTER TABLE [social].[Calls]
@@ -17,4 +17,8 @@ ALTER TABLE [social].[Calls]
 
 GO
 ALTER TABLE [social].[Calls]
-    ADD [Duration] FLOAT NULL;
+    ADD [Duration] FLOAT NOT NULL;
+
+ALTER TABLE  [social].Calls
+    ADD CONSTRAINT df_social_Calls_Duration
+    DEFAULT 0 FOR  [Duration];

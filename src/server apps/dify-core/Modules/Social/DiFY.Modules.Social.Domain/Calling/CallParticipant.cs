@@ -24,6 +24,7 @@ public class CallParticipant : Entity
         CallId = callId;
         ParticipantId = participantId;
         _joinDate = joinDate;
+        _active = true;
     }
 
     public static CallParticipant CreateNew(CallId callId, MemberId participantId, DateTime joinDate)
@@ -31,8 +32,15 @@ public class CallParticipant : Entity
         return new CallParticipant(callId, participantId, joinDate);
     }
 
+    internal bool IsActive() => _active;
+
     internal void MarkAsNotActive()
     {
         _active = false;
+    }
+    
+    internal void MarkAsActive()
+    {
+        _active = true;
     }
 }
