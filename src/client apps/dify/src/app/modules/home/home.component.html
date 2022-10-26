@@ -1,8 +1,13 @@
-<p>home works!</p>
-<div *ngIf="(currentUser$ | async) as currentUser">
-  <p>{{currentUser?.id}}</p>
-  <p>{{currentUser?.name}}</p>
-  <p>{{currentUser?.email}}</p>
+<app-home-header></app-home-header>
+<app-home-navigation></app-home-navigation>
+<router-outlet class="home-content"></router-outlet>
+<div class="home-content">
+  <p>home works!</p>
+  <div *ngIf="(currentUser$ | async) as currentUser">
+    <p>{{currentUser?.id}}</p>
+    <p>{{currentUser?.name}}</p>
+    <p>{{currentUser?.email}}</p>
+  </div>
+  <button (click)="back()">Back</button>
+  <button (click)="logout()">Logout</button>
 </div>
-<button (click)="back()">Back</button>
-<button (click)="logout()">Logout</button>

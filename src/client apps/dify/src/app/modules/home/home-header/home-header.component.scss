@@ -1,0 +1,13 @@
+.home-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1;
+  display: flex;
+  height: 3.9375rem;
+  align-items: center;
+  padding: 0 1.2rem;
+  border-bottom: 1px solid var(--tui-base-03);
+  box-shadow: 0 0.125rem 1rem rgb(0 0 0 / 8%);
+}

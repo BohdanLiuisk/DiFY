@@ -4,7 +4,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
   TuiAlertModule, TuiButtonModule,
   TuiDialogModule,
-  TuiHintModule,
+  TuiHintModule, TuiLinkModule,
   TuiRootModule, TuiSvgModule,
   TuiTextfieldControllerModule
 } from '@taiga-ui/core';
@@ -26,7 +26,8 @@ import { StickyHeaderComponent } from './components/sticky-header/sticky-header.
     TuiInputPasswordModule,
     FontAwesomeModule,
     TuiButtonModule,
-    TuiSvgModule
+    TuiSvgModule,
+    TuiLinkModule
   ],
   declarations: [
     StickyHeaderComponent
@@ -42,7 +43,8 @@ import { StickyHeaderComponent } from './components/sticky-header/sticky-header.
     TuiInputPasswordModule,
     TuiButtonModule,
     StickyHeaderComponent,
-    TuiSvgModule
+    TuiSvgModule,
+    TuiLinkModule
   ]
 })
 export class SharedModule { }

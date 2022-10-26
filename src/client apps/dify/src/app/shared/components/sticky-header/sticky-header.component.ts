@@ -4,8 +4,7 @@ import {
   filter,
   fromEvent,
   map,
-  pairwise,
-  share, tap,
+  share,
   throttleTime
 } from 'rxjs';
 
