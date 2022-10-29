@@ -13,6 +13,7 @@ public class CallEntityTypeConfiguration : IEntityTypeConfiguration<Call>
         builder.Ignore(c => c.Participants);
         builder.ToTable("Calls", "social");
         builder.HasKey(c => c.Id);
+        builder.Property<string>("_name").HasColumnName("Name");
         builder.Property<MemberId>("_initiatorId").HasColumnName("InitiatorId");
         builder.Property<MemberId>("_dropperId").HasColumnName("DropperId");
         builder.Property<DateTime>("_startDate").HasColumnName("StartDate");

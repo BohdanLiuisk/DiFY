@@ -4,5 +4,6 @@ public static class CallPermission
 {
     public const string CanCreateCall = "CanCreateCall";
     public const string CanEndCall = "CanEndCall";
-    public const string CanJoinOrLeftCall = "CanJoinCall";
+    public const string CanJoinOrLeftCall = "CanJoinOrLeftCall";
+    public const string CanGetAllCalls = "CanGetAllCalls";
 }

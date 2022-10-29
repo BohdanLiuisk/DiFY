@@ -22,7 +22,7 @@ internal class CreateCallCommandHandler : ICommandHandler<CreateCallCommand, Gui
     
     public async Task<Guid> Handle(CreateCallCommand command, CancellationToken cancellationToken)
     {
-        var call = Call.CreateNew(_memberContext.MemberId, command.StartDate);
+        var call = Call.CreateNew(command.Name, _memberContext.MemberId, command.StartDate);
         await _callRepository.AddAsync(call);
         return call.Id.Value;
     }

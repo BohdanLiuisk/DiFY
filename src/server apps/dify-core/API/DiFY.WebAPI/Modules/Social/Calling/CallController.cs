@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using DiFY.Modules.Social.Application.Calling.CreateCall;
 using DiFY.Modules.Social.Application.Calling.EndCall;
+using DiFY.Modules.Social.Application.Calling.GetAllCalls;
 using DiFY.Modules.Social.Application.Calling.JoinCall;
 using DiFY.Modules.Social.Application.Calling.LeftCall;
 using DiFY.Modules.Social.Application.Contracts;
@@ -29,7 +31,7 @@ public class CallController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<ActionResult<NewCallDto>> CreateCall(CreateCallDto request) 
     {
-        var callId = await _socialModule.ExecuteCommandAsync(new CreateCallCommand(DateTime.UtcNow));
+        var callId = await _socialModule.ExecuteCommandAsync(new CreateCallCommand(request.Name, DateTime.UtcNow));
         return Ok(new NewCallDto() { CallId = callId });
     }
     
@@ -58,5 +60,14 @@ public class CallController : ControllerBase
     {
         var summary = await _socialModule.ExecuteCommandAsync(new EndCallCommand(callId, DateTime.UtcNow));
         return Ok(summary);
+    }
+    
+    [HttpGet("getAll")]
+    [HasPermission(CallPermission.CanGetAllCalls)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<ActionResult<IEnumerable<CallDto>>> GetAllCalls(int? page, int? perPage)
+    {
+        var calls = await _socialModule.ExecuteQueryAsync(new GetAllCallsQuery(page, perPage));
+        return Ok(calls);
     }
 }

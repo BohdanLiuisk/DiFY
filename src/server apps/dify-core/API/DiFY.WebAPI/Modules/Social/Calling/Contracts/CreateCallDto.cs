@@ -2,5 +2,5 @@
 
 public class CreateCallDto
 {
-    
+    public string Name { get; set; }
 }

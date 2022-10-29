@@ -34,10 +34,12 @@ VALUES
 	('CanSendFriendshipRequest', 'CanSendFriendshipRequest'),
 	('CanCreateCall', 'CanCreateCall'),
 	('CanEndCall', 'CanEndCall'),
-	('CanJoinCall', 'CanJoinCall')
+	('CanJoinOrLeftCall', 'CanJoinOrLeftCall'),
+	('CanGetAllCalls', 'CanGetAllCalls')
 
 INSERT INTO [users].[RolesToPermissions] VALUES 
 	('Member', 'CanSendFriendshipRequest'),
 	('Member', 'CanCreateCall'),
 	('Member', 'CanEndCall'),
-	('Member', 'CanJoinCall')
+	('Member', 'CanJoinOrLeftCall'),
+	('Administrator', 'CanGetAllCalls')

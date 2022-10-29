@@ -16,6 +16,8 @@ public class Call : Entity, IAggregateRoot
     
     public IReadOnlyList<CallParticipant> Participants => _participants.AsReadOnly();
 
+    private string _name;
+
     private readonly MemberId _initiatorId;
 
     private MemberId _dropperId;
@@ -30,9 +32,10 @@ public class Call : Entity, IAggregateRoot
 
     private Call() { }
 
-    private Call(DateTime startDate, MemberId initiatorId)
+    private Call(string name, DateTime startDate, MemberId initiatorId)
     {
         Id = new CallId(Guid.NewGuid());
+        _name = name;
         _startDate = startDate;
         _active = true;
         _initiatorId = initiatorId;
@@ -42,9 +45,9 @@ public class Call : Entity, IAggregateRoot
         };
     }
 
-    public static Call CreateNew(MemberId initiatorId, DateTime startDate)
+    public static Call CreateNew(string name, MemberId initiatorId, DateTime startDate)
     {
-        return new Call(startDate, initiatorId);
+        return new Call(name, startDate, initiatorId);
     }
 
     public void Join(MemberId participantId, DateTime joinDate)
