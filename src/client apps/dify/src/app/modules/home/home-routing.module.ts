@@ -5,7 +5,13 @@ import { HomeComponent } from './home.component';
 const routes: Routes =  [
   {
     path: '',
-    component: HomeComponent
+    component: HomeComponent,
+    children: [
+      {
+        path: 'calls',
+        loadChildren: async () => (await import('../calls/calls.module')).CallsModule
+      }
+    ]
   }
 ];
 

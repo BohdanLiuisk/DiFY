@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using DiFY.Modules.Social.Application.Calling.CreateCall;
 using DiFY.Modules.Social.Application.Calling.EndCall;
@@ -65,7 +64,7 @@ public class CallController : ControllerBase
     [HttpGet("getAll")]
     [HasPermission(CallPermission.CanGetAllCalls)]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<ActionResult<IEnumerable<CallDto>>> GetAllCalls(int? page, int? perPage)
+    public async Task<ActionResult<CallsResultDto>> GetAllCalls(int? page, int? perPage)
     {
         var calls = await _socialModule.ExecuteQueryAsync(new GetAllCallsQuery(page, perPage));
         return Ok(calls);

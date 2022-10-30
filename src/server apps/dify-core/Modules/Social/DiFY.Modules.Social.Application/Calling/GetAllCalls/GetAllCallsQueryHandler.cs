@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Dapper;
@@ -8,7 +9,7 @@ using DiFY.Modules.Social.Application.Configuration.Queries;
 
 namespace DiFY.Modules.Social.Application.Calling.GetAllCalls;
 
-internal class GetAllCallsQueryHandler : IQueryHandler<GetAllCallsQuery, IEnumerable<CallDto>>
+internal class GetAllCallsQueryHandler : IQueryHandler<GetAllCallsQuery, CallsResultDto>
 {
     private readonly ISqlConnectionFactory _sqlConnectionFactory;
 
@@ -17,14 +18,14 @@ internal class GetAllCallsQueryHandler : IQueryHandler<GetAllCallsQuery, IEnumer
         _sqlConnectionFactory = sqlConnectionFactory;
     }
     
-    public async Task<IEnumerable<CallDto>> Handle(GetAllCallsQuery query, CancellationToken cancellationToken)
+    public async Task<CallsResultDto> Handle(GetAllCallsQuery query, CancellationToken cancellationToken)
     {
         var connection = _sqlConnectionFactory.GetOpenConnection();
         var parameters = new DynamicParameters();
         var pageData = PagedQueryManager.GetPageData(query);
         parameters.Add(nameof(PagedQueryManager.Offset), pageData.Offset);
         parameters.Add(nameof(PagedQueryManager.Next), pageData.Next);
-        var sql = "SELECT " +
+        var selectCall = "SELECT " +
                   $"[Call].[Id] AS [{nameof(CallDto.Id)}], " +
                   $"[Call].[Name] AS [{nameof(CallDto.Name)}], " +
                   $"[Call].[Active] AS [{nameof(CallDto.Active)}], " +
@@ -34,6 +35,11 @@ internal class GetAllCallsQueryHandler : IQueryHandler<GetAllCallsQuery, IEnumer
                   $"[Call].[TotalParticipants] AS [{nameof(CallDto.TotalParticipants)}]" +
                   $"FROM [social].[v_Calls] AS [Call] " +
                   $"ORDER BY [Call].[StartDate] DESC";
-        return await connection.QueryAsync<CallDto>(PagedQueryManager.AppendPageStatement(sql), parameters);
+        var selectTotalCount = "SELECT COUNT([Call].[Id]) FROM [social].[v_Calls] AS [Call]";
+        return new CallsResultDto()
+        {
+            Calls = await connection.QueryAsync<CallDto>(PagedQueryManager.AppendPageStatement(selectCall), parameters),
+            TotalCount = (await connection.QueryAsync<int>(selectTotalCount)).FirstOrDefault()
+        };
     }
 }

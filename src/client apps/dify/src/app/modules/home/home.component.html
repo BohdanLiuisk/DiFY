@@ -1,6 +1,5 @@
 <app-home-header></app-home-header>
 <app-home-navigation></app-home-navigation>
-<router-outlet class="home-content"></router-outlet>
 <div class="home-content">
   <p>home works!</p>
   <div *ngIf="(currentUser$ | async) as currentUser">
@@ -10,4 +9,5 @@
   </div>
   <button (click)="back()">Back</button>
   <button (click)="logout()">Logout</button>
+  <router-outlet></router-outlet>
 </div>

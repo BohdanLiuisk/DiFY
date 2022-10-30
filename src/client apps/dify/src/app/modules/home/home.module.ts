@@ -1,10 +1,10 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { HomeComponent } from './home.component';
 import { HomeRoutingModule } from './home-routing.module';
 import { HomeHeaderComponent } from './home-header/home-header.component';
 import { SharedModule } from '@shared/shared.module';
 import { HomeNavigationComponent } from './home-navigation/home-navigation.component';
+import { TuiModule } from '@shared/tui.module';
 
 @NgModule({
   declarations: [
@@ -13,9 +13,9 @@ import { HomeNavigationComponent } from './home-navigation/home-navigation.compo
     HomeNavigationComponent
   ],
   imports: [
-    CommonModule,
     HomeRoutingModule,
-    SharedModule
+    SharedModule,
+    TuiModule
   ]
 })
 export class HomeModule { }
