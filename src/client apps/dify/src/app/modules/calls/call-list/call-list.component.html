@@ -1,1 +1,29 @@
-<p>call-list works!</p>
+<tui-loader [overlay]="true" [showLoader]="!!(loading$ | async)">
+  <table tuiTable [columns]="columns" class="calls-list" (sorterChange)="logEvent($event)"
+         (directionChange)="logEvent($event)">
+    <thead>
+      <tr tuiThGroup>
+        <th *tuiHead="'name'" tuiTh>Name</th>
+        <th *tuiHead="'status'" tuiTh>Status</th>
+        <th *tuiHead="'actions'" tuiTh [sorter]="null"></th>
+      </tr>
+    </thead>
+    <tbody *tuiLet="(callsList$ | async) | tuiTableSort as sortedCalls" tuiTbody  [data]="sortedCalls">
+      <tr *ngFor="let item of sortedCalls;" tuiTr>
+        <td *tuiCell="'name'" tuiTd>{{ item.name }}</td>
+      </tr>
+    </tbody>
+    <tfoot>
+      <tr>
+        <td [colSpan]="columns.length">
+          <tui-table-pagination
+            class="tui-space_top-2"
+            [total]="(totalCount$ | async) || 0"
+            (pageChange)="setPage($event)"
+            (sizeChange)="setPerPage($event)"
+          ></tui-table-pagination>
+        </td>
+      </tr>
+    </tfoot>
+  </table>
+</tui-loader>

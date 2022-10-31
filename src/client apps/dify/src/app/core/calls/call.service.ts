@@ -3,9 +3,9 @@ import { CoreHttpService } from '@core/services/core-http.service';
 import { Observable } from 'rxjs';
 import { Call } from '@core/calls/store/call-list/call-list.reducer';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class CallService {
-  private readonly callsPath: 'api/social/calls';
+  private readonly callsPath: string = '/api/social/calls';
 
   constructor(private httpService: CoreHttpService) { }
 

@@ -8,6 +8,16 @@
   height: 3.9375rem;
   align-items: center;
   padding: 0 1.2rem;
+  background-color: salmon;
   border-bottom: 1px solid var(--tui-base-03);
   box-shadow: 0 0.125rem 1rem rgb(0 0 0 / 8%);
+}
+
+.dify-link {
+  color: black;
+  transition: 0.2s;
+  &:hover {
+    color: black;
+    opacity: 0.7;
+  }
 }

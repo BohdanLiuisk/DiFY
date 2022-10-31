@@ -1,13 +1,5 @@
 <app-home-header></app-home-header>
 <app-home-navigation></app-home-navigation>
 <div class="home-content">
-  <p>home works!</p>
-  <div *ngIf="(currentUser$ | async) as currentUser">
-    <p>{{currentUser?.id}}</p>
-    <p>{{currentUser?.name}}</p>
-    <p>{{currentUser?.email}}</p>
-  </div>
-  <button (click)="back()">Back</button>
-  <button (click)="logout()">Logout</button>
   <router-outlet></router-outlet>
 </div>

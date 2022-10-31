@@ -32,7 +32,7 @@ export interface Call {
 export const callsListInitialState: CallList = {
   listConfig: {
     page: 1,
-    perPage: 5
+    perPage: 10
   },
   calls: {
     entities: [],
@@ -48,6 +48,10 @@ export const callListFeature = createFeature({
     callsListInitialState,
     on(callListActions.setListPage, (state, { page }) => {
       const listConfig: CallListConfig = { ...state.listConfig, page };
+      return { ...state, listConfig };
+    }),
+    on(callListActions.setPerPage, (state, { perPage }) => {
+      const listConfig: CallListConfig = { ...state.listConfig, perPage };
       return { ...state, listConfig };
     }),
     on(callListActions.loadCalls, (state) => {

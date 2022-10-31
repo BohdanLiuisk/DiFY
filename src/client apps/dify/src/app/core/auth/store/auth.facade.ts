@@ -4,7 +4,7 @@ import * as AuthSelectors from './auth.selectors';
 import { Store } from '@ngrx/store';
 import { NewUser } from '@core/auth/store/auth.models';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class AuthFacade {
   public auth$ = this.store.select(AuthSelectors.selectAuth);
   public user$ = this.store.select(AuthSelectors.selectAuthUser);

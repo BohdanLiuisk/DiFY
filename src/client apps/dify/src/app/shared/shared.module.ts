@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { StickyHeaderComponent } from './components/sticky-header/sticky-header.component';
 import { RouterModule } from '@angular/router';
+import { CallStatusDirective } from './directives/call-status.directive';
 
 @NgModule({
   imports: [
@@ -12,7 +13,8 @@ import { RouterModule } from '@angular/router';
     RouterModule
   ],
   declarations: [
-    StickyHeaderComponent
+    StickyHeaderComponent,
+    CallStatusDirective
   ],
   exports: [
     CommonModule,

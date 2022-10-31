@@ -1,11 +1,13 @@
 import { NgModule } from '@angular/core';
 import {
   TuiAlertModule, TuiButtonModule,
-  TuiDialogModule, TuiHintModule, TuiLinkModule,
-  TuiSvgModule,  TuiTextfieldControllerModule
+  TuiDialogModule, TuiHintModule, TuiLinkModule, TuiLoaderModule,
+  TuiSvgModule, TuiTextfieldControllerModule
 } from '@taiga-ui/core';
 import { TuiInputModule, TuiInputPasswordModule } from '@taiga-ui/kit';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { TuiTableModule, TuiTablePaginationModule } from '@taiga-ui/addon-table';
+import { TuiLetModule } from '@taiga-ui/cdk';
 
 @NgModule({
   imports: [
@@ -18,7 +20,11 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
     FontAwesomeModule,
     TuiButtonModule,
     TuiSvgModule,
-    TuiLinkModule
+    TuiLinkModule,
+    TuiTableModule,
+    TuiLetModule,
+    TuiLoaderModule,
+    TuiTablePaginationModule
   ],
   exports: [
     TuiAlertModule,
@@ -30,7 +36,11 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
     TuiInputPasswordModule,
     TuiButtonModule,
     TuiSvgModule,
-    TuiLinkModule
+    TuiLinkModule,
+    TuiTableModule,
+    TuiLetModule,
+    TuiLoaderModule,
+    TuiTablePaginationModule
   ]
 })
 export class TuiModule { }
