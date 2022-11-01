@@ -31,8 +31,11 @@ export class AuthInterceptor implements HttpInterceptor {
     }
     if(this.jwtHelper.isTokenExpired(jwt.access_token) && jwt.refresh_token) {
       return this.authService.refreshToken().pipe(
-        switchMap(jwt => {
-          return next.handle(setBearerToHeader(req, jwt.access_token));
+        switchMap(({ access_token, refresh_token}) => {
+          this.jwtStorage.setToken({ key: 'access_token', value: access_token });
+          this.jwtStorage.setToken({ key: 'refresh_token', value: refresh_token });
+          this.authFacade.refreshTokenSuccess();
+          return next.handle(setBearerToHeader(req, access_token));
         })
       )
     }

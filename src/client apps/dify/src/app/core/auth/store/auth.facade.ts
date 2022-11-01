@@ -29,4 +29,8 @@ export class AuthFacade {
   public getAuthUser(): void {
     this.store.dispatch(AuthActions.getAuthUserRequest());
   }
+
+  public refreshTokenSuccess(): void {
+    this.store.dispatch(AuthActions.refreshTokenSuccess());
+  }
 }
