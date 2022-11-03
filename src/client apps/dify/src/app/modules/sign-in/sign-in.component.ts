@@ -9,6 +9,7 @@ import { AuthFacade } from '@core/auth/store/auth.facade';
   styleUrls: ['./sign-in.component.scss']
 })
 export class SignInComponent implements OnInit {
+  public hidePassword: boolean = true;
   public loginForm: FormGroup;
 
   constructor(private authFacade: AuthFacade) { }

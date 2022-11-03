@@ -1,29 +1,21 @@
 <form [formGroup]="loginForm" (ngSubmit)="submit()" class="login-form">
-  <tui-input
-    formControlName="username"
-    tuiHintContent="Min length 4"
-    [tuiTextfieldCleaner]="true"
-    [tuiTextfieldCustomContent]="username.valid ? success : ''"
-    [tuiTextfieldLabelOutside]="true"
-    class="tui-space_top-3">
-    Login
-  </tui-input>
-  <tui-input-password
-    formControlName="password"
-    [tuiTextfieldCleaner]="true"
-    [tuiTextfieldCustomContent]="password.valid ? success : ''"
-    [tuiTextfieldLabelOutside]="true"
-    class="tui-space_top-3">
-    Password
-  </tui-input-password>
-  <button
-    tuiButton
-    type="submit"
-    appearance="primary"
-    class="tui-space_right-3 tui-space_bottom-3 tui-space_top-3 login-form-submit">
-    Submit
-  </button>
+  <mat-form-field appearance="fill" class="login-form-username">
+    <mat-label>Enter login</mat-label>
+    <input matInput formControlName="username" required>
+    <mat-error *ngIf="username.invalid && (username.dirty || username.touched) && username.errors?.['required']">
+      {{"Login is required"}}
+    </mat-error>
+  </mat-form-field>
+  <mat-form-field appearance="fill">
+    <mat-label>Enter password</mat-label>
+    <input matInput formControlName="password" [type]="hidePassword ? 'password' : 'text'">
+    <mat-error *ngIf="password.invalid && (password.dirty || password.touched) && password.errors?.['required']">
+      {{ "Password is required"}}
+    </mat-error>
+    <button type="button" mat-icon-button matSuffix (click)="hidePassword = !hidePassword"
+            [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hidePassword">
+      <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+    </button>
+  </mat-form-field>
+  <button type="submit" mat-flat-button color="primary">Login</button>
 </form>
-<ng-template #success>
-  <tui-svg src="tuiIconCheckLarge" class="success tui-space_left-3"></tui-svg>
-</ng-template>

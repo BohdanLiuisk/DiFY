@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { SignInComponent } from './sign-in.component';
 import { SignInRoutingModule } from './sign-in-routing.module';
 import { SharedModule } from '@shared/shared.module';
-import { TuiModule } from '@shared/tui.module';
+import { MaterialModule } from '@shared/material.module';
 
 @NgModule({
   declarations: [
@@ -11,7 +11,7 @@ import { TuiModule } from '@shared/tui.module';
   imports: [
     SignInRoutingModule,
     SharedModule,
-    TuiModule
+    MaterialModule
   ]
 })
 export class SignInModule { }

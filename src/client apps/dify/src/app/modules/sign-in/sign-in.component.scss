@@ -1,13 +1,13 @@
 .login-form {
-  width: 400px;
+  width: 330px;
   padding: 20px;
-  &-submit {
-    width: 100%;
-  }
 }
 
-.success {
-  position: relative;
-  color: var(--tui-success-fill);
+.mat-form-field {
+  width: 100%;
+  margin-bottom: 7px;
 }
 
+.mat-flat-button {
+  width: 100%;
+}

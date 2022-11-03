@@ -1,5 +1,23 @@
-@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@500;800&display=swap');
 * {
   box-sizing: border-box;
-  font-size: 1.05em;
+}
+
+.success-snackbar {
+  background: rgb(65, 252, 134);
+  color: white;
+  button {
+    background-color: rgb(65, 252, 134);
+    color: white;
+    border: none;
+  }
+}
+
+.error-snackbar {
+  background: #f44336;
+  color: white;
+  button {
+    background-color: #f44336;
+    color: white !important;
+    border: none;
+  }
 }

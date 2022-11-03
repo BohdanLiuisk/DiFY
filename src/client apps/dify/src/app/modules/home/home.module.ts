@@ -4,7 +4,7 @@ import { HomeRoutingModule } from './home-routing.module';
 import { HomeHeaderComponent } from './home-header/home-header.component';
 import { SharedModule } from '@shared/shared.module';
 import { HomeNavigationComponent } from './home-navigation/home-navigation.component';
-import { TuiModule } from '@shared/tui.module';
+import { MaterialModule } from '@shared/material.module';
 
 @NgModule({
   declarations: [
@@ -15,7 +15,7 @@ import { TuiModule } from '@shared/tui.module';
   imports: [
     HomeRoutingModule,
     SharedModule,
-    TuiModule
+    MaterialModule
   ]
 })
 export class HomeModule { }
