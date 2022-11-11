@@ -1,0 +1,31 @@
+<ng-container [ngSwitch]="true">
+  <span *ngSwitchCase="!!menuItem.header" class="df-menu-item__header">
+    {{ menuItem.header }}
+  </span>
+  <df-menu-anchor
+    *ngSwitchCase="!menuItem.children && !menuItem.header"
+    class="df-menu-anchor"
+    [menuItem]="menuItem"
+    [disable]="disable || isItemDisabled">
+  </df-menu-anchor>
+  <ng-container *ngSwitchCase="!!menuItem.children">
+    <df-menu-anchor
+      class="df-menu-anchor"
+      [ngClass]="{ 'df-menu-anchor--open': node.isOpen }"
+      [menuItem]="menuItem"
+      (anchorClicked)="node.onNodeToggleClick()"
+      [isActive]="node.isActiveChild">
+      <i toggleIcon [@rotate]="node.isOpen" [class]="node.nodeService.toggleIconClasses">
+      </i>
+    </df-menu-anchor>
+    <df-menu-node
+      #node
+      class="df-menu-node"
+      [menuItem]="menuItem"
+      [level]="level"
+      [disable]="disable || isItemDisabled"
+      (isActive)="onNodeActive($event)"
+      (isFiltered)="onNodeFiltered($event)"
+    ></df-menu-node>
+  </ng-container>
+</ng-container>

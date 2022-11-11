@@ -1,0 +1,15 @@
+<ul [@openClose]="isOpen">
+  <li *ngIf="level === 0" class="df-menu-item">
+    <span class="df-menu-node__label">{{ menuItem.label }}</span>
+  </li>
+  <ng-container *ngFor="let childItem of menuItem.children; trackBy: trackByItem">
+    <li
+      df-menu-item
+      class="df-menu-item"
+      *ngIf="roleService.showItem$(childItem.roles) | async"
+      [menuItem]="childItem"
+      [level]="level + 1"
+      [disable]="disable"
+    ></li>
+  </ng-container>
+</ul>

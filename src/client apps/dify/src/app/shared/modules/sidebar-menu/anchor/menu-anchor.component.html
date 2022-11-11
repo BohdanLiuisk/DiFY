@@ -1,0 +1,36 @@
+<ng-container [ngSwitch]="true">
+  <a *ngSwitchCase="!!menuItem.children" (click)="anchorClicked.emit()">
+    <ng-container *ngTemplateOutlet="innerItem"></ng-container>
+  </a>
+  <a
+    *ngSwitchCase="!!menuItem.route || menuItem.route === ''"
+    [routerLink]="disable ? undefined : menuItem.route"
+    routerLinkActive
+    #rla="routerLinkActive"
+    [routerLinkActiveOptions]="{ exact: menuItem.linkActiveExact === undefined ? true : menuItem.linkActiveExact }">
+    <ng-container *ngTemplateOutlet="innerItem"></ng-container>
+  </a>
+  <a *ngSwitchCase="!!menuItem.url" [href]="menuItem.url" [target]="menuItem.target">
+    <ng-container *ngTemplateOutlet="innerItem"></ng-container>
+  </a>
+</ng-container>
+<ng-template #innerItem>
+  <i
+    [class]="menuItem.iconClass || anchorService.iconClasses"
+    *ngIf="menuItem.iconClass || anchorService.iconClasses"
+    class="df-menu-anchor__icon">
+  </i>
+  <span class="df-menu-anchor__label">{{ menuItem.label }}</span>
+  <span
+    *ngIf="menuItem.badges || menuItem.children"
+    class="df-menu-anchor__pull"
+    [ngClass]="{ 'df-badges': menuItem.badges, 'df-toggle': menuItem.children }">
+    <span *ngFor="let badge of menuItem.badges" [class]="badge.classes" class="df-badges__badge">
+      {{ badge.label }}
+    </span>
+    <span class="df-toggle__icon">
+      <ng-content select="[toggleIcon]">
+      </ng-content>
+    </span>
+  </span>
+</ng-template>

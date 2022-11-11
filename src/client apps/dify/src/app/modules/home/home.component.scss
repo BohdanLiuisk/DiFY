@@ -1,5 +1,71 @@
-.home-content {
-  margin-top: 3.9375rem;
-  margin-left: 16.25rem;
-  padding: 1.15rem;
+@import "src/app/shared/styles/variables";
+
+.main-wrapper {
+  display: grid;
+  grid-template-areas:
+    'nav header'
+    'nav content';
+  grid-template-columns: 0 auto;
+  grid-template-rows: 50px auto;
+  height: 100vh;
+  &.main-wrapper--navigation-open {
+    grid-template-columns: auto 1fr;
+  }
+}
+
+.main-header {
+  grid-area: header;
+  border-bottom: 1px solid #dfdfdf;
+  display: flex;
+  .sidebar-toggle {
+    width: 50px;
+    height: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-right: 1px solid #dfdfdf;
+    cursor: pointer;
+  }
+}
+
+.main-content {
+  grid-area: content;
+  padding: 1rem;
+}
+
+::ng-deep .main-navigation {
+  .df-menu--mode-expandable:not(:hover) .input-search,
+  .df-menu--mode-mini .input-search {
+    display: none !important;
+  }
+}
+
+.main-navigation {
+  grid-area: nav;
+  background: $df-base-01;
+  .input-search {
+    display: flex;
+    margin: 10px;
+    background-color: $df-base-02;
+    align-items: center;
+    border-radius: 4px;
+    &.input-search--focus {
+      background-color: $df-base-03;
+    }
+    input {
+      padding: 10px;
+      color: $df-text-white-01;
+      font: inherit;
+      background: rgba(0,0,0,0);
+      border: none;
+      outline: none;
+      caret-color: $df-text-white-01;
+    }
+    i, input::placeholder {
+      color: $df-text-white-01;
+    }
+    i {
+      margin: 0 10px;
+    }
+  }
 }

@@ -1,0 +1,120 @@
+:host {
+  display: block;
+  overflow: hidden;
+
+  &:hover {
+    overflow: visible;
+  }
+}
+
+:host ::ng-deep {
+  ul,
+  .df-menu-item {
+    margin: 0;
+    padding: 0;
+  }
+
+  li {
+    line-height: 0;
+  }
+
+  .df-menu-item__header,
+  .df-menu-anchor__label,
+  .df-menu-node__label {
+    white-space: nowrap;
+  }
+
+  .df-menu-node__label {
+    display: none;
+  }
+
+  .df-menu-node:not(.df-menu-node--open) > .ng-trigger-openClose,
+  .df-menu-node > .ng-trigger-openClose.ng-animating {
+    overflow: hidden;
+  }
+
+  .df-menu-item--filtered {
+    display: none;
+  }
+
+  .df-menu,
+  .df-menu-node ul {
+    list-style: none;
+  }
+
+  .df-menu-anchor a {
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    position: relative;
+    user-select: none;
+  }
+
+  .df-menu-item__header {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: block;
+  }
+
+  .df-menu-node .df-menu-item__header {
+    margin-left: -6px;
+  }
+
+  .df-menu-anchor__icon {
+    width: 20px;
+  }
+
+  .df-menu-anchor__pull.df-toggle,
+  .df-menu-anchor__pull.df-badges {
+    position: absolute;
+    right: 10px;
+
+    .df-toggle__icon,
+    .df-badges__badge {
+      float: right;
+      text-align: center;
+      white-space: nowrap;
+      margin-left: 4px;
+    }
+
+    .df-toggle__icon {
+      margin: 0 4px 0 8px;
+    }
+  }
+
+  .df-menu--mode-mini,
+  .df-menu--mode-expandable:not(:hover) {
+    width: 50px;
+
+    > ul > .df-menu-item > .df-menu-item__header,
+    > ul > .df-menu-item > .df-menu-node > ul,
+    > ul > .df-menu-item > .df-menu-node > .df-menu-anchor .df-menu-anchor__label,
+    > ul > .df-menu-item > .df-menu-node > .df-menu-anchor .df-menu-anchor__pull,
+    > ul > .df-menu-item > .df-menu-anchor .df-menu-anchor__label,
+    > ul > .df-menu-item > .df-menu-anchor .df-menu-anchor__pull {
+      display: none;
+    }
+  }
+
+  .df-menu--mode-mini {
+    .df-menu-node__label {
+      display: block;
+    }
+
+    > ul > .df-menu-item {
+      position: relative;
+    }
+
+    > ul > .df-menu-item:hover > .df-menu-anchor .df-menu-anchor__label,
+    > ul > .df-menu-item:hover > .df-menu-node > ul {
+      display: block !important;
+      position: absolute;
+      top: 0;
+      left: 100%;
+      height: auto !important;
+      z-index: 999;
+    }
+  }
+}

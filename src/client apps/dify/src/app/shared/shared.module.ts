@@ -21,7 +21,7 @@ import { CallStatusDirective } from './directives/call-status.directive';
     FormsModule,
     ReactiveFormsModule,
     StickyHeaderComponent,
-    RouterModule
+    RouterModule,
   ]
 })
 export class SharedModule { }

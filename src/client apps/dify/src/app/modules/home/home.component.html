@@ -1,5 +1,33 @@
-<app-home-header></app-home-header>
-<app-home-navigation></app-home-navigation>
-<div class="home-content">
-  <router-outlet></router-outlet>
+<div class="main-wrapper" [ngClass]="{ 'main-wrapper--navigation-open': mainNavigationOpened }">
+  <nav class="main-navigation">
+    <df-sidebar-menu
+      *ngIf="menu"
+      [menu]="menu"
+      [mode]="sidebarCollapsed ? sidebarModes.COLLAPSED : sidebarModes.EXPANDED"
+      [role]="currentRole"
+      [search]="currentSearch"
+      toggleIconClasses="fa fa-angle-left"
+      iconClasses="fa fa-circle-o">
+      <div class="input-search" [ngClass]="{ 'input-search--focus': inputSearchFocus }">
+        <input
+          matInput
+          placeholder="Search..."
+          type="text"
+          (keyup)="currentSearch = $any($event.target).value"
+          (focusin)="inputSearchFocus = true"
+          (focusout)="inputSearchFocus = false"
+          autocomplete="off"
+        />
+        <i class="fa fa-search"></i>
+      </div>
+    </df-sidebar-menu>
+  </nav>
+  <header class="main-header">
+    <span class="material-icons-outlined sidebar-toggle" (click)="sidebarCollapsed = !sidebarCollapsed">
+      {{sidebarCollapsed ? 'chevron_right' : 'chevron_left'}}
+    </span>
+  </header>
+  <main class="main-content">
+    <router-outlet></router-outlet>
+  </main>
 </div>
