@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Dapper;
@@ -25,6 +24,11 @@ internal class GetAllCallsQueryHandler : IQueryHandler<GetAllCallsQuery, CallsRe
         var pageData = PagedQueryManager.GetPageData(query);
         parameters.Add(nameof(PagedQueryManager.Offset), pageData.Offset);
         parameters.Add(nameof(PagedQueryManager.Next), pageData.Next);
+        var sorting = SqlSortBuilder.BuildSorting(query.SortOptions, "[Call]");
+        if (string.IsNullOrWhiteSpace(sorting))
+        {
+            sorting = "[Call].[StartDate] DESC";
+        }
         var selectCall = "SELECT " +
                   $"[Call].[Id] AS [{nameof(CallDto.Id)}], " +
                   $"[Call].[Name] AS [{nameof(CallDto.Name)}], " +
@@ -34,7 +38,7 @@ internal class GetAllCallsQueryHandler : IQueryHandler<GetAllCallsQuery, CallsRe
                   $"[Call].[ActiveParticipants] AS [{nameof(CallDto.ActiveParticipants)}], " +
                   $"[Call].[TotalParticipants] AS [{nameof(CallDto.TotalParticipants)}]" +
                   $"FROM [social].[v_Calls] AS [Call] " +
-                  $"ORDER BY [Call].[StartDate] DESC";
+                  $"ORDER BY {sorting}";
         var selectTotalCount = "SELECT COUNT([Call].[Id]) FROM [social].[v_Calls] AS [Call]";
         return new CallsResultDto()
         {

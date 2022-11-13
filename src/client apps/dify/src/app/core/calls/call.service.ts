@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { CoreHttpService } from '@core/services/core-http.service';
 import { Observable } from 'rxjs';
-import { Call } from '@core/calls/store/call-list/call-list.reducer';
+import { Call, SortOptions } from '@core/calls/store/call-list/call-list.reducer';
 
 @Injectable({ providedIn: 'root' })
 export class CallService {
@@ -9,8 +9,8 @@ export class CallService {
 
   constructor(private httpService: CoreHttpService) { }
 
-  public getAll(page: number, perPage: number): Observable<{ calls: Call[], totalCount: number }> {
-    return this.httpService.getRequest<{ calls: Call[], totalCount: number }>(
-      `${this.callsPath}/getAll?page=${page}&perPage=${perPage}`);
+  public getAll(page: number, perPage: number, sortOptions: SortOptions): Observable<{ calls: Call[], totalCount: number }> {
+    return this.httpService.postRequest<{ calls: Call[], totalCount: number }>(
+      `${this.callsPath}/getAll?page=${page}&perPage=${perPage}`, sortOptions);
   }
 }

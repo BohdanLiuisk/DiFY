@@ -1,4 +1,5 @@
 ﻿using System;
+using DiFY.BuildingBlocks.Application.Queries;
 
 namespace DiFY.Modules.Social.Application.Contracts
 {
@@ -13,7 +14,20 @@ namespace DiFY.Modules.Social.Application.Contracts
         {
             Id = id;
         }
+        
+        protected QueryBase(SortOption[] sortOptions)
+        {
+            SortOptions = sortOptions;
+        }
+        
+        protected QueryBase(Guid id, SortOption[] sortOptions)
+        {
+            Id = id;
+            SortOptions = sortOptions;
+        }
 
         public Guid Id { get; }
+
+        public SortOption[] SortOptions { get; }
     }
 }

@@ -15,7 +15,7 @@ export class CallListEffects {
 
   public readonly setListPage = createEffect(() =>
     this.actions$.pipe(
-      ofType(callListActions.setListPage),
+      ofType(callListActions.setListPage, callListActions.setPerPage, callListActions.addSortOption),
       map(() => callListActions.loadCalls()),
     )
   );
@@ -25,7 +25,7 @@ export class CallListEffects {
       ofType(callListActions.loadCalls),
       concatLatestFrom(() => this.facade.listConfig$),
       concatMap(([_, config]) =>
-        this.callService.getAll(config.page, config.perPage).pipe(
+        this.callService.getAll(config.page, config.perPage, config.sortOptions).pipe(
           map(({calls, totalCount}) =>
             callListActions.loadCallsSuccess({ calls, totalCount })
           ),

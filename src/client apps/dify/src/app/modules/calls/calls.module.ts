@@ -8,11 +8,15 @@ import { CallListEffects } from '@core/calls/store/call-list/call-list.effects';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { MaterialModule } from '@shared/material.module';
+import { CallStatusPipe } from './pipes/call-status.pipe';
+import { CallDatePipe } from './pipes/call-date.pipe';
 
 @NgModule({
   declarations: [
     CallComponent,
-    CallListComponent
+    CallListComponent,
+    CallStatusPipe,
+    CallDatePipe
   ],
   imports: [
     SharedModule,

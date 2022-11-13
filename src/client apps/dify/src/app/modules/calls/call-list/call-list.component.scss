@@ -1,3 +1,46 @@
+@import "src/app/shared/styles/variables";
+
 .calls-list {
-  width: 100%;
+  &-content {
+    display: grid;
+    border-radius: 10px;
+    border: $df-border-01;
+    overflow: hidden;
+    margin-bottom: 7px;
+    box-shadow: rgb(43 34 51 / 8%) 0px 1px 4px;
+  }
+  &-row {
+    display: grid;
+    align-items: center;
+    justify-items: stretch;
+    grid-template-columns: repeat(7, calc(100% / 7));
+    padding: 10px;
+    height: 70px;
+  }
+  &-row-header {
+    background: #f3f3f7;
+  }
+  &-row-call {
+    border-top: $df-border-01;
+  }
+  &-column {
+    &-sorting{
+      display: flex;
+      align-items: center;
+      .mat-icon {
+        cursor: pointer;
+      }
+    }
+    &-status {
+      padding: 5px;
+      border-radius: 5px;
+      &.active {
+        background-color: #1cf52e;
+      }
+      &.ended {
+        background-color: #a5a3a2d2;
+        color: white;
+      }
+    } 
+  }
 }

@@ -5,7 +5,7 @@ namespace DiFY.Modules.Social.Application.Calling.GetAllCalls;
 
 public class GetAllCallsQuery : QueryBase<CallsResultDto>, IPagedQuery
 {
-    public GetAllCallsQuery(int? page, int? perPage)
+    public GetAllCallsQuery(int? page, int? perPage, SortOption[] sortOptions) : base(sortOptions)
     {
         Page = page;
         PerPage = perPage;

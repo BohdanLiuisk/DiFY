@@ -5,3 +5,4 @@ export const { selectCallListState, selectCalls, selectListConfig } = callListFe
 export const selectCallEntities = createSelector(selectCalls, (calls) => calls.entities);
 export const selectCallsTotalCount = createSelector(selectCalls, (calls) => calls.totalCount);
 export const selectIsLoading = createSelector(selectCalls, (calls) => calls.loading);
+export const selectSortOptions = createSelector(selectListConfig, (listConfig) => listConfig.sortOptions);

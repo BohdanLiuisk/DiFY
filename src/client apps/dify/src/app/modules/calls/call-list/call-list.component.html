@@ -1,29 +1,85 @@
-<!--<tui-loader [overlay]="true" [showLoader]="!!(loading$ | async)">-->
-<!--  <table tuiTable [columns]="columns" class="calls-list" (sorterChange)="logEvent($event)"-->
-<!--         (directionChange)="logEvent($event)">-->
-<!--    <thead>-->
-<!--      <tr tuiThGroup>-->
-<!--        <th *tuiHead="'name'" tuiTh>Name</th>-->
-<!--        <th *tuiHead="'status'" tuiTh>Status</th>-->
-<!--        <th *tuiHead="'actions'" tuiTh [sorter]="null"></th>-->
-<!--      </tr>-->
-<!--    </thead>-->
-<!--    <tbody *tuiLet="(callsList$ | async) | tuiTableSort as sortedCalls" tuiTbody  [data]="sortedCalls">-->
-<!--      <tr *ngFor="let item of sortedCalls;" tuiTr>-->
-<!--        <td *tuiCell="'name'" tuiTd>{{ item.name }}</td>-->
-<!--      </tr>-->
-<!--    </tbody>-->
-<!--    <tfoot>-->
-<!--      <tr>-->
-<!--        <td [colSpan]="columns.length">-->
-<!--          <tui-table-pagination-->
-<!--            class="tui-space_top-2"-->
-<!--            [total]="(totalCount$ | async) || 0"-->
-<!--            (pageChange)="setPage($event)"-->
-<!--            (sizeChange)="setPerPage($event)"-->
-<!--          ></tui-table-pagination>-->
-<!--        </td>-->
-<!--      </tr>-->
-<!--    </tfoot>-->
-<!--  </table>-->
-<!--</tui-loader>-->
+<div class="calls-list-content">
+  <div class="calls-list-row calls-list-row-header">
+    <div class="calls-list-column">
+      <label>Name</label>
+    </div>
+    <div class="calls-list-column calls-list-column-sorting">
+      <label>Status</label>
+      <mat-icon 
+        [fontIcon]="(getSortIconByColumn(callColumns.active) | async) || 'expand_more'"
+        (click)="columnSorting.next(callColumns.active)">
+      </mat-icon>
+    </div>
+    <div class="calls-list-column">
+      <label>Action</label>
+    </div>
+    <div class="calls-list-column">
+      <label>Active participants</label>
+    </div>
+    <div class="calls-list-column calls-list-column-sorting">
+      <label>Total participants</label>
+      <mat-icon 
+        [fontIcon]="(getSortIconByColumn(callColumns.totalParticipants) | async) || 'expand_more'"
+        (click)="columnSorting.next(callColumns.totalParticipants)">
+      </mat-icon>
+    </div>
+    <div class="calls-list-column calls-list-column-sorting">
+      <label>Start date</label>
+      <mat-icon 
+        [fontIcon]="(getSortIconByColumn(callColumns.startDate) | async) || 'expand_more'"
+        (click)="columnSorting.next(callColumns.startDate)">
+      </mat-icon>
+    </div>
+    <div class="calls-list-column">
+      <label>End date</label>
+    </div>
+  </div>
+  <ng-container *ngFor="let call of callsList$ | async">
+    <div class="calls-list-row calls-list-row-call">
+      <div class="calls-list-column">
+        <label>{{ call.name }}</label>
+      </div>
+      <div class="calls-list-column">
+        <label class="calls-list-column-status" [ngClass]="call.active ? 'active' : 'ended'">
+          {{ call.active | callStatus }}
+        </label>
+      </div>
+      <div class="calls-list-column">
+        <button 
+          mat-stroked-button 
+          color="primary"
+          [disabled]="call.active ? false : true">
+          Join
+          <mat-icon fontIcon="call"></mat-icon>
+        </button>
+      </div>
+      <div class="calls-list-column">
+        <label>
+          {{ call.activeParticipants }}
+        </label>
+      </div>
+      <div class="calls-list-column">
+        <label>
+          {{ call.totalParticipants }}
+        </label>
+      </div>
+      <div class="calls-list-column">
+        <label>
+          {{ call.startDate | callDate: 'medium' }}
+        </label>
+      </div>
+      <div class="calls-list-column">
+        <label>
+          {{ call.endDate | callDate: 'medium': 'Not ended' }}
+        </label>
+      </div>
+    </div>
+  </ng-container>
+</div>
+<mat-paginator 
+  [length]="totalCount$ | async"
+  [pageSize]="pageSize"
+  [pageSizeOptions]="pageSizeOptions"
+  (page)="paginatorClick($event)"
+  aria-label="Select page">
+</mat-paginator>

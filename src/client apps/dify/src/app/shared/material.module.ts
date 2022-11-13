@@ -5,6 +5,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatSelectModule } from '@angular/material/select';
+import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatOptionModule } from '@angular/material/core';
 
 @NgModule({
@@ -15,7 +16,8 @@ import { MatOptionModule } from '@angular/material/core';
     MatIconModule,
     MatSnackBarModule,
     MatSelectModule,
-    MatOptionModule
+    MatOptionModule,
+    MatPaginatorModule
   ],
   exports: [
     MatButtonModule,
@@ -24,7 +26,8 @@ import { MatOptionModule } from '@angular/material/core';
     MatIconModule,
     MatSnackBarModule,
     MatSelectModule,
-    MatOptionModule
+    MatOptionModule,
+    MatPaginatorModule
   ]
 })
 export class MaterialModule { }

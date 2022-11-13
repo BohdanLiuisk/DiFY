@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using DiFY.BuildingBlocks.Application.Queries;
 using DiFY.Modules.Social.Application.Calling.CreateCall;
 using DiFY.Modules.Social.Application.Calling.EndCall;
 using DiFY.Modules.Social.Application.Calling.GetAllCalls;
@@ -61,12 +62,12 @@ public class CallController : ControllerBase
         return Ok(summary);
     }
     
-    [HttpGet("getAll")]
+    [HttpPost("getAll")]
     [HasPermission(CallPermission.CanGetAllCalls)]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<ActionResult<CallsResultDto>> GetAllCalls(int? page, int? perPage)
+    public async Task<ActionResult<CallsResultDto>> GetAllCalls(int? page, int? perPage, [FromBody] SortOption[] sortOptions)
     {
-        var calls = await _socialModule.ExecuteQueryAsync(new GetAllCallsQuery(page, perPage));
+        var calls = await _socialModule.ExecuteQueryAsync(new GetAllCallsQuery(page, perPage, sortOptions));
         return Ok(calls);
     }
 }
