@@ -1,14 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { Call, CallColumns, CallList, SortDirection } from '@core/calls/store/call-list/call-list.reducer';
+import { Call, CallColumns, CallList, CallListConfig, SortDirection, SortOption, SortOptions } from '@core/calls/store/call-list/call-list.reducer';
 import { callListActions } from '@core/calls/store/call-list/call-list.actions';
 import {
   selectCallEntities,
   selectCallsTotalCount,
   selectIsLoading,
+  selectListConfig,
   selectSortOptions
 } from '@core/calls/store/call-list/call-list.selectors';
-import { filter, map, mergeMap, Observable, Subject } from 'rxjs';
+import { filter, map, mergeMap, Observable, Subject, withLatestFrom } from 'rxjs';
 import { PageEvent } from '@angular/material/paginator';
 
 @Component({
@@ -19,22 +20,40 @@ import { PageEvent } from '@angular/material/paginator';
 export class CallListComponent implements OnInit {
   public callsList$: Observable<Call[]> = this.store.select(selectCallEntities);
   public loading$: Observable<boolean> = this.store.select(selectIsLoading);
+  public listConfig$: Observable<CallListConfig> = this.store.select(selectListConfig);
   public totalCount$: Observable<number> = this.store.select(selectCallsTotalCount);
-  public sortOptions$ = this.store.select(selectSortOptions).pipe(
-    mergeMap(options => options)
-  );
+  public sortOptions$ = this.store.select(selectSortOptions);
   public pageSizeOptions: number[] = [5, 10, 25, 100]; 
   public pageSize: number = 10;
   public callColumns = CallColumns;
   public columnSorting: Subject<CallColumns> = new Subject<CallColumns>();
+  public pageEvent: Subject<PageEvent> = new Subject<PageEvent>();
 
+  private sortColumnsSeqNumbers: Record<string, number> = {
+    [CallColumns.startDate]: 3,
+    [CallColumns.totalParticipants]: 2,
+    [CallColumns.active]: 1
+  }
+  
   constructor(private store: Store<CallList>) { }
 
   public ngOnInit(): void {
     this.setPage(0);
     this.columnSorting.subscribe(sortBy => {
       this.store.dispatch(callListActions.addSortOption({ sortBy }));
-    })
+    });
+    this.pageEvent.pipe(
+      filter(pageEvent => pageEvent.previousPageIndex !== pageEvent.pageIndex)
+    ).subscribe(pageEvent => {
+      this.setPage(pageEvent.pageIndex);
+    });
+    this.pageEvent.pipe(
+      withLatestFrom(this.listConfig$),
+      filter(([pageEvent, listConfig]) => pageEvent.pageSize !== listConfig.perPage),
+      map(([pageEvent]) => pageEvent)
+    ).subscribe(pageEvent => {
+      this.setPerPage(pageEvent.pageSize);
+    });
   }
 
   public setPage(page: number): void {
@@ -45,21 +64,9 @@ export class CallListComponent implements OnInit {
     this.store.dispatch(callListActions.setPerPage({ perPage }));
   }
 
-  public paginatorClick(pageEvent: PageEvent): void {
-    if(pageEvent.previousPageIndex !== pageEvent.pageIndex) {
-      this.setPage(pageEvent.pageIndex);
-    } else if(pageEvent.pageSize !== this.pageSize) {
-      this.pageSize = pageEvent.pageSize;
-      this.setPerPage(pageEvent.pageSize);
-    }
-  }
-
-  public sortBy(column: CallColumns): void {
-    this.store.dispatch(callListActions.addSortOption({ sortBy: column }));
-  }
-
   public getSortIconByColumn(sortBy: CallColumns): Observable<string> {
     return this.sortOptions$.pipe(
+      mergeMap(options => options),
       filter(option => option.column === sortBy),
       map(({ direction }) => this.getSortIcon(direction))
     );

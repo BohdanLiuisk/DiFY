@@ -78,8 +78,8 @@
 </div>
 <mat-paginator 
   [length]="totalCount$ | async"
-  [pageSize]="pageSize"
+  [pageSize]="(listConfig$ | async).perPage"
   [pageSizeOptions]="pageSizeOptions"
-  (page)="paginatorClick($event)"
+  (page)="pageEvent.next($event)"
   aria-label="Select page">
 </mat-paginator>
