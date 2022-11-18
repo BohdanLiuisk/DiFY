@@ -17,7 +17,7 @@ export enum SortDirection {
 };
 
 export interface SortOption {
-  column: string, 
+  column: string,
   direction: SortDirection,
   seqNumber: number
 };
@@ -78,37 +78,10 @@ export const callListFeature = createFeature({
       const listConfig: CallListConfig = { ...state.listConfig, perPage };
       return { ...state, listConfig };
     }),
-    on(callListActions.addSortOption, (state, { sortBy }) => {
-      let seqNumber: number;
-      switch (sortBy) {
-        case CallColumns.startDate:
-          seqNumber = 3
-          break;
-        case CallColumns.totalParticipants:
-          seqNumber = 2
-          break;
-        case CallColumns.active:
-          seqNumber = 1
-          break;
-        default:
-          seqNumber = 0
-          break;
-      }
-      let existingColumn = state.listConfig.sortOptions.find(option => option.column === sortBy);
-      if(existingColumn) {
-        existingColumn = { 
-          ...existingColumn, 
-          direction: existingColumn.direction === SortDirection.asc ? SortDirection.desc : SortDirection.asc, 
-          seqNumber
-        };
-      }
-      const listConfig: CallListConfig = { ...state.listConfig, sortOptions: [
-        ...state.listConfig.sortOptions.filter(so => so.column !== sortBy), existingColumn ?? {
-          column: sortBy,
-          direction: SortDirection.asc,
-          seqNumber
-        }]
-      };
+    on(callListActions.addSortOption, (state, { sortOption }) => {
+      const listConfig: CallListConfig = {...state.listConfig, sortOptions: [
+        ...state.listConfig.sortOptions.filter(so => so.column !== sortOption.column), sortOption
+      ]};
       return { ...state, listConfig };
     }),
     on(callListActions.loadCalls, (state) => {

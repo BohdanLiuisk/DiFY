@@ -5,7 +5,7 @@
     </div>
     <div class="calls-list-column calls-list-column-sorting">
       <label>Status</label>
-      <mat-icon 
+      <mat-icon
         [fontIcon]="(getSortIconByColumn(callColumns.active) | async) || 'expand_more'"
         (click)="columnSorting.next(callColumns.active)">
       </mat-icon>
@@ -18,14 +18,14 @@
     </div>
     <div class="calls-list-column calls-list-column-sorting">
       <label>Total participants</label>
-      <mat-icon 
+      <mat-icon
         [fontIcon]="(getSortIconByColumn(callColumns.totalParticipants) | async) || 'expand_more'"
         (click)="columnSorting.next(callColumns.totalParticipants)">
       </mat-icon>
     </div>
     <div class="calls-list-column calls-list-column-sorting">
       <label>Start date</label>
-      <mat-icon 
+      <mat-icon
         [fontIcon]="(getSortIconByColumn(callColumns.startDate) | async) || 'expand_more'"
         (click)="columnSorting.next(callColumns.startDate)">
       </mat-icon>
@@ -34,7 +34,7 @@
       <label>End date</label>
     </div>
   </div>
-  <ng-container *ngFor="let call of callsList$ | async">
+  <ng-container *ngFor="let call of callListFacade.callsList$ | async">
     <div class="calls-list-row calls-list-row-call">
       <div class="calls-list-column">
         <label>{{ call.name }}</label>
@@ -45,8 +45,8 @@
         </label>
       </div>
       <div class="calls-list-column">
-        <button 
-          mat-stroked-button 
+        <button
+          mat-stroked-button
           color="primary"
           [disabled]="call.active ? false : true">
           Join
@@ -76,9 +76,9 @@
     </div>
   </ng-container>
 </div>
-<mat-paginator 
-  [length]="totalCount$ | async"
-  [pageSize]="(listConfig$ | async).perPage"
+<mat-paginator
+  [length]="callListFacade.totalCount$ | async"
+  [pageSize]="(callListFacade.listConfig$ | async).perPage"
   [pageSizeOptions]="pageSizeOptions"
   (page)="pageEvent.next($event)"
   aria-label="Select page">

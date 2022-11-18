@@ -1,82 +1,96 @@
 import { Component, OnInit } from '@angular/core';
-import { Store } from '@ngrx/store';
-import { Call, CallColumns, CallList, CallListConfig, SortDirection, SortOption, SortOptions } from '@core/calls/store/call-list/call-list.reducer';
-import { callListActions } from '@core/calls/store/call-list/call-list.actions';
-import {
-  selectCallEntities,
-  selectCallsTotalCount,
-  selectIsLoading,
-  selectListConfig,
-  selectSortOptions
-} from '@core/calls/store/call-list/call-list.selectors';
+import { CallColumns, SortDirection } from '@core/calls/store/call-list/call-list.reducer';
 import { filter, map, mergeMap, Observable, Subject, withLatestFrom } from 'rxjs';
 import { PageEvent } from '@angular/material/paginator';
+import { BaseComponent } from '@core/components/base.component';
+import { CallListFacade } from '@core/calls/store/call-list/call-list.facade';
 
 @Component({
   selector: 'app-call-list',
   templateUrl: './call-list.component.html',
   styleUrls: ['./call-list.component.scss']
 })
-export class CallListComponent implements OnInit {
-  public callsList$: Observable<Call[]> = this.store.select(selectCallEntities);
-  public loading$: Observable<boolean> = this.store.select(selectIsLoading);
-  public listConfig$: Observable<CallListConfig> = this.store.select(selectListConfig);
-  public totalCount$: Observable<number> = this.store.select(selectCallsTotalCount);
-  public sortOptions$ = this.store.select(selectSortOptions);
-  public pageSizeOptions: number[] = [5, 10, 25, 100]; 
-  public pageSize: number = 10;
+export class CallListComponent extends BaseComponent implements OnInit {
   public callColumns = CallColumns;
+  public pageSizeOptions: number[] = [5, 10, 25, 100];
   public columnSorting: Subject<CallColumns> = new Subject<CallColumns>();
   public pageEvent: Subject<PageEvent> = new Subject<PageEvent>();
 
-  private sortColumnsSeqNumbers: Record<string, number> = {
+  private readonly sortColumnsSeqNumbers: Record<string, number> = {
     [CallColumns.startDate]: 3,
     [CallColumns.totalParticipants]: 2,
     [CallColumns.active]: 1
   }
-  
-  constructor(private store: Store<CallList>) { }
+
+  constructor(public callListFacade: CallListFacade) {
+    super();
+  }
 
   public ngOnInit(): void {
-    this.setPage(0);
-    this.columnSorting.subscribe(sortBy => {
-      this.store.dispatch(callListActions.addSortOption({ sortBy }));
-    });
-    this.pageEvent.pipe(
-      filter(pageEvent => pageEvent.previousPageIndex !== pageEvent.pageIndex)
-    ).subscribe(pageEvent => {
-      this.setPage(pageEvent.pageIndex);
-    });
-    this.pageEvent.pipe(
-      withLatestFrom(this.listConfig$),
-      filter(([pageEvent, listConfig]) => pageEvent.pageSize !== listConfig.perPage),
-      map(([pageEvent]) => pageEvent)
-    ).subscribe(pageEvent => {
-      this.setPerPage(pageEvent.pageSize);
-    });
-  }
-
-  public setPage(page: number): void {
-    this.store.dispatch(callListActions.setListPage({ page: page + 1 }));
-  }
-
-  public setPerPage(perPage: number): void {
-    this.store.dispatch(callListActions.setPerPage({ perPage }));
+    this.callListFacade.setPage(1);
+    this._subscribeColumnSorting();
+    this._subscribePagination();
   }
 
   public getSortIconByColumn(sortBy: CallColumns): Observable<string> {
-    return this.sortOptions$.pipe(
+    return this.callListFacade.sortOptions$.pipe(
       mergeMap(options => options),
       filter(option => option.column === sortBy),
       map(({ direction }) => this.getSortIcon(direction))
     );
   }
 
-  private getSortIcon(direction: SortDirection): string { 
+  private getSortIcon(direction: SortDirection): string {
     if(direction === SortDirection.asc) {
       return 'expand_less';
     } else {
-      return 'expand_more'
+      return 'expand_more';
     }
+  }
+
+  private _subscribePagination(): void {
+    this.pageEvent.pipe(
+      this.untilThis,
+      filter(pageEvent => pageEvent.previousPageIndex !== pageEvent.pageIndex)
+    ).subscribe(({ pageIndex: page } ) => {
+      this.callListFacade.setPage(page + 1);
+    });
+    this.pageEvent.pipe(
+      this.untilThis,
+      withLatestFrom(this.callListFacade.listConfig$),
+      filter(([pageEvent, listConfig]) => pageEvent.pageSize !== listConfig.perPage),
+      map(([pageEvent]) => pageEvent)
+    ).subscribe(({ pageSize: perPage }) => {
+      this.callListFacade.setPerPage(perPage);
+    });
+  }
+
+  private _subscribeColumnSorting(): void {
+    this.columnSorting
+    .pipe(
+      this.untilThis,
+      withLatestFrom(this.callListFacade.sortOptions$),
+      map(([sortBy, sortOptions]) => {
+        const existingOption = sortOptions.filter(sortOption => sortOption.column === sortBy)[0];
+        if(existingOption) {
+          return {
+            ...existingOption,
+            direction: this._getOppositeSortDirection(existingOption.direction)
+          };
+        } else {
+          return {
+            column: sortBy,
+            direction: SortDirection.asc,
+            seqNumber: this.sortColumnsSeqNumbers[sortBy]
+          };
+        }
+      })
+    ).subscribe(sortOption => {
+      this.callListFacade.addSortOption(sortOption);
+    });
+  }
+
+  private _getOppositeSortDirection(direction: SortDirection): SortDirection {
+    return direction === SortDirection.asc ? SortDirection.desc : SortDirection.asc;
   }
 }
