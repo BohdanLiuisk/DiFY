@@ -1,6 +1,18 @@
 @import "src/app/shared/styles/variables";
 
 .calls-list {
+  &-header {
+    display: grid;
+    grid-template-columns: minmax(0px, 1fr) auto;
+    &-h1 {
+      font-size: 1.4rem;
+      margin: 0px;
+    }
+    .mat-flat-button {
+      border-radius: 7px;
+    }
+    margin-bottom: 1em;
+  }
   &-content {
     display: grid;
     border-radius: 10px;
@@ -24,6 +36,9 @@
     border-top: $df-border-01;
   }
   &-column {
+    .mat-stroked-button {
+      border-radius: 7px;
+    }
     &-sorting{
       display: flex;
       align-items: center;
@@ -32,15 +47,16 @@
       }
     }
     &-status {
-      padding: 5px;
+      padding: 6px;
       border-radius: 5px;
       &.active {
-        background-color: #1cf52e;
+        background-color: #22ac14;
+        color: white;
       }
       &.ended {
         background-color: #a5a3a2d2;
         color: white;
       }
-    } 
+    }
   }
 }
