@@ -4,14 +4,31 @@ import { CallListFacade } from '@core/calls/store/call-list/call-list.facade';
 import { Actions, concatLatestFrom, createEffect, ofType } from '@ngrx/effects';
 import { callListActions } from '@core/calls/store/call-list/call-list.actions';
 import { catchError, concatMap, map, of } from 'rxjs';
+import { MatSnackBar } from "@angular/material/snack-bar";
+import { ActivatedRoute, Router } from "@angular/router";
 
 @Injectable()
 export class CallListEffects {
   constructor(
+    private router: Router,
     private actions$: Actions,
     private callService: CallService,
     private facade: CallListFacade,
+    private snackBar: MatSnackBar
   ) { }
+
+  public readonly createNewCall = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(callListActions.createNewCall),
+      concatMap(({ name }) => this.callService.createNew(name).pipe(
+        map(({callId}) => {
+          this.router.navigate([`home/calls/${callId}`]);
+        }),
+      ))
+    )
+  },
+  { dispatch: false }
+  );
 
   public readonly setListPage = createEffect(() =>
     this.actions$.pipe(

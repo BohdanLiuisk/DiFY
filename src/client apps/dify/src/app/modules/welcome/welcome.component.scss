@@ -4,11 +4,6 @@
   height: 100%;
 }
 
-.mat-stroked-button {
-  color: papayawhip !important;
-  margin-left: 13px !important;
-}
-
 .info-block {
   flex: 1 1 0;
   display: flex;
@@ -25,4 +20,8 @@
   justify-content: flex-end;
   flex: 1 1 0;
   margin: auto 0 auto 0;
+  .mat-stroked-button {
+    color: papayawhip !important;
+    margin-left: 13px !important;
+  }
 }

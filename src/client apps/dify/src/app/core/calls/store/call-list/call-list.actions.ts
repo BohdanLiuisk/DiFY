@@ -4,6 +4,7 @@ import { Call, SortOption } from './call-list.reducer';
 export const callListActions = createActionGroup({
   source: 'Call List',
   events: {
+    'Create New Call': props<{ name: string }>(),
     'Set List Page': props<{ page: number }>(),
     'Set Per Page': props<({ perPage: number })>(),
     'Add Sort Option': props<({ sortOption: SortOption })>(),

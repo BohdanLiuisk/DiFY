@@ -51,6 +51,7 @@ export class HomeComponent implements OnInit {
         label: 'Calls',
         route: 'calls',
         iconClass: 'fa fa-phone',
+        linkActiveExact: false
       }
     ];
   }

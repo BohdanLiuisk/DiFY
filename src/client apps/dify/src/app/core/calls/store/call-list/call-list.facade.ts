@@ -26,4 +26,8 @@ export class CallListFacade {
   public addSortOption(sortOption: SortOption) {
     this.store.dispatch(callListActions.addSortOption({ sortOption }));
   }
+
+  public createNew(name: string) {
+    this.store.dispatch(callListActions.createNewCall({ name }));
+  }
 }

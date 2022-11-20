@@ -4,6 +4,8 @@ import { filter, map, mergeMap, Observable, Subject, withLatestFrom } from 'rxjs
 import { PageEvent } from '@angular/material/paginator';
 import { BaseComponent } from '@core/components/base.component';
 import { CallListFacade } from '@core/calls/store/call-list/call-list.facade';
+import { Dialog } from '@angular/cdk/dialog';
+import { CreateNewCallComponent } from '../create-new-call/create-new-call.component';
 
 @Component({
   selector: 'app-call-list',
@@ -22,7 +24,7 @@ export class CallListComponent extends BaseComponent implements OnInit {
     [CallColumns.active]: 1
   }
 
-  constructor(public callListFacade: CallListFacade) {
+  constructor(public callListFacade: CallListFacade, private _dialog: Dialog) {
     super();
   }
 
@@ -38,6 +40,20 @@ export class CallListComponent extends BaseComponent implements OnInit {
       filter(option => option.column === sortBy),
       map(({ direction }) => this.getSortIcon(direction))
     );
+  }
+
+  public createNew(): void {
+    const dialogRef = this._dialog.open<{ name: string }>(CreateNewCallComponent, {
+      disableClose: true,
+      autoFocus: true,
+      restoreFocus: false,
+      width: '370px'
+    });
+    dialogRef.closed.subscribe(result => {
+      if(result && result.name) {
+        this.callListFacade.createNew(result.name);
+      }
+    });
   }
 
   private getSortIcon(direction: SortDirection): string {

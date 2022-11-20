@@ -13,7 +13,7 @@ export class CallComponent implements OnInit {
 
   public ngOnInit(): void {
     this.route.params.subscribe(params => {
-
+      console.log(params['id']);
     });
   }
 }

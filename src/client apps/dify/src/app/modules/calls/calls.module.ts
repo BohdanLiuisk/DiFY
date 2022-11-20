@@ -10,11 +10,14 @@ import { EffectsModule } from '@ngrx/effects';
 import { MaterialModule } from '@shared/material.module';
 import { CallStatusPipe } from './pipes/call-status.pipe';
 import { CallDatePipe } from './pipes/call-date.pipe';
+import { CreateNewCallComponent } from './create-new-call/create-new-call.component';
+import { DEFAULT_DIALOG_CONFIG } from '@angular/cdk/dialog';
 
 @NgModule({
   declarations: [
     CallComponent,
     CallListComponent,
+    CreateNewCallComponent,
     CallStatusPipe,
     CallDatePipe
   ],

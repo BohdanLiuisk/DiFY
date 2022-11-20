@@ -14,7 +14,6 @@ export class AuthEffects {
     private router: Router,
     private actions$: Actions,
     private authService: AuthService,
-    private activatedRoute: ActivatedRoute,
     private jwtStorage: JwtStorageService,
     private snackBar: MatSnackBar
   ) { }
