@@ -6,6 +6,7 @@ import { BaseComponent } from '@core/components/base.component';
 import { CallListFacade } from '@core/calls/store/call-list/call-list.facade';
 import { Dialog } from '@angular/cdk/dialog';
 import { CreateNewCallComponent } from '../create-new-call/create-new-call.component';
+import { GUID } from '@shared/custom-types';
 
 @Component({
   selector: 'app-call-list',
@@ -56,6 +57,10 @@ export class CallListComponent extends BaseComponent implements OnInit {
     });
   }
 
+  public joinCall(callId: GUID): void {
+    this.callListFacade.joinCall(callId);
+  }
+
   private getSortIcon(direction: SortDirection): string {
     if(direction === SortDirection.asc) {
       return 'expand_less';
@@ -82,8 +87,7 @@ export class CallListComponent extends BaseComponent implements OnInit {
   }
 
   private _subscribeColumnSorting(): void {
-    this.columnSorting
-    .pipe(
+    this.columnSorting.pipe(
       this.untilThis,
       withLatestFrom(this.callListFacade.sortOptions$),
       map(([sortBy, sortOptions]) => {

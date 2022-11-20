@@ -3,7 +3,7 @@ import { CallService } from '@core/calls/call.service';
 import { CallListFacade } from '@core/calls/store/call-list/call-list.facade';
 import { Actions, concatLatestFrom, createEffect, ofType } from '@ngrx/effects';
 import { callListActions } from '@core/calls/store/call-list/call-list.actions';
-import { catchError, concatMap, map, of } from 'rxjs';
+import { catchError, concatMap, map, of, tap } from 'rxjs';
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { ActivatedRoute, Router } from "@angular/router";
 
@@ -21,14 +21,47 @@ export class CallListEffects {
     return this.actions$.pipe(
       ofType(callListActions.createNewCall),
       concatMap(({ name }) => this.callService.createNew(name).pipe(
-        map(({callId}) => {
+        tap(({callId}) => {
           this.router.navigate([`home/calls/${callId}`]);
-        }),
+        })
       ))
     )
   },
   { dispatch: false }
   );
+
+  public readonly joinCall = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(callListActions.joinCall),
+      concatMap(({ callId }) => this.callService.joinCall(callId).pipe(
+        map(() => callListActions.joinCallSuccess({ callId })),
+        catchError(error => of(callListActions.joinCallFailure({ error }))),
+      )))
+    }
+  );
+
+  public readonly joinCallSuccess= createEffect(() => {
+    return this.actions$.pipe(
+      ofType(callListActions.joinCallSuccess),
+      tap(({ callId }) => {
+        this.router.navigate([`home/calls/${callId}`]);
+      })
+    );
+  }, { dispatch: false });
+
+  public readonly joinCallFailure = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(callListActions.joinCallFailure),
+      tap(({ error: { error } }) => {
+        this.snackBar.open(error.detail, 'Ok', {
+          horizontalPosition: 'right',
+          verticalPosition: 'top',
+          panelClass: ['error-snackbar'],
+          duration: 2000
+        });
+      })
+    );
+  }, { dispatch: false });
 
   public readonly setListPage = createEffect(() =>
     this.actions$.pipe(

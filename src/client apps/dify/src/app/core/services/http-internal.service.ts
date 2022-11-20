@@ -12,7 +12,7 @@ export class HttpInternalService {
     return this.http.post<T>(this.buildUrl(url), payload, { headers: headers, params: httpParams });
   }
 
-  public putRequest<T>(url: string, payload: object, headers?: HttpHeaders, httpParams?: any): Observable<T> {
+  public putRequest<T>(url: string, payload?: object, headers?: HttpHeaders, httpParams?: any): Observable<T> {
     return this.http.put<T>(this.buildUrl(url), payload, { headers: headers, params: httpParams });
   }
 

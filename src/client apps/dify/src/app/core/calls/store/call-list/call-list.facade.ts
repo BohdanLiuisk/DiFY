@@ -4,6 +4,7 @@ import { Call, CallList, CallListConfig, SortOption } from '@core/calls/store/ca
 import { selectIsLoading, selectCallEntities, selectCallsTotalCount, selectListConfig, selectSortOptions } from './call-list.selectors';
 import { callListActions } from '@core/calls/store/call-list/call-list.actions';
 import { Observable } from "rxjs";
+import { GUID } from "@shared/custom-types";
 
 @Injectable({ providedIn: 'root' })
 export class CallListFacade {
@@ -29,5 +30,9 @@ export class CallListFacade {
 
   public createNew(name: string) {
     this.store.dispatch(callListActions.createNewCall({ name }));
+  }
+
+  public joinCall(callId: GUID) {
+    this.store.dispatch(callListActions.joinCall({ callId }));
   }
 }

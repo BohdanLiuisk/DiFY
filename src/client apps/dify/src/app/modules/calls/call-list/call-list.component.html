@@ -53,6 +53,7 @@
       </div>
       <div class="calls-list-column">
         <button
+          (click)="joinCall(call.id)"
           mat-stroked-button
           color="primary"
           [disabled]="call.active ? false : true">

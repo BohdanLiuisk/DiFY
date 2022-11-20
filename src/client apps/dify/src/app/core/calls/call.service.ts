@@ -18,4 +18,8 @@ export class CallService {
   public createNew(name: string): Observable<{ callId: GUID }> {
     return this.httpService.postRequest<{ callId: GUID }>(`${this.callsPath}/createCall`, { name });
   }
+
+  public joinCall(callId: GUID): Observable<void> {
+    return this.httpService.putRequest<void>(`${this.callsPath}/joinCall/${callId}`);
+  }
 }
