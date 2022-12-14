@@ -4,6 +4,7 @@ using DiFY.BuildingBlocks.Application.Queries;
 using DiFY.Modules.Social.Application.Calling.CreateCall;
 using DiFY.Modules.Social.Application.Calling.EndCall;
 using DiFY.Modules.Social.Application.Calling.GetAllCalls;
+using DiFY.Modules.Social.Application.Calling.GetCall;
 using DiFY.Modules.Social.Application.Calling.JoinCall;
 using DiFY.Modules.Social.Application.Calling.LeftCall;
 using DiFY.Modules.Social.Application.Contracts;
@@ -26,6 +27,15 @@ public class CallController : ControllerBase
         _socialModule = socialModule;
     }
     
+    [HttpGet("{callId:guid}")]
+    [HasPermission(CallPermission.CanGetAllCalls)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<ActionResult<GetCallDto>> GetCall(Guid callId)
+    {
+        var call = await _socialModule.ExecuteQueryAsync(new GetCallQuery(callId));
+        return call;
+    }
+
     [HttpPost("createCall")]
     [HasPermission(CallPermission.CanCreateCall)]
     [ProducesResponseType(StatusCodes.Status200OK)]

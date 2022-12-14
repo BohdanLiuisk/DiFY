@@ -1,11 +1,11 @@
-import { Injectable } from "@angular/core";
+import { Injectable } from '@angular/core';
 import { CallService } from '@core/calls/call.service';
 import { CallListFacade } from '@core/calls/store/call-list/call-list.facade';
 import { Actions, concatLatestFrom, createEffect, ofType } from '@ngrx/effects';
 import { callListActions } from '@core/calls/store/call-list/call-list.actions';
 import { catchError, concatMap, map, of, tap } from 'rxjs';
-import { MatSnackBar } from "@angular/material/snack-bar";
-import { ActivatedRoute, Router } from "@angular/router";
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { Router } from '@angular/router';
 
 @Injectable()
 export class CallListEffects {

@@ -43,6 +43,7 @@ public class Call : Entity, IAggregateRoot
         {
             CallParticipant.CreateNew(Id, _initiatorId, startDate)
         };
+        AddDomainEvent(new ParticipantJoinedCall(_initiatorId, startDate));
     }
 
     public static Call CreateNew(string name, MemberId initiatorId, DateTime startDate)
@@ -63,6 +64,7 @@ public class Call : Entity, IAggregateRoot
         {
             _participants.Add(CallParticipant.CreateNew(Id, participantId, joinDate));
         }
+        AddDomainEvent(new ParticipantJoinedCall(_initiatorId, joinDate));
     }
 
     public void Left(MemberId participantId)

@@ -1,5 +1,4 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { BusinessRuleException } from '@core/types/business-rule-exception';
 import { createActionGroup, emptyProps, props } from '@ngrx/store';
 import { GUID } from '@shared/custom-types';
 import { Call, SortOption } from './call-list.reducer';
