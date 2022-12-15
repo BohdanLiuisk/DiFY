@@ -9,8 +9,8 @@ public class ParticipantJoinedCallEventHandler : INotificationHandler<Participan
 {
     
     
-    public Task Handle(ParticipantJoinedCall notification, CancellationToken cancellationToken)
+    public async Task Handle(ParticipantJoinedCall notification, CancellationToken cancellationToken)
     {
-        throw new System.NotImplementedException();
+        
     }
 }

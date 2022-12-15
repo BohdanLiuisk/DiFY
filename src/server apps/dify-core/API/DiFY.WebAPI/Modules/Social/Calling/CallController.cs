@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using DiFY.BuildingBlocks.Application.Queries;
+using DiFY.Modules.Social.Application.Calling;
 using DiFY.Modules.Social.Application.Calling.CreateCall;
 using DiFY.Modules.Social.Application.Calling.EndCall;
 using DiFY.Modules.Social.Application.Calling.GetAllCalls;
@@ -30,7 +31,7 @@ public class CallController : ControllerBase
     [HttpGet("{callId:guid}")]
     [HasPermission(CallPermission.CanGetAllCalls)]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<ActionResult<GetCallDto>> GetCall(Guid callId)
+    public async Task<ActionResult<GetCallQueryResult>> GetCall(Guid callId)
     {
         var call = await _socialModule.ExecuteQueryAsync(new GetCallQuery(callId));
         return call;
@@ -75,7 +76,7 @@ public class CallController : ControllerBase
     [HttpPost("getAll")]
     [HasPermission(CallPermission.CanGetAllCalls)]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<ActionResult<CallsResultDto>> GetAllCalls(int? page, int? perPage, [FromBody] SortOption[] sortOptions)
+    public async Task<ActionResult<GetAllCallsQueryResult>> GetAllCalls(int? page, int? perPage, [FromBody] SortOption[] sortOptions)
     {
         var calls = await _socialModule.ExecuteQueryAsync(new GetAllCallsQuery(page, perPage, sortOptions));
         return Ok(calls);

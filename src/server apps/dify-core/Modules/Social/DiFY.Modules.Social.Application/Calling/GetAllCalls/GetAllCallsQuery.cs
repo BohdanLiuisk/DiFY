@@ -3,7 +3,7 @@ using DiFY.Modules.Social.Application.Contracts;
 
 namespace DiFY.Modules.Social.Application.Calling.GetAllCalls;
 
-public class GetAllCallsQuery : QueryBase<CallsResultDto>, IPagedQuery
+public class GetAllCallsQuery : QueryBase<GetAllCallsQueryResult>, IPagedQuery
 {
     public GetAllCallsQuery(int? page, int? perPage, SortOption[] sortOptions) : base(sortOptions)
     {

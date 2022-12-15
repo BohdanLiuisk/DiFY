@@ -5,7 +5,7 @@ import { Call, SortOptions } from '@core/calls/store/call-list/call-list.reducer
 import { GUID } from "@shared/custom-types";
 
 @Injectable({ providedIn: 'root' })
-export class CallService {
+export class CallListService {
   private readonly callsPath: string = '/api/social/calls';
 
   constructor(private httpService: CoreHttpService) { }

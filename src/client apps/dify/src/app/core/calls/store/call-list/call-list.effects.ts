@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { CallService } from '@core/calls/call.service';
+import { CallListService } from '@core/calls/store/call-list/call-list.service';
 import { CallListFacade } from '@core/calls/store/call-list/call-list.facade';
 import { Actions, concatLatestFrom, createEffect, ofType } from '@ngrx/effects';
 import { callListActions } from '@core/calls/store/call-list/call-list.actions';
@@ -12,7 +12,7 @@ export class CallListEffects {
   constructor(
     private router: Router,
     private actions$: Actions,
-    private callService: CallService,
+    private callService: CallListService,
     private facade: CallListFacade,
     private snackBar: MatSnackBar
   ) { }

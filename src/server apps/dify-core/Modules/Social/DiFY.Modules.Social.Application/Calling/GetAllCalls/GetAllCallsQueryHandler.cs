@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using Dapper;
 using DiFY.BuildingBlocks.Application.Data;
@@ -8,7 +7,7 @@ using DiFY.Modules.Social.Application.Configuration.Queries;
 
 namespace DiFY.Modules.Social.Application.Calling.GetAllCalls;
 
-internal class GetAllCallsQueryHandler : IQueryHandler<GetAllCallsQuery, CallsResultDto>
+internal class GetAllCallsQueryHandler : IQueryHandler<GetAllCallsQuery, GetAllCallsQueryResult>
 {
     private readonly ISqlConnectionFactory _sqlConnectionFactory;
 
@@ -17,7 +16,7 @@ internal class GetAllCallsQueryHandler : IQueryHandler<GetAllCallsQuery, CallsRe
         _sqlConnectionFactory = sqlConnectionFactory;
     }
     
-    public async Task<CallsResultDto> Handle(GetAllCallsQuery query, CancellationToken cancellationToken)
+    public async Task<GetAllCallsQueryResult> Handle(GetAllCallsQuery query, CancellationToken cancellationToken)
     {
         var connection = _sqlConnectionFactory.GetOpenConnection();
         var parameters = new DynamicParameters();
@@ -30,20 +29,21 @@ internal class GetAllCallsQueryHandler : IQueryHandler<GetAllCallsQuery, CallsRe
             sorting = "[Call].[StartDate] DESC";
         }
         var selectCall = "SELECT " +
-                  $"[Call].[Id] AS [{nameof(CallDto.Id)}], " +
-                  $"[Call].[Name] AS [{nameof(CallDto.Name)}], " +
-                  $"[Call].[Active] AS [{nameof(CallDto.Active)}], " +
-                  $"[Call].[StartDate] AS [{nameof(CallDto.StartDate)}], " +
-                  $"[Call].[EndDate] AS [{nameof(CallDto.EndDate)}], " +
-                  $"[Call].[ActiveParticipants] AS [{nameof(CallDto.ActiveParticipants)}], " +
-                  $"[Call].[TotalParticipants] AS [{nameof(CallDto.TotalParticipants)}]" +
+                  $"[Call].[Id] AS [{nameof(GetAllCallsDto.Id)}], " +
+                  $"[Call].[Name] AS [{nameof(GetAllCallsDto.Name)}], " +
+                  $"[Call].[Active] AS [{nameof(GetAllCallsDto.Active)}], " +
+                  $"[Call].[StartDate] AS [{nameof(GetAllCallsDto.StartDate)}], " +
+                  $"[Call].[EndDate] AS [{nameof(GetAllCallsDto.EndDate)}], " +
+                  $"[Call].[ActiveParticipants] AS [{nameof(GetAllCallsDto.ActiveParticipants)}], " +
+                  $"[Call].[TotalParticipants] AS [{nameof(GetAllCallsDto.TotalParticipants)}]" +
                   $"FROM [social].[v_Calls] AS [Call] " +
                   $"ORDER BY {sorting}";
         var selectTotalCount = "SELECT COUNT([Call].[Id]) FROM [social].[v_Calls] AS [Call]";
-        return new CallsResultDto()
+        return new GetAllCallsQueryResult
         {
-            Calls = await connection.QueryAsync<CallDto>(PagedQueryManager.AppendPageStatement(selectCall), parameters),
-            TotalCount = (await connection.QueryAsync<int>(selectTotalCount)).FirstOrDefault()
+            Calls = await connection.QueryAsync<GetAllCallsDto>(
+                PagedQueryManager.AppendPageStatement(selectCall), parameters),
+            TotalCount = await connection.QuerySingleAsync<int>(selectTotalCount)
         };
     }
 }

@@ -8,8 +8,8 @@ export const environment = {
   peerOptions: {
     key: 'peerjs',
     host: 'localhost',
-    port: 3000,
-    secure: true,
+    port: 443,
+    secure: false,
     path: '/',
     debug: 1,
     config: {

@@ -3,7 +3,7 @@ using DiFY.Modules.Social.Application.Contracts;
 
 namespace DiFY.Modules.Social.Application.Calling.GetCall;
 
-public class GetCallQuery : QueryBase<GetCallDto>
+public class GetCallQuery : QueryBase<GetCallQueryResult>
 {
     public GetCallQuery(Guid callId)
     {

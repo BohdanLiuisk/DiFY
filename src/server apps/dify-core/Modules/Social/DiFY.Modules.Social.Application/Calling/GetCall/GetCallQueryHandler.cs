@@ -6,7 +6,7 @@ using DiFY.Modules.Social.Application.Configuration.Queries;
 
 namespace DiFY.Modules.Social.Application.Calling.GetCall;
 
-public class GetCallQueryHandler : IQueryHandler<GetCallQuery, GetCallDto>
+public class GetCallQueryHandler : IQueryHandler<GetCallQuery, GetCallQueryResult>
 {
     private readonly ISqlConnectionFactory _sqlConnectionFactory;
     
@@ -15,7 +15,7 @@ public class GetCallQueryHandler : IQueryHandler<GetCallQuery, GetCallDto>
         _sqlConnectionFactory = sqlConnectionFactory;
     }
     
-    public async Task<GetCallDto> Handle(GetCallQuery request, CancellationToken cancellationToken)
+    public async Task<GetCallQueryResult> Handle(GetCallQuery request, CancellationToken cancellationToken)
     {
         var connection = _sqlConnectionFactory.GetOpenConnection();
         const string callSelect = "SELECT " +
@@ -27,17 +27,20 @@ public class GetCallQueryHandler : IQueryHandler<GetCallQuery, GetCallDto>
                                   "FROM [social].[v_Calls] AS [Call] " +
                                   "WHERE [Call].[Id] = @CallId";
         const string participantsSelect = "SELECT " +
-                                 $"[CallParticipant].[ParticipantId] AS [{nameof(CallParticipantDto.ParticipantId)}], " +
+                                 $"[CallParticipant].[ParticipantId] AS [{nameof(CallParticipantDto.Id)}], " +
                                  $"[CallParticipant].[JoinOn] AS [{nameof(CallParticipantDto.JoinOn)}], " +
                                  $"[CallParticipant].[Active] AS [{nameof(CallParticipantDto.Active)}], " +
-                                 $"[Member].[Name] AS [{nameof(CallParticipantDto.ParticipantName)}] " +
+                                 $"[Member].[Name] AS [{nameof(CallParticipantDto.Name)}] " +
                                  "FROM [social].[CallParticipants] as [CallParticipant] " +
                                  "LEFT OUTER JOIN [social].[Members] as [Member] " +
                                  "ON [Member].[Id] = [CallParticipant].[ParticipantId] " +
                                  $"WHERE [CallParticipant].[CallId] = @CallId";
-        var call = await connection.QueryFirstOrDefaultAsync<GetCallDto>(callSelect, new { request.CallId });
-        call.Participants = await connection.QueryAsync<CallParticipantDto>(
-            participantsSelect, new { request.CallId });
-        return call;
+        return new GetCallQueryResult
+        {
+            Call = await connection.QueryFirstOrDefaultAsync<GetCallDto>(
+                callSelect, new { request.CallId }),
+            Participants = await connection.QueryAsync<CallParticipantDto>(
+                participantsSelect, new { request.CallId })
+        };
     }
 }
