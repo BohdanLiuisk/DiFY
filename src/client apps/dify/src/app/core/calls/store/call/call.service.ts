@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { CoreHttpService } from "@core/services/core-http.service";
 import { GUID } from "@shared/custom-types";
 import { Observable } from "rxjs";
-import { Call, Participant } from "./call.store";
+import { Call, Participant } from "@core/calls/store/call/call.models";
 
 @Injectable({ providedIn: 'root' })
 export class CallService {

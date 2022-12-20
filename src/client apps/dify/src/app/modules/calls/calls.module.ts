@@ -11,7 +11,8 @@ import { MaterialModule } from '@shared/material.module';
 import { CallStatusPipe } from './pipes/call-status.pipe';
 import { CallDatePipe } from './pipes/call-date.pipe';
 import { CreateNewCallComponent } from './create-new-call/create-new-call.component';
-import { DEFAULT_DIALOG_CONFIG } from '@angular/cdk/dialog';
+import { callFeature } from '@core/calls/store/call/call.reducer';
+import { CallEffects } from '@core/calls/store/call/call.effects';
 
 @NgModule({
   declarations: [
@@ -26,7 +27,8 @@ import { DEFAULT_DIALOG_CONFIG } from '@angular/cdk/dialog';
     MaterialModule,
     CallsRoutingModule,
     StoreModule.forFeature(callListFeature),
-    EffectsModule.forFeature([CallListEffects]),
+    StoreModule.forFeature(callFeature),
+    EffectsModule.forFeature([CallListEffects, CallEffects]),
   ]
 })
 export class CallsModule { }

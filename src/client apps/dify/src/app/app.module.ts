@@ -7,6 +7,7 @@ import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { SignalREffects, signalrReducer } from 'ngrx-signalr-core';
 
 @NgModule({
   declarations: [
@@ -16,8 +17,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     AppRoutingModule,
     CoreModule,
     SharedModule,
-    StoreModule.forRoot({}, {}),
-    EffectsModule.forRoot([]),
+    StoreModule.forRoot({ signalr: signalrReducer }),
+    EffectsModule.forRoot([SignalREffects]),
     BrowserModule,
     BrowserAnimationsModule
   ],
