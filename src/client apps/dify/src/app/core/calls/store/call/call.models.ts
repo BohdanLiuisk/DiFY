@@ -5,7 +5,7 @@ export interface CallState {
   participants: Participant[],
   loading: boolean,
   loaded: boolean,
-  testMessage: string
+  testMessage: any
 }
 
 export interface CallConnectionData {

@@ -35,7 +35,7 @@ export const callFeature = createFeature({
       return { ...state, loading: false, loaded: true };
     }),
     on(callActions.testReceiveMessage, (state, { message }) => {
-      return { ...state, testMessage: message };
+      return { ...state, testMessage: message.userId };
     })
   )
 });

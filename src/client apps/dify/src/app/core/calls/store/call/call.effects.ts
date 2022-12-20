@@ -8,6 +8,8 @@ import { Router } from "@angular/router";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { createSignalRHub, startSignalRHub, ofHub, signalrHubUnstarted, signalrConnected, mergeMapHubToAction, findHub, hubNotFound, signalrError } from "ngrx-signalr-core";
 import { callHub } from "./call.hub";
+import { IHttpConnectionOptions } from "@microsoft/signalr";
+import { JwtStorageService } from "@core/auth/jwt-storage.service";
 
 @Injectable()
 export class CallEffects {
@@ -16,7 +18,8 @@ export class CallEffects {
     private callService: CallService,
     private facade: CallFacade,
     private router: Router,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private jwtStorageService: JwtStorageService
   ) { }
 
   public readonly loadCall = createEffect(() =>
@@ -52,7 +55,12 @@ export class CallEffects {
   public readonly loadCallSucess = createEffect(() => {
     return this.actions$.pipe(
       ofType(callActions.loadCallSuccess),
-      map(() => createSignalRHub(callHub))
+      map(() => {
+        const options: IHttpConnectionOptions = {
+          accessTokenFactory: () => this.jwtStorageService.getToken('access_token')
+        };
+        return createSignalRHub({ ...callHub, options, automaticReconnect: true });
+      })
     );
   });
 
@@ -72,7 +80,9 @@ export class CallEffects {
         const setLoaded$ = of(callActions.setLoaded());
         const testReceiveMessage$ = hub
           .on("ReceiveMessage")
-          .pipe(map((message) => callActions.testReceiveMessage({ message})));
+          .pipe(map((message) => {
+            return callActions.testReceiveMessage({ message })
+          }));
         return merge(setLoaded$, testReceiveMessage$);
       })
     )

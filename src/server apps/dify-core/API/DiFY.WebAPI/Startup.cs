@@ -1,5 +1,7 @@
 using System;
+using System.IdentityModel.Tokens.Jwt;
 using System.Reflection;
+using System.Threading.Tasks;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using DiFY.BuildingBlocks.Application;
@@ -20,6 +22,7 @@ using IdentityServer4.AccessTokenValidation;
 using IdentityServer4.EntityFramework.DbContexts;
 using IdentityServer4.Services;
 using IdentityServer4.Validation;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -164,13 +167,32 @@ namespace DiFY.WebAPI
                 .AddProfileService<ProfileService>()
                 .AddDeveloperSigningCredential();
             services.AddTransient<IResourceOwnerPasswordValidator, ResourceOwnerPasswordValidator>();
-            services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
-                .AddIdentityServerAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme, x =>
+            JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = 
+                    JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = 
+                    JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(o =>
+            {
+                o.Authority = "http://localhost:5050";
+                o.Audience = "DiFYCoreAPI";
+                o.RequireHttpsMetadata = false;
+                o.Events = new JwtBearerEvents
                 {
-                    x.Authority = "http://localhost:5050";
-                    x.ApiName = "DiFYCoreAPI";
-                    x.RequireHttpsMetadata = false;
-                });
+                    OnMessageReceived = context =>
+                    {
+                        var path = context.HttpContext.Request.Path;
+                        var accessToken = context.Request.Query["access_token"];
+                        if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/hubs/social"))
+                        {
+                            context.Token = accessToken;
+                        }
+                        return Task.CompletedTask;
+                    }
+                };
+            });
         }
 
         private static void InitializeIdentityDb(IApplicationBuilder app)
