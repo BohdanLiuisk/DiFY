@@ -3,13 +3,15 @@ import { Actions, concatLatestFrom, createEffect, ofType } from "@ngrx/effects";
 import { CallFacade } from "@core/calls/store/call/call.facade";
 import { CallService } from "@core/calls/store/call/call.service";
 import { callActions } from '@core/calls/store/call/call.actions';
-import { catchError, map, of, switchMap, tap, merge, mergeMap } from "rxjs";
+import { catchError, map, of, switchMap, tap, merge, combineLatest, filter } from "rxjs";
 import { Router } from "@angular/router";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { createSignalRHub, startSignalRHub, ofHub, signalrHubUnstarted, signalrConnected, mergeMapHubToAction, findHub, hubNotFound, signalrError } from "ngrx-signalr-core";
 import { callHub } from "./call.hub";
 import { IHttpConnectionOptions } from "@microsoft/signalr";
 import { JwtStorageService } from "@core/auth/jwt-storage.service";
+import { AuthFacade } from "@core/auth/store/auth.facade";
+import { AuthService } from "@core/auth/auth.service";
 
 @Injectable()
 export class CallEffects {
@@ -19,6 +21,7 @@ export class CallEffects {
     private facade: CallFacade,
     private router: Router,
     private snackBar: MatSnackBar,
+    private authService: AuthService,
     private jwtStorageService: JwtStorageService
   ) { }
 
@@ -55,12 +58,22 @@ export class CallEffects {
   public readonly loadCallSucess = createEffect(() => {
     return this.actions$.pipe(
       ofType(callActions.loadCallSuccess),
-      map(() => {
+      switchMap(() => this.authService.getJwtToken()),
+      filter(({ access_token }) => Boolean(access_token)),
+      map(({ access_token }) => {
         const options: IHttpConnectionOptions = {
-          accessTokenFactory: () => this.jwtStorageService.getToken('access_token')
+          accessTokenFactory: () => access_token
         };
         return createSignalRHub({ ...callHub, options, automaticReconnect: true });
       })
+    );
+  });
+
+  public readonly setCurrentMediaStream = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(callActions.setCurrentMediaStream),
+      switchMap(({ stream }) => stream),
+      map(stream => callActions.getCurrentMediaStreamSuccess({ stream }))
     );
   });
 
@@ -115,5 +128,5 @@ export class CallEffects {
         })
       ),
     { dispatch: false }
-  )
+  );
 }

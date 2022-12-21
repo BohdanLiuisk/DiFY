@@ -8,6 +8,7 @@ import { NewUser } from '@core/auth/store/auth.models';
 export class AuthFacade {
   public auth$ = this.store.select(AuthSelectors.selectAuth);
   public user$ = this.store.select(AuthSelectors.selectAuthUser);
+  public userId$ = this.store.select(AuthSelectors.selectAuthUserId);
   public isLoggedIn$ = this.store.select(AuthSelectors.selectIsLoggedIn);
   public isLoadingLogin$ = this.store.select(AuthSelectors.selectIsLoadingLogin);
   public hasLoginError$ = this.store.select(AuthSelectors.selectLoginError);

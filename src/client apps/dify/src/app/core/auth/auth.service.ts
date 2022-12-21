@@ -5,11 +5,12 @@ import { Store } from '@ngrx/store';
 import { AuthState, AuthUser, JwtToken, LoginCredentials, NewUser, TokenStatus } from './store/auth.models';
 import * as AuthActions from './store/auth.actions';
 import * as AuthSelectors from './store/auth.selectors';
-import { filter, lastValueFrom, Observable, take } from 'rxjs';
+import { EMPTY, filter, lastValueFrom, map, Observable, of, switchMap, take } from 'rxjs';
 import { dify, grandTypes } from '@shared/constans/app-settings';
 import { HttpHeaders } from '@angular/common/http';
 import { JwtStorageService } from '@core/auth/jwt-storage.service';
 import { GUID } from '@shared/custom-types';
+import { JwtHelperService } from '@auth0/angular-jwt';
 
 @Injectable()
 export class AuthService {
@@ -19,7 +20,11 @@ export class AuthService {
   private readonly clientId: string;
   private readonly clientSecret: string;
 
-  constructor(private store: Store, private httpService: CoreHttpService, private jwtStorage: JwtStorageService) {
+  constructor(
+    private store: Store,
+    private httpService: CoreHttpService,
+    private jwtStorage: JwtStorageService,
+    private jwtHelper: JwtHelperService) {
     this.clientId = environment.authConfig.client_id;
     this.clientSecret = environment.authConfig.client_secret;
   }
@@ -53,6 +58,28 @@ export class AuthService {
 
   public confirmNewUser(newUserId: GUID): Observable<any> {
     return this.httpService.patchRequest<any>(`${this.signUpPath}/${newUserId}/confirm`);
+  }
+
+  public getJwtToken(): Observable<JwtToken> {
+    const jwt: JwtToken = {
+      access_token: this.jwtStorage.getToken('access_token') ?? dify.emptyString,
+      refresh_token: this.jwtStorage.getToken('refresh_token') ?? dify.emptyString
+    }
+    if(!Boolean(jwt.access_token)) {
+      this.store.dispatch(AuthActions.logout());
+      return EMPTY;
+    }
+    if(this.jwtHelper.isTokenExpired(jwt.access_token) && jwt.refresh_token) {
+      return this.refreshToken().pipe(
+        map(({ access_token, refresh_token }) => {
+          this.jwtStorage.setToken({ key: 'access_token', value: access_token });
+          this.jwtStorage.setToken({ key: 'refresh_token', value: refresh_token });
+          this.store.dispatch(AuthActions.refreshTokenSuccess());
+          return { access_token, refresh_token };
+        })
+      )
+    }
+    return of(jwt);
   }
 
   public refreshToken(): Observable<JwtToken> {

@@ -87,10 +87,8 @@ export class AuthEffects {
       ofType(AuthActions.refreshTokenRequest),
       exhaustMap(() =>
         this.authService.refreshToken().pipe(
-          map(jwtToken => {
-            this.setToken(jwtToken);
-            return AuthActions.refreshTokenSuccess();
-          }),
+          tap((jwtToken) => this.setToken(jwtToken)),
+          map(() => AuthActions.refreshTokenSuccess()),
           catchError(() => of(AuthActions.refreshTokenFailure()))
         )
       )

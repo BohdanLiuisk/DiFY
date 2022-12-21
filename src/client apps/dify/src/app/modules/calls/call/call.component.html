@@ -2,3 +2,4 @@
 <p>{{(callFacade.call$ | async).name}}</p>
 <p>{{(callFacade.testMessage$ | async)}}</p>
 <button (click)="callFacade.sendTestMessage()">SEND</button>
+<button (click)="mediaEnabled.next()">Switch camera</button>

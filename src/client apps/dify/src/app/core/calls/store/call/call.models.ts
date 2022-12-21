@@ -1,8 +1,10 @@
 import { GUID } from "@shared/custom-types"
 
 export interface CallState {
-  call: Call,
+  call: Call | null,
   participants: Participant[],
+  connectionData: CallConnectionData | null,
+  currentStream: MediaStream,
   loading: boolean,
   loaded: boolean,
   testMessage: any
@@ -11,6 +13,7 @@ export interface CallState {
 export interface CallConnectionData {
   peerId: string,
   userId: GUID,
+  callId: GUID,
   streamId: string
 }
 
