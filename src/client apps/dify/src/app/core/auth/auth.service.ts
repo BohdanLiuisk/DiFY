@@ -5,7 +5,7 @@ import { Store } from '@ngrx/store';
 import { AuthState, AuthUser, JwtToken, LoginCredentials, NewUser, TokenStatus } from './store/auth.models';
 import * as AuthActions from './store/auth.actions';
 import * as AuthSelectors from './store/auth.selectors';
-import { EMPTY, filter, lastValueFrom, map, Observable, of, switchMap, take } from 'rxjs';
+import { EMPTY, filter, lastValueFrom, map, Observable, of, take } from 'rxjs';
 import { dify, grandTypes } from '@shared/constans/app-settings';
 import { HttpHeaders } from '@angular/common/http';
 import { JwtStorageService } from '@core/auth/jwt-storage.service';

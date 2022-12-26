@@ -3,15 +3,16 @@ import { Actions, concatLatestFrom, createEffect, ofType } from "@ngrx/effects";
 import { CallFacade } from "@core/calls/store/call/call.facade";
 import { CallService } from "@core/calls/store/call/call.service";
 import { callActions } from '@core/calls/store/call/call.actions';
-import { catchError, map, of, switchMap, tap, merge, combineLatest, filter } from "rxjs";
+import { catchError, map, of, switchMap, tap, merge, filter } from "rxjs";
 import { Router } from "@angular/router";
 import { MatSnackBar } from "@angular/material/snack-bar";
-import { createSignalRHub, startSignalRHub, ofHub, signalrHubUnstarted, signalrConnected, mergeMapHubToAction, findHub, hubNotFound, signalrError } from "ngrx-signalr-core";
 import { callHub } from "./call.hub";
 import { IHttpConnectionOptions } from "@microsoft/signalr";
-import { JwtStorageService } from "@core/auth/jwt-storage.service";
-import { AuthFacade } from "@core/auth/store/auth.facade";
 import { AuthService } from "@core/auth/auth.service";
+import { CallSignalrEvents } from "@core/calls/store/call-signalr.events";
+import { CallConnectionData } from "@core/calls/store/call/call.models";
+import { GUID } from "@shared/custom-types";
+import { createHub, findHub, removeHub } from "@core/signalr/signalr";
 
 @Injectable()
 export class CallEffects {
@@ -22,7 +23,7 @@ export class CallEffects {
     private router: Router,
     private snackBar: MatSnackBar,
     private authService: AuthService,
-    private jwtStorageService: JwtStorageService
+    private signarEvents: CallSignalrEvents
   ) { }
 
   public readonly loadCall = createEffect(() =>
@@ -58,75 +59,109 @@ export class CallEffects {
   public readonly loadCallSucess = createEffect(() => {
     return this.actions$.pipe(
       ofType(callActions.loadCallSuccess),
+      switchMap(() => {
+        const hub = findHub(callHub);
+        if(hub) {
+          return hub.status$;
+        } else {
+          return of('unstarted');
+        }
+      }),
+      filter(status => status === 'unstarted'),
       switchMap(() => this.authService.getJwtToken()),
       filter(({ access_token }) => Boolean(access_token)),
-      map(({ access_token }) => {
+      switchMap(({ access_token }) => {
         const options: IHttpConnectionOptions = {
           accessTokenFactory: () => access_token
         };
-        return createSignalRHub({ ...callHub, options, automaticReconnect: true });
-      })
-    );
+        const hub = createHub(callHub.hubName, callHub.hubUrl, options, true);
+        return hub.start().pipe(map(() => callActions.callHubStarted()));
+      }),
+      catchError((error) => of(callActions.callHubError({ error })))
+    )
   });
 
-  public readonly setCurrentMediaStream = createEffect(() => {
+  public readonly listenCallHubEvents$ = createEffect(() => {
     return this.actions$.pipe(
-      ofType(callActions.setCurrentMediaStream),
-      switchMap(({ stream }) => stream),
-      map(stream => callActions.getCurrentMediaStreamSuccess({ stream }))
-    );
-  });
-
-  public readonly initCallHub$ = createEffect(() => {
-    return this.actions$.pipe(
-      ofType(signalrHubUnstarted),
-      ofHub(callHub),
-      map((hub) => startSignalRHub(hub))
-    );
-  });
-
-  public readonly listenCallEvents$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(signalrConnected),
-      ofHub(callHub),
-      mergeMapHubToAction(({ hub }) => {
+      ofType(callActions.callHubStarted),
+      switchMap(() => {
         const setLoaded$ = of(callActions.setLoaded());
-        const testReceiveMessage$ = hub
-          .on("ReceiveMessage")
-          .pipe(map((message) => {
-            return callActions.testReceiveMessage({ message })
+        const hub = findHub(callHub);
+        const participantJoinedCall$ = hub
+          .on<CallConnectionData>("OnParticipantJoined")
+          .pipe(
+            tap((connection) => this.signarEvents.callParticipantConnected.next(connection)),
+            map((connection) => callActions.addParticipant(connection.participant))
+          );
+        const participantLeftCall$ = hub
+          .on<{ participantId: GUID }>("OnParticipantLeft")
+          .pipe(
+            tap(({ participantId }) => this.signarEvents.participantLeft.next({ participantId })),
+            map(({ participantId }) => callActions.removeParticipant({ participantId }))
+          );
+        const hubStatus$ = hub.status$.pipe(
+          filter(status => status === 'disconnected' || status === 'reconnecting'),
+          switchMap((status) => {
+            return of(callActions.callHubError( { error: { message: `Call hub status: ${ status }` }}));
           }));
-        return merge(setLoaded$, testReceiveMessage$);
+        return merge(setLoaded$, participantJoinedCall$, participantLeftCall$, hubStatus$);
       })
     )
+  });
+
+  public readonly stopCallHub$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(callActions.stopCallHub),
+      switchMap(() => {
+        const hub = findHub(callHub);
+        return hub.stop().pipe(switchMap(() => {
+          return of(callActions.callHubStopped({ result: `Call hub stopped successfully`}));
+        }));
+      }),
+      catchError((error) => of(callActions.callHubError({ error }))))
+    }
   );
 
-  public readonly sendTestMessage$ = createEffect(() =>
-      this.actions$.pipe(
-        ofType(callActions.testSendMessage),
-        map(({ message }) => {
-          const hub = findHub(callHub);
-          if (!hub) {
-            return of(hubNotFound(callHub));
-          }
-          return hub.send("SendMessage", message, 'bbb');
-        })
-      ),
-    { dispatch: false }
+  public readonly callHubStopped$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(callActions.callHubStopped),
+      tap(({ result }) => {
+        removeHub(findHub(callHub));
+        this.snackBar.open(result.toString(), 'Ok', {
+          horizontalPosition: 'right',
+          verticalPosition: 'top',
+          panelClass: ['error-snackbar'],
+          duration: 2000
+        });
+      }))
+    }, { dispatch: false }
   );
 
-  public readonly signalrError$ = createEffect(() =>
-      this.actions$.pipe(
-        ofType(signalrError),
-        tap(({ error }) => {
-          this.snackBar.open(error, 'Ok', {
-            horizontalPosition: 'right',
-            verticalPosition: 'top',
-            panelClass: ['error-snackbar'],
-            duration: 2000
-          });
-        })
-      ),
-    { dispatch: false }
+  public readonly callHubError$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(callActions.callHubError),
+      tap(({ error }) => {
+        const message = error && error.message;
+        this.snackBar.open(message, 'Ok', {
+          horizontalPosition: 'right',
+          verticalPosition: 'top',
+          panelClass: ['error-snackbar'],
+          duration: 2000
+        });
+      }))
+    }, { dispatch: false }
+  );
+
+  public readonly invokeParticipantJoined$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(callActions.invokeParticipantJoined),
+      switchMap((connection) => {
+        const hub = findHub(callHub);
+        if(!hub) {
+          return of(() => callActions.callHubError({ error: { message: `Call hub not found` }}));
+        }
+        return hub.send("OnParticipantJoined", connection);
+      })
+    ), { dispatch: false }
   );
 }

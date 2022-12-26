@@ -26,7 +26,6 @@
     "@ngrx/effects": "^14.3.2",
     "@ngrx/store": "^14.3.2",
     "font-awesome": "^4.7.0",
-    "ngrx-signalr-core": "^14.3.0",
     "peerjs": "^1.4.7",
     "rxjs": "~7.5.0",
     "tslib": "^2.3.0",

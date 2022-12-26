@@ -13,7 +13,7 @@ export class AuthInterceptor implements HttpInterceptor {
       return next.handle(req);
     }
     return this.authService.getJwtToken().pipe(
-      switchMap((token) => next.handle(setBearerToHeader(req, token.access_token)))
+      switchMap(({ access_token }) => next.handle(setBearerToHeader(req, access_token)))
     );
   }
 }

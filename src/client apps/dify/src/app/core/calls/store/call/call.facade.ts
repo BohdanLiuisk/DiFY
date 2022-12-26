@@ -1,40 +1,27 @@
 import { Injectable } from "@angular/core";
 import { Store } from "@ngrx/store";
 import { GUID } from "@shared/custom-types";
-import { filter, Observable } from "rxjs";
+import { Observable } from "rxjs";
 import { callActions } from '@core/calls/store/call/call.actions';
 import {
   selectCall,
   selectCallId,
   selectConnectionData,
-  selectCurrentStreamId,
+  selectCurrentMediaStreamId,
   selectLoaded,
-  selectLoading,
-  selectMediaTracks,
-  selectTestMessage
+  selectLoading
 } from "@core/calls/store/call/call.selectors";
 import { Call, CallConnectionData, CallState } from "@core/calls/store/call/call.models";
-import { stopSignalRHub } from "ngrx-signalr-core";
-import { callHub } from "./call.hub";
+import { filterEmpty } from "@core/utils/pipe.operators";
 
 @Injectable({ providedIn: 'root' })
 export class CallFacade {
-  public readonly callId$: Observable<GUID> = this.store.select(selectCallId);
+  public readonly callId$: Observable<GUID> = this.store.select(selectCallId).pipe(filterEmpty());
   public readonly call$: Observable<Call> = this.store.select(selectCall);
-  public readonly loaded$: Observable<boolean> = this.store.select(selectLoaded).pipe(
-    filter(loaded => Boolean(loaded))
-  );
+  public readonly loaded$: Observable<boolean> = this.store.select(selectLoaded).pipe(filterEmpty());
   public readonly loading$: Observable<boolean> = this.store.select(selectLoading);
-  public readonly currentMediaStreamId$: Observable<string> = this.store.select(selectCurrentStreamId).pipe(
-    filter(streamId => Boolean(streamId))
-  );
-  public readonly connectionData$: Observable<CallConnectionData> = this.store.select(selectConnectionData).pipe(
-    filter(connectionData => Boolean(connectionData))
-  );
-  public readonly mediaTracks$: Observable<MediaStreamTrack[]> = this.store.select(selectMediaTracks).pipe(
-    filter(connectionData => Boolean(connectionData))
-  );
-  public readonly testMessage$: Observable<string> = this.store.select(selectTestMessage);
+  public readonly currentMediaStreamId$: Observable<string> = this.store.select(selectCurrentMediaStreamId).pipe(filterEmpty());
+  public readonly connectionData$: Observable<CallConnectionData> = this.store.select(selectConnectionData).pipe(filterEmpty());
 
   constructor(private store: Store<CallState>) { }
 
@@ -43,19 +30,23 @@ export class CallFacade {
     this.store.dispatch(callActions.loadCall());
   }
 
-  public setCurrentMediaStream(stream: Observable<MediaStream>): void {
-    this.store.dispatch(callActions.setCurrentMediaStream({ stream }));
+  public setCurrentMediaStreamId(streamId: string): void {
+    this.store.dispatch(callActions.setCurrentMediaStreamId({ streamId }));
   }
 
-  public setConnectionData(connectionData: CallConnectionData): void {
-    this.store.dispatch(callActions.setConnectionData(connectionData));
+  public setConnectionData(peerId: string, callId: GUID, streamId: string, userId: GUID): void {
+    this.store.dispatch(callActions.setConnectionData({ peerId, callId, streamId, userId }));
   }
 
-  public sendTestMessage(): void {
-    this.store.dispatch(callActions.testSendMessage({ message: 'aaa' }));
+  public invokeParticipantJoinedCall(peerId: string, callId: GUID, streamId: string, userId: GUID): void {
+    this.store.dispatch(callActions.invokeParticipantJoined({ peerId, callId, streamId, userId }));
   }
 
-  public disconnectCallHub(): void {
-    this.store.dispatch(stopSignalRHub(callHub));
+  public clearState(): void {
+    this.store.dispatch(callActions.clearState());
+  }
+
+  public leftCallHub(): void {
+    this.store.dispatch(callActions.stopCallHub());
   }
 }

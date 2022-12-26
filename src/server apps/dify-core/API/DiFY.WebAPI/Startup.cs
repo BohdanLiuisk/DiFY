@@ -16,6 +16,7 @@ using DiFY.WebAPI.Configuration.Extensions;
 using DiFY.WebAPI.Configuration.Validation;
 using DiFY.WebAPI.Modules.Administration;
 using DiFY.WebAPI.Modules.Social;
+using DiFY.WebAPI.Modules.Social.Calling;
 using DiFY.WebAPI.Modules.UserAccess;
 using Hellang.Middleware.ProblemDetails;
 using IdentityServer4.AccessTokenValidation;
@@ -150,6 +151,7 @@ namespace DiFY.WebAPI
             {
                 endpoints.MapControllers();
                 endpoints.MapHub<SocialHub>("/hubs/social");
+                endpoints.MapHub<CallHub>("/hubs/call");
             });
         }
 
@@ -185,7 +187,7 @@ namespace DiFY.WebAPI
                     {
                         var path = context.HttpContext.Request.Path;
                         var accessToken = context.Request.Query["access_token"];
-                        if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/hubs/social"))
+                        if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/hubs/call"))
                         {
                             context.Token = accessToken;
                         }

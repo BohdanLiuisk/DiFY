@@ -1,5 +1,7 @@
 <p>call works!</p>
 <p>{{(callFacade.call$ | async).name}}</p>
-<p>{{(callFacade.testMessage$ | async)}}</p>
-<button (click)="callFacade.sendTestMessage()">SEND</button>
-<button (click)="mediaEnabled.next()">Switch camera</button>
+<button (click)="logConnectedStreams()">Connected streams</button>
+<button (click)="logPeerConnections()">Peer connections</button>
+<button (click)="logCurrentStream()">Current stream</button>
+<button (click)="videoEnabled.next()">Switch camera</button>
+<video #currentVideo autoplay="autoplay"></video>

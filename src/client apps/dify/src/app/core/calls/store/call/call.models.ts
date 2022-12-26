@@ -4,17 +4,17 @@ export interface CallState {
   call: Call | null,
   participants: Participant[],
   connectionData: CallConnectionData | null,
-  currentStream: MediaStream,
+  currentMediaStreamId: string,
   loading: boolean,
-  loaded: boolean,
-  testMessage: any
+  loaded: boolean
 }
 
 export interface CallConnectionData {
   peerId: string,
   userId: GUID,
   callId: GUID,
-  streamId: string
+  streamId: string,
+  participant: Participant
 }
 
 export interface Call {

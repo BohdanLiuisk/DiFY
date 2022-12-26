@@ -1,14 +1,15 @@
 import { Injectable } from '@angular/core';
-import * as AuthActions from './auth.actions';
-import * as AuthSelectors from './auth.selectors';
+import * as AuthActions from '@core/auth/store/auth.actions';
+import * as AuthSelectors from '@core/auth/store/auth.selectors';
 import { Store } from '@ngrx/store';
 import { NewUser } from '@core/auth/store/auth.models';
+import { filterEmpty } from '@core/utils/pipe.operators';
 
 @Injectable({ providedIn: 'root' })
 export class AuthFacade {
   public auth$ = this.store.select(AuthSelectors.selectAuth);
   public user$ = this.store.select(AuthSelectors.selectAuthUser);
-  public userId$ = this.store.select(AuthSelectors.selectAuthUserId);
+  public userId$ = this.store.select(AuthSelectors.selectAuthUserId).pipe(filterEmpty());
   public isLoggedIn$ = this.store.select(AuthSelectors.selectIsLoggedIn);
   public isLoadingLogin$ = this.store.select(AuthSelectors.selectIsLoadingLogin);
   public hasLoginError$ = this.store.select(AuthSelectors.selectLoginError);

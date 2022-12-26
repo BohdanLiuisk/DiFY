@@ -7,10 +7,7 @@ export const {
   selectParticipants,
   selectLoaded,
   selectLoading,
-  selectTestMessage,
-  selectCurrentStream,
-  selectConnectionData
+  selectCurrentMediaStreamId,
+  selectConnectionData,
 } = callFeature;
 export const selectCallId = createSelector(selectCall, (call) => call?.id);
-export const selectCurrentStreamId = createSelector(selectCurrentStream, (stream) => stream?.id);
-export const selectMediaTracks = createSelector(selectCurrentStream, (stream) => stream?.getTracks());

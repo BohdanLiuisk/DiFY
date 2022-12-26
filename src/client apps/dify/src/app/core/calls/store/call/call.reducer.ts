@@ -6,11 +6,10 @@ import { CallState } from "@core/calls/store/call/call.models";
 export const callInitialState: CallState = {
   call: null,
   participants: [],
-  currentStream: null,
+  currentMediaStreamId: dify.emptyString,
   connectionData: null,
   loaded: false,
-  loading: false,
-  testMessage: dify.emptyString
+  loading: false
 }
 
 export const callFeature = createFeature({
@@ -20,11 +19,17 @@ export const callFeature = createFeature({
     on(callActions.setCallId, (state, { callId }) => {
       return { ...state, call: { ...state.call, id: callId } };
     }),
-    on(callActions.getCurrentMediaStreamSuccess, (state, { stream }) => {
-      return { ...state, currentStream: stream };
+    on(callActions.setCurrentMediaStreamId, (state, { streamId }) => {
+      return { ...state, currentMediaStreamId: streamId };
     }),
     on(callActions.setConnectionData, (state, { peerId, callId, userId, streamId }) => {
-      return { ...state, connectionData: { peerId, callId, userId, streamId } };
+      return { ...state, connectionData: { ...state.connectionData, peerId, callId, userId, streamId } };
+    }),
+    on(callActions.addParticipant, (state, participant) => {
+      return { ...state, participants: [ ...state.participants, participant ] };
+    }),
+    on(callActions.removeParticipant, (state, { participantId }) => {
+      return { ...state, participants: [ ...state.participants.filter(p => p.id === participantId) ] };
     }),
     on(callActions.loadCall, (state) => {
       return { ...state, loading: true, loaded: false };
@@ -35,8 +40,8 @@ export const callFeature = createFeature({
     on(callActions.setLoaded, (state) => {
       return { ...state, loading: false, loaded: true };
     }),
-    on(callActions.testReceiveMessage, (state, { message }) => {
-      return { ...state, testMessage: message.userId };
+    on(callActions.clearState, () => {
+      return callInitialState;
     })
   )
 });
