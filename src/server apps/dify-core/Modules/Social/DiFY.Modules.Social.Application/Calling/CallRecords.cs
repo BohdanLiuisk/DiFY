@@ -28,6 +28,12 @@ public record CallParticipantDto
     
     public string Name { get; set; }
     
+    public string StreamId { get; set; }
+    
+    public string PeerId { get; set; }
+    
+    public string ConnectionId { get; set; }
+    
     public bool Active { get; set; }
     
     public DateTime JoinOn { get; set; }

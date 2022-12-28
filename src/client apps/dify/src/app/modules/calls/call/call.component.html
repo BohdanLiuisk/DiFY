@@ -5,3 +5,9 @@
 <button (click)="logCurrentStream()">Current stream</button>
 <button (click)="videoEnabled.next()">Switch camera</button>
 <video #currentVideo autoplay="autoplay"></video>
+
+<app-call-participant
+  *ngFor="let participantCard of participantCards$ | async"
+  [callParticipant]="participantCard">
+</app-call-participant>
+

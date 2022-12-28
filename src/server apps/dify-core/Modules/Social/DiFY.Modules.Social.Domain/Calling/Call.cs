@@ -39,11 +39,6 @@ public class Call : Entity, IAggregateRoot
         _startDate = startDate;
         _active = true;
         _initiatorId = initiatorId;
-        _participants = new List<CallParticipant>
-        {
-            CallParticipant.CreateNew(Id, _initiatorId, startDate)
-        };
-        AddDomainEvent(new ParticipantJoinedCall(_initiatorId, startDate));
     }
 
     public static Call CreateNew(string name, MemberId initiatorId, DateTime startDate)
@@ -51,7 +46,7 @@ public class Call : Entity, IAggregateRoot
         return new Call(name, startDate, initiatorId);
     }
 
-    public void Join(MemberId participantId, DateTime joinDate)
+    public void Join(MemberId participantId, string streamId, string peerId, string connectionId, DateTime joinDate)
     {
         CheckRule(new ExistingActiveParticipantCantJoinRule(_participants, participantId));
         CheckRule(new CantEndLeftOrJoinNotActiveCallRule(_active));
@@ -59,10 +54,11 @@ public class Call : Entity, IAggregateRoot
         if (existingParticipant != null && !existingParticipant.IsActive())
         {
             existingParticipant.MarkAsActive();
+            existingParticipant.SetConnectionData(streamId, peerId, connectionId);
         }
         else
         {
-            _participants.Add(CallParticipant.CreateNew(Id, participantId, joinDate));
+            _participants.Add(CallParticipant.CreateNew(Id, participantId, joinDate, streamId, peerId, connectionId));
         }
         AddDomainEvent(new ParticipantJoinedCall(_initiatorId, joinDate));
     }
@@ -72,7 +68,11 @@ public class Call : Entity, IAggregateRoot
         CheckRule(new CantEndLeftOrJoinNotActiveCallRule(_active));
         CheckRule(new NotParticipantCantLeftOrEndCallRule(Participants, participantId));
         var existingParticipant = _participants.FirstOrDefault(p => p.ParticipantId == participantId);
-        existingParticipant?.MarkAsNotActive();
+        if (existingParticipant != null)
+        {
+            existingParticipant.MarkAsNotActive();
+            existingParticipant.ClearConnectionData();
+        }
         AddDomainEvent(new ParticipantLeftCallDomainEvent(participantId));
     }
     

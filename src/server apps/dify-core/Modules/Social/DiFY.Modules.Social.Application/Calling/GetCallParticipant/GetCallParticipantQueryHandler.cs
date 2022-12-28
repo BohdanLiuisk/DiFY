@@ -23,6 +23,9 @@ public class GetCallParticipantQueryHandler : IQueryHandler<GetCallParticipantQu
               $"[CallParticipant].[ParticipantId] AS [{nameof(CallParticipantDto.Id)}], " +
               $"[CallParticipant].[JoinOn] AS [{nameof(CallParticipantDto.JoinOn)}], " +
               $"[CallParticipant].[Active] AS [{nameof(CallParticipantDto.Active)}], " +
+              $"[CallParticipant].[StreamId] AS [{nameof(CallParticipantDto.StreamId)}], " +
+              $"[CallParticipant].[PeerId] AS [{nameof(CallParticipantDto.PeerId)}], " +
+              $"[CallParticipant].[ConnectionId] AS [{nameof(CallParticipantDto.ConnectionId)}], " +
               $"[Member].[Name] AS [{nameof(CallParticipantDto.Name)}] " +
               "FROM [social].[CallParticipants] as [CallParticipant] " +
               "LEFT OUTER JOIN [social].[Members] as [Member] " +

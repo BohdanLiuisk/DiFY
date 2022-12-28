@@ -8,6 +8,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatOptionModule } from '@angular/material/core';
 import { MatDialogModule } from '@angular/material/dialog';
+import { TuiLoaderModule } from '@taiga-ui/core';
 
 @NgModule({
   imports: [
@@ -19,7 +20,8 @@ import { MatDialogModule } from '@angular/material/dialog';
     MatSelectModule,
     MatOptionModule,
     MatPaginatorModule,
-    MatDialogModule
+    MatDialogModule,
+    TuiLoaderModule
   ],
   exports: [
     MatButtonModule,
@@ -30,7 +32,8 @@ import { MatDialogModule } from '@angular/material/dialog';
     MatSelectModule,
     MatOptionModule,
     MatPaginatorModule,
-    MatDialogModule
+    MatDialogModule,
+    TuiLoaderModule
   ]
 })
 export class MaterialModule { }

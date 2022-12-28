@@ -1,64 +1,33 @@
-import { Injectable } from "@angular/core";
+import { Inject, Injectable } from "@angular/core";
 import { Actions, concatLatestFrom, createEffect, ofType } from "@ngrx/effects";
 import { CallFacade } from "@core/calls/store/call/call.facade";
-import { CallService } from "@core/calls/store/call/call.service";
 import { callActions } from '@core/calls/store/call/call.actions';
-import { catchError, map, of, switchMap, tap, merge, filter } from "rxjs";
-import { Router } from "@angular/router";
-import { MatSnackBar } from "@angular/material/snack-bar";
+import { catchError, map, of, switchMap, tap, merge, filter, from } from "rxjs";
 import { callHub } from "./call.hub";
 import { IHttpConnectionOptions } from "@microsoft/signalr";
 import { AuthService } from "@core/auth/auth.service";
 import { CallSignalrEvents } from "@core/calls/store/call-signalr.events";
-import { CallConnectionData } from "@core/calls/store/call/call.models";
+import { Call, Participant } from "@core/calls/store/call/call.models";
 import { GUID } from "@shared/custom-types";
 import { createHub, findHub, removeHub } from "@core/signalr/signalr";
+import { TuiAlertService, TuiNotification } from "@taiga-ui/core";
+import { NavigationService } from "@core/services/navigation.service";
 
 @Injectable()
 export class CallEffects {
   constructor(
     private actions$: Actions,
-    private callService: CallService,
     private facade: CallFacade,
-    private router: Router,
-    private snackBar: MatSnackBar,
+    private navigationService: NavigationService,
     private authService: AuthService,
-    private signarEvents: CallSignalrEvents
+    private signarEvents: CallSignalrEvents,
+    @Inject(TuiAlertService)
+    private readonly alertService: TuiAlertService
   ) { }
 
-  public readonly loadCall = createEffect(() =>
-    this.actions$.pipe(
-      ofType(callActions.loadCall),
-      concatLatestFrom(() => this.facade.callId$),
-      switchMap(([_, callId]) =>
-        this.callService.getById(callId).pipe(
-          map(({ call, participants }) =>
-            callActions.loadCallSuccess({ call, participants })
-          ),
-          catchError((error) => of(callActions.loadCallFailure({ error })))
-        )
-      )
-    )
-  );
-
-  public readonly loadCallFailure = createEffect(() => {
+  public readonly startCallHub = createEffect(() => {
     return this.actions$.pipe(
-      ofType(callActions.loadCallFailure),
-      tap(({ error }) => {
-        this.snackBar.open(error.message, 'Ok', {
-          horizontalPosition: 'right',
-          verticalPosition: 'top',
-          panelClass: ['error-snackbar'],
-          duration: 2000
-        });
-        this.router.navigate([`home/calls`]);
-      })
-    );
-  }, { dispatch: false });
-
-  public readonly loadCallSucess = createEffect(() => {
-    return this.actions$.pipe(
-      ofType(callActions.loadCallSuccess),
+      ofType(callActions.startCallHub),
       switchMap(() => {
         const hub = findHub(callHub);
         if(hub) {
@@ -67,7 +36,7 @@ export class CallEffects {
           return of('unstarted');
         }
       }),
-      filter(status => status === 'unstarted'),
+      filter(status => status === 'unstarted' || status === 'disconnected'),
       switchMap(() => this.authService.getJwtToken()),
       filter(({ access_token }) => Boolean(access_token)),
       switchMap(({ access_token }) => {
@@ -75,23 +44,104 @@ export class CallEffects {
           accessTokenFactory: () => access_token
         };
         const hub = createHub(callHub.hubName, callHub.hubUrl, options, true);
-        return hub.start().pipe(map(() => callActions.callHubStarted()));
+        return hub.start();
       }),
-      catchError((error) => of(callActions.callHubError({ error })))
-    )
+      map(() => {
+        return callActions.callHubStarted();
+      }),
+      catchError((error) => of(callActions.callHubInfo({ info: error })))
+    );
   });
+
+  public readonly joinCall$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(callActions.joinCall),
+      concatLatestFrom(() => this.facade.joinData$),
+      switchMap(([_, joinData]) => {
+        const hub = findHub(callHub);
+        return hub.status$.pipe(
+          filter(status => status === 'connected'),
+          switchMap(() => {
+            return hub.send<{ call: Call; participants: Participant[] }>("OnJoinCall", joinData).pipe(
+              switchMap((call) => {
+                return of(callActions.joinCallSuccess(call));
+              }),
+              catchError((error) => {
+                return of(callActions.joinCallFailure({ error }));
+              }));
+          })
+        );
+      })
+    )
+  );
+
+  public readonly setCurrentMediaStream$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(callActions.getCurrentMediaStream),
+      switchMap(() => {
+        return from(navigator.mediaDevices.getUserMedia({
+          video: true,
+          audio: false
+        })).pipe(switchMap((mediaStream) => of(
+          callActions.setCurrentMediaStream({ mediaStream })
+        )));
+      })
+  )});
+
+  public readonly joinCallFailure$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(callActions.joinCallFailure),
+      tap(({ error }) => {
+        this.alertService.open(error.toString(), { status: TuiNotification.Error }).subscribe();
+        this.navigationService.back();
+      })
+    ), { dispatch: false });
+
+  public readonly invokeParticipantJoined$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(callActions.invokeParticipantJoined),
+      concatLatestFrom(() => this.facade.callId$),
+      switchMap(([_, callId]) => {
+        const hub = findHub(callHub);
+        return hub.send("OnParticipantJoined", callId).pipe(
+          switchMap(() => of(callActions.setLoaded()))
+        );
+      })
+    )
+  );
+
+  public readonly participantLeftCall$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(callActions.removeParticipant),
+      concatLatestFrom(({ participantId }) => this.facade.selectParticipantById(participantId)),
+      tap(([_, participant]) => {
+        const message = `${ participant.name } left call`;
+        this.alertService.open(message, { status: TuiNotification.Info }).subscribe();
+      }))
+    }, { dispatch: false }
+  );
+
+  public readonly participantJoinedCall$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(callActions.addParticipant),
+      tap(({ name }) => {
+        const message = `${ name } joined call call`;
+        this.alertService.open(message, { status: TuiNotification.Success }).subscribe();
+      }))
+    }, { dispatch: false }
+  );
 
   public readonly listenCallHubEvents$ = createEffect(() => {
     return this.actions$.pipe(
-      ofType(callActions.callHubStarted),
+      ofType(callActions.joinCallSuccess),
       switchMap(() => {
-        const setLoaded$ = of(callActions.setLoaded());
         const hub = findHub(callHub);
+        const invokeParticipantJoined$ = of(callActions.invokeParticipantJoined());
         const participantJoinedCall$ = hub
-          .on<CallConnectionData>("OnParticipantJoined")
+          .on<Participant>("OnParticipantJoined")
           .pipe(
-            tap((connection) => this.signarEvents.callParticipantConnected.next(connection)),
-            map((connection) => callActions.addParticipant(connection.participant))
+            tap((participant) => this.signarEvents.callParticipantConnected.next(participant)),
+            map((participant) => callActions.addParticipant(participant))
           );
         const participantLeftCall$ = hub
           .on<{ participantId: GUID }>("OnParticipantLeft")
@@ -100,11 +150,10 @@ export class CallEffects {
             map(({ participantId }) => callActions.removeParticipant({ participantId }))
           );
         const hubStatus$ = hub.status$.pipe(
-          filter(status => status === 'disconnected' || status === 'reconnecting'),
           switchMap((status) => {
-            return of(callActions.callHubError( { error: { message: `Call hub status: ${ status }` }}));
+            return of(callActions.callHubInfo( { info: { message: `Call hub status: ${ status }` }}));
           }));
-        return merge(setLoaded$, participantJoinedCall$, participantLeftCall$, hubStatus$);
+        return merge(invokeParticipantJoined$, participantJoinedCall$, participantLeftCall$, hubStatus$);
       })
     )
   });
@@ -115,53 +164,29 @@ export class CallEffects {
       switchMap(() => {
         const hub = findHub(callHub);
         return hub.stop().pipe(switchMap(() => {
-          return of(callActions.callHubStopped({ result: `Call hub stopped successfully`}));
+          return of(callActions.callHubStopped());
         }));
       }),
-      catchError((error) => of(callActions.callHubError({ error }))))
+      catchError((error) => of(callActions.callHubInfo({ info: error }))))
     }
   );
 
   public readonly callHubStopped$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(callActions.callHubStopped),
-      tap(({ result }) => {
+      tap(() => {
         removeHub(findHub(callHub));
-        this.snackBar.open(result.toString(), 'Ok', {
-          horizontalPosition: 'right',
-          verticalPosition: 'top',
-          panelClass: ['error-snackbar'],
-          duration: 2000
-        });
       }))
     }, { dispatch: false }
   );
 
-  public readonly callHubError$ = createEffect(() => {
+  public readonly callHubInfo$ = createEffect(() => {
     return this.actions$.pipe(
-      ofType(callActions.callHubError),
-      tap(({ error }) => {
-        const message = error && error.message;
-        this.snackBar.open(message, 'Ok', {
-          horizontalPosition: 'right',
-          verticalPosition: 'top',
-          panelClass: ['error-snackbar'],
-          duration: 2000
-        });
+      ofType(callActions.callHubInfo),
+      tap(({ info }) => {
+        const message = info && info.message;
+        this.alertService.open(message, { status: TuiNotification.Info }).subscribe();
       }))
     }, { dispatch: false }
-  );
-
-  public readonly invokeParticipantJoined$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(callActions.invokeParticipantJoined),
-      switchMap((connection) => {
-        const hub = findHub(callHub);
-        if(!hub) {
-          return of(() => callActions.callHubError({ error: { message: `Call hub not found` }}));
-        }
-        return hub.send("OnParticipantJoined", connection);
-      })
-    ), { dispatch: false }
   );
 }

@@ -1,13 +1,14 @@
-import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { AuthFacade } from '@core/auth/store/auth.facade';
 import { CallSignalrEvents } from '@core/calls/store/call-signalr.events';
 import { CallFacade } from '@core/calls/store/call/call.facade';
+import { CallParticipantCard, Participant } from '@core/calls/store/call/call.models';
 import { BaseComponent } from '@core/components/base.component';
 import { environment } from '@env/environment';
 import { GUID } from '@shared/custom-types';
+import { TuiAlertService } from '@taiga-ui/core';
 import Peer from 'peerjs';
-import { combineLatest, from, Observable, Subject, startWith, scan, skip } from 'rxjs';
+import { combineLatest, from, Observable, Subject, startWith, scan, skip, mergeMap, map, withLatestFrom, filter } from 'rxjs';
 
 @Component({
   selector: 'app-call',
@@ -15,11 +16,14 @@ import { combineLatest, from, Observable, Subject, startWith, scan, skip } from 
   styleUrls: ['./call.component.scss']
 })
 export class CallComponent extends BaseComponent implements OnInit, AfterViewInit, OnDestroy {
-  @ViewChild('currentVideo') private currentVideo: ElementRef
+  @ViewChild('currentVideo') private currentVideo: ElementRef;
   public peer: Peer;
   public currentStream: MediaStream;
   public connectedStreams: MediaStream[] = [];
   public connectedPeers: Map<string, MediaStream> = new Map<string, MediaStream>();
+  public participantCards: CallParticipantCard[] = [];
+  public participantCards$: Observable<CallParticipantCard[]> = this.callFacade.participantCards$.pipe(this.untilThis);
+  private currentStreamLoaded: EventEmitter<void> = new EventEmitter<void>();
   public videoEnabled: Subject<void> = new Subject<void>();
   public videoEnabled$: Observable<boolean> = this.videoEnabled.asObservable().pipe(
     scan((state) => !state, true),
@@ -28,17 +32,31 @@ export class CallComponent extends BaseComponent implements OnInit, AfterViewIni
 
   constructor(
     public readonly callFacade: CallFacade,
-    private authFacade: AuthFacade,
     private signarEvents: CallSignalrEvents,
-    private route: ActivatedRoute) {
+    private route: ActivatedRoute,
+    @Inject(TuiAlertService)
+    private readonly alertService: TuiAlertService) {
     super();
   }
 
   public ngOnInit(): void {
     this.route.params.subscribe(params => {
       const callId: GUID = params['id'];
-      this.callFacade.loadCall(callId);
-      this._configurePeer();
+      this.callFacade.setCallId(callId);
+      this.callFacade.setLoading();
+      this.callFacade.startCallHub();
+      this.callFacade.hubConnected$.pipe(this.untilThis).subscribe(() => {
+        this._getMediaStream().pipe(this.untilThis).subscribe((currentStream => {
+          this.currentStream = currentStream;
+          this.connectedStreams.push(currentStream);
+          this.currentStreamLoaded.next();
+          this.callFacade.setCurrentMediaStreamId(currentStream.id);
+        }));
+        this._configurePeer();
+      });
+      this.callFacade.loaded$.pipe(this.untilThis).subscribe((loaded) => {
+        console.log('joined', loaded);
+      });
       this.videoEnabled$.pipe(this.untilThis, skip(1)).subscribe((enabled) => {
         const videoTracks = this.currentStream.getVideoTracks();
         if (!enabled) {
@@ -52,19 +70,17 @@ export class CallComponent extends BaseComponent implements OnInit, AfterViewIni
           track.enabled = enabled;
         });
         navigator.mediaDevices.getUserMedia({ video: true })
-          .then(videoStream => this._enableVideo(videoStream));
+          .then(videoStream =>
+            this._enableVideo(videoStream));
       });
+      this._subscribeSignalrEvents();
     });
-    this._subscribeSignalrEvents();
   }
 
   public ngAfterViewInit(): void {
-    this._getMediaStream().pipe(this.untilThis).subscribe((currentStream => {
-      this.currentStream = currentStream;
-      this.callFacade.setCurrentMediaStreamId(currentStream.id);
-      this.connectedStreams.push(currentStream);
-      this.currentVideo.nativeElement.srcObject = currentStream;
-    }));
+    this.currentStreamLoaded.pipe(this.untilThis).subscribe(() => {
+      this.currentVideo.nativeElement.srcObject = this.currentStream;
+    });
   }
 
   public override ngOnDestroy(): void {
@@ -81,9 +97,9 @@ export class CallComponent extends BaseComponent implements OnInit, AfterViewIni
   }
 
   private _subscribeSignalrEvents(): void {
-    this.signarEvents.callParticipantConnected$.pipe(this.untilThis).subscribe((connection) => {
-      console.log('participant joined', connection);
-      this._callParticipant(connection.peerId);
+    this.signarEvents.callParticipantConnected$.pipe(this.untilThis).subscribe((participant) => {
+      console.log('participant joined', participant);
+      this._callParticipant(participant.peerId);
     });
     this.signarEvents.participantLeft$.pipe(this.untilThis).subscribe((connection) => {
       console.log('participant left', connection);
@@ -91,32 +107,33 @@ export class CallComponent extends BaseComponent implements OnInit, AfterViewIni
   }
 
   private _configurePeer(): void {
-    this.callFacade.loaded$.pipe(this.untilThis).subscribe((loaded) => {
-      console.log('loaded', loaded);
-      this.peer = new Peer(environment.peerOptions);
-      this.peer.on('open', (id) => this._peerOpened(id));
-      this.peer.on('call', (call) => {
-        call.on('stream', (stream) => {
-          if (!this.connectedStreams.includes(stream)) {
-            this.connectedStreams.push(stream);
-          }
-          this.connectedPeers.set(call.peer, stream);
-        });
-        call.answer(this.currentStream);
+    this.peer = new Peer(environment.peerOptions);
+    this.peer.on('open', (id) => this._peerOpened(id));
+    this.peer.on('call', (call) => {
+      call.on('stream', (stream) => {
+        if (!this.connectedStreams.includes(stream)) {
+          this.connectedStreams.push(stream);
+        }
+        this.connectedPeers.set(call.peer, stream);
+        this.callFacade.addParticipantCard(stream);
+        this.callFacade.selectParticipantByStreamId(stream.id).pipe(this.untilThis)
+          .subscribe((participant) => {
+            this._createParticipantCard(participant);
+          });
       });
+      call.answer(this.currentStream);
     });
   }
 
   private _peerOpened(peerId: string): void {
     combineLatest([
-        this.callFacade.callId$.pipe(this.untilThis),
-        this.callFacade.currentMediaStreamId$.pipe(this.untilThis),
-        this.authFacade.userId$.pipe(this.untilThis)])
-      .pipe(this.untilThis)
-      .subscribe(([callId, streamId, userId]) => {
-        this.callFacade.setConnectionData(peerId, callId, streamId, userId);
-        this.callFacade.invokeParticipantJoinedCall(peerId, callId, streamId, userId);
-      });
+      this.callFacade.callId$.pipe(this.untilThis),
+      this.callFacade.currentMediaStreamId$.pipe(this.untilThis)])
+    .pipe(this.untilThis)
+    .subscribe(([callId, streamId]) => {
+      this.callFacade.setJoinData(streamId, peerId, callId);
+      this.callFacade.joinCall();
+    });
   }
 
   private _callParticipant(peerId: string): void {
@@ -127,7 +144,19 @@ export class CallComponent extends BaseComponent implements OnInit, AfterViewIni
       const connectedPeer = this.connectedPeers.get(call.peer);
       if (!connectedPeer || connectedPeer.id !== stream.id) {
         this.connectedPeers.set(call.peer, stream);
+        this.callFacade.addParticipantCard(stream);
+        this.callFacade.selectParticipantByStreamId(stream.id).pipe(this.untilThis).subscribe((participant) => {
+          this._createParticipantCard(participant);
+        });
       }
+    });
+  }
+
+  private _createParticipantCard(participant: Participant): void {
+    const stream = this.connectedStreams.find((stream) => stream.id === participant.streamId);
+    this.participantCards.push({
+      participantId: participant.id,
+      stream
     });
   }
 

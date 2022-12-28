@@ -77,15 +77,9 @@ export class SignalrHub {
 
   private _getOpenedConnection(): HubConnection {
     if (!this._hubConnection) {
-      this._hubConnection = createHubConnection(
-        this.hubUrl,
-        this.options,
-        this.automaticReconnect,
-        this.withHubProtocol
-      );
+      this._hubConnection = createHubConnection(this.hubUrl, this.options, this.automaticReconnect, this.withHubProtocol);
       this._hubConnection.onclose((error) => {
-        this._closed.next(error ?? `${this.hubName} closed for some reason`);
-        this._hubStatus.next('disconnected');
+        this._closed.next(error ?? `${ this.hubName } closed for some reason`);
       });
       this._hubConnection.onreconnecting(() => {
         this._hubStatus.next('reconnecting');

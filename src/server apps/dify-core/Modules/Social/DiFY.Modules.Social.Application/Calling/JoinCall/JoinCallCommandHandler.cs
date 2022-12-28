@@ -24,7 +24,7 @@ public class JoinCallCommandHandler : ICommandHandler<JoinCallCommand>
     public async Task<Unit> Handle(JoinCallCommand command, CancellationToken cancellationToken)
     {
         var call = await _callRepository.GetByIdAsync(new CallId(command.CallId));
-        call.Join(_memberContext.MemberId, DateTime.UtcNow);
+        call.Join(_memberContext.MemberId, command.StreamId, command.PeerId, command.ConnectionId, DateTime.UtcNow);
         return Unit.Value;
     }
 }

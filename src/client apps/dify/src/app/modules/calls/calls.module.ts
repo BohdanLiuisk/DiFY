@@ -13,6 +13,7 @@ import { CallDatePipe } from './pipes/call-date.pipe';
 import { CreateNewCallComponent } from './create-new-call/create-new-call.component';
 import { callFeature } from '@core/calls/store/call/call.reducer';
 import { CallEffects } from '@core/calls/store/call/call.effects';
+import { CallParticipantComponent } from './call-participant/call-participant.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { CallEffects } from '@core/calls/store/call/call.effects';
     CallListComponent,
     CreateNewCallComponent,
     CallStatusPipe,
-    CallDatePipe
+    CallDatePipe,
+    CallParticipantComponent
   ],
   imports: [
     SharedModule,

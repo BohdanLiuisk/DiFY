@@ -32,6 +32,9 @@ public class CallEntityTypeConfiguration : IEntityTypeConfiguration<Call>
             b.Property<CallId>("CallId").HasColumnName("CallId");
             b.Property<DateTime>("_joinDate").HasColumnName("JoinOn");
             b.Property<bool>("_active").HasColumnName("Active");
+            b.Property<string>("_streamId").HasColumnName("StreamId");
+            b.Property<string>("_peerId").HasColumnName("PeerId");
+            b.Property<string>("_connectionId").HasColumnName("ConnectionId");
         });
     }
 }
