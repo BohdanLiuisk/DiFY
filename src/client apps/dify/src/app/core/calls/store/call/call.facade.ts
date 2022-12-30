@@ -6,17 +6,16 @@ import { callActions } from '@core/calls/store/call/call.actions';
 import {
   selectCall,
   selectCallId,
-  selectCurrentMediaStreamId,
   selectHubConnected,
-  selectJoinData,
   selectLoaded,
   selectLoading,
   selectParticipantById,
   selectParticipantByStreamId,
   selectParticipantCards,
-  selectParticipants
+  selectParticipants,
+  selectCurrentMediaStream
 } from "@core/calls/store/call/call.selectors";
-import { Call, CallParticipantCard, CallState, JoinData, Participant } from "@core/calls/store/call/call.models";
+import { Call, CallParticipantCard, CallState, Participant } from "@core/calls/store/call/call.models";
 import { filterEmpty } from "@core/utils/pipe.operators";
 
 @Injectable({ providedIn: 'root' })
@@ -26,10 +25,9 @@ export class CallFacade {
   public readonly loaded$: Observable<boolean> = this.store.select(selectLoaded).pipe(filterEmpty());
   public readonly hubConnected$: Observable<boolean> = this.store.select(selectHubConnected).pipe(filterEmpty());
   public readonly loading$: Observable<boolean> = this.store.select(selectLoading);
-  public readonly currentMediaStreamId$: Observable<string> = this.store.select(selectCurrentMediaStreamId).pipe(filterEmpty());
-  public readonly joinData$: Observable<JoinData> = this.store.select(selectJoinData).pipe(filterEmpty());
   public readonly participants$: Observable<Participant[]> = this.store.select(selectParticipants).pipe(filterEmpty());
   public readonly participantCards$: Observable<CallParticipantCard[]> = this.store.select(selectParticipantCards).pipe(filterEmpty());
+  public readonly currentMediaStream$: Observable<MediaStream> = this.store.select(selectCurrentMediaStream).pipe(filterEmpty());
 
   constructor(private store: Store<CallState>) { }
 
@@ -49,20 +47,24 @@ export class CallFacade {
     this.store.dispatch(callActions.setCallId({ callId }));
   }
 
+  public setCurrentParticipantId(id: GUID) {
+    this.store.dispatch(callActions.setCurrentParticipantId({ id }));
+  }
+
+  public stopVideoStream(): void {
+    this.store.dispatch(callActions.stopVideoStream());
+  }
+
+  public enableVideoStream(): void {
+    this.store.dispatch(callActions.enableVideoStream());
+  }
+
   public startCallHub(): void {
     this.store.dispatch(callActions.startCallHub());
   }
 
-  public joinCall(): void {
-    this.store.dispatch(callActions.joinCall());
-  }
-
-  public setCurrentMediaStreamId(streamId: string): void {
-    this.store.dispatch(callActions.setCurrentMediaStreamId({ streamId }));
-  }
-
-  public setJoinData(streamId: string, peerId: string, callId: GUID): void {
-    this.store.dispatch(callActions.setJoinData({ streamId, peerId, callId }));
+  public joinCall(peerId: string): void {
+    this.store.dispatch(callActions.joinCall({ peerId }));
   }
 
   public addParticipantCard(stream: MediaStream): void {

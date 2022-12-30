@@ -7,7 +7,7 @@ import { callHub } from "./call.hub";
 import { IHttpConnectionOptions } from "@microsoft/signalr";
 import { AuthService } from "@core/auth/auth.service";
 import { CallSignalrEvents } from "@core/calls/store/call-signalr.events";
-import { Call, Participant } from "@core/calls/store/call/call.models";
+import { Call, JoinData, Participant } from "@core/calls/store/call/call.models";
 import { GUID } from "@shared/custom-types";
 import { createHub, findHub, removeHub } from "@core/signalr/signalr";
 import { TuiAlertService, TuiNotification } from "@taiga-ui/core";
@@ -56,35 +56,41 @@ export class CallEffects {
   public readonly joinCall$ = createEffect(() =>
     this.actions$.pipe(
       ofType(callActions.joinCall),
-      concatLatestFrom(() => this.facade.joinData$),
-      switchMap(([_, joinData]) => {
-        const hub = findHub(callHub);
-        return hub.status$.pipe(
-          filter(status => status === 'connected'),
-          switchMap(() => {
-            return hub.send<{ call: Call; participants: Participant[] }>("OnJoinCall", joinData).pipe(
-              switchMap((call) => {
-                return of(callActions.joinCallSuccess(call));
-              }),
-              catchError((error) => {
-                return of(callActions.joinCallFailure({ error }));
-              }));
-          })
-        );
-      })
+      concatLatestFrom(() => this.facade.callId$),
+      switchMap(([ { peerId }, callId ]) => from(navigator.mediaDevices.getUserMedia({ video: true, audio: false })).pipe(
+        switchMap((stream) => {
+          const hub = findHub(callHub);
+          return hub.status$.pipe(
+            filter(status => status === 'connected'),
+            switchMap(() => {
+              const joinData: JoinData = { peerId, streamId: stream.id, callId }
+              return hub.send<{ call: Call; participants: Participant[] }>("OnJoinCall", joinData).pipe(
+                switchMap((call) => {
+                  return of(callActions.joinCallSuccess({ ...call, stream }));
+                }),
+                catchError((error) => {
+                  return of(callActions.joinCallFailure({ error }));
+                })
+              );
+            })
+          );
+        })
+      ))
     )
   );
 
-  public readonly setCurrentMediaStream$ = createEffect(() => {
+  public readonly enableVideoStream$ = createEffect(() => {
     return this.actions$.pipe(
-      ofType(callActions.getCurrentMediaStream),
+      ofType(callActions.enableVideoStream),
       switchMap(() => {
         return from(navigator.mediaDevices.getUserMedia({
           video: true,
           audio: false
-        })).pipe(switchMap((mediaStream) => of(
-          callActions.setCurrentMediaStream({ mediaStream })
-        )));
+        })).pipe(switchMap((mediaStream) => {
+          const videoTrack = mediaStream.getVideoTracks()[0];
+          this.signarEvents.updateVideoTrack.next({ videoTrack })
+          return of(callActions.setNewVideoStream({ videoTrack }));
+        }));
       })
   )});
 
@@ -134,8 +140,9 @@ export class CallEffects {
   public readonly listenCallHubEvents$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(callActions.joinCallSuccess),
-      switchMap(() => {
+      switchMap(({ stream }) => {
         const hub = findHub(callHub);
+        const addParticipantCard$ = of(callActions.addParticipantCard({ stream }));
         const invokeParticipantJoined$ = of(callActions.invokeParticipantJoined());
         const participantJoinedCall$ = hub
           .on<Participant>("OnParticipantJoined")
@@ -153,7 +160,13 @@ export class CallEffects {
           switchMap((status) => {
             return of(callActions.callHubInfo( { info: { message: `Call hub status: ${ status }` }}));
           }));
-        return merge(invokeParticipantJoined$, participantJoinedCall$, participantLeftCall$, hubStatus$);
+        return merge(
+          addParticipantCard$,
+          invokeParticipantJoined$,
+          participantJoinedCall$,
+          participantLeftCall$,
+          hubStatus$
+        );
       })
     )
   });

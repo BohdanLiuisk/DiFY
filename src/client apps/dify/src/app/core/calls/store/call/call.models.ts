@@ -3,10 +3,8 @@ import { GUID } from "@shared/custom-types"
 export interface CallState {
   call: Call | null,
   participants: Participant[],
-  joinData: JoinData,
-  currentMediaStream: MediaStream,
-  currentMediaStreamId: string,
   participantCards: CallParticipantCard[],
+  currentParticipantId: GUID,
   hubConnected: boolean,
   loading: boolean,
   loaded: boolean
@@ -37,5 +35,7 @@ export interface Participant {
 
 export interface CallParticipantCard {
   participantId: GUID,
-  stream: MediaStream
+  stream: MediaStream,
+  videoEnabled: boolean,
+  audioEnabled: boolean
 }

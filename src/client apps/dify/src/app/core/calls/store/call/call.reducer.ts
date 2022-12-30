@@ -1,14 +1,13 @@
 import { createFeature, createReducer, on } from "@ngrx/store";
-import { dify } from "@shared/constans/app-settings";
 import { callActions } from '@core/calls/store/call/call.actions';
 import { CallParticipantCard, CallState } from "@core/calls/store/call/call.models";
+import { dify } from "@shared/constans/app-settings";
+import { guid } from "@shared/custom-types";
 
 export const callInitialState: CallState = {
   call: null,
   participants: [],
-  currentMediaStream: null,
-  currentMediaStreamId: dify.emptyString,
-  joinData: null,
+  currentParticipantId: guid(dify.emptyString),
   participantCards: [],
   loaded: false,
   loading: false,
@@ -22,40 +21,58 @@ export const callFeature = createFeature({
     on(callActions.setCallId, (state, { callId }) => {
       return { ...state, call: { ...state.call, id: callId } };
     }),
+    on(callActions.setCurrentParticipantId, (state, { id }) => {
+      return { ...state, currentParticipantId: id };
+    }),
     on(callActions.callHubStarted, (state, {  }) => {
       return { ...state, hubConnected: true };
     }),
     on(callActions.joinCallSuccess, (state, { call, participants }) => {
-      return { ...state, call, participants, joinedCall: true };
+      return { ...state, call, participants };
     }),
-    on(callActions.setCurrentMediaStreamId, (state, { streamId }) => {
-      return { ...state, currentMediaStreamId: streamId };
+    on(callActions.stopVideoStream, (state) => {
+      const videoTracks = state.participantCards
+        .find(card => card.participantId === state.currentParticipantId).stream.getVideoTracks();
+      videoTracks.forEach(track => {
+        track.enabled = false;
+        track.stop();
+      });
+      return state;
     }),
-    on(callActions.setJoinData, (state, { streamId, peerId, callId }) => {
-      return { ...state, joinData: { ...state.joinData, streamId, peerId, callId } };
-    }),
-    on(callActions.setCurrentMediaStream, (state, { mediaStream }) => {
-      return { ...state, currentMediaStream: mediaStream.clone() };
+    on(callActions.setNewVideoStream, (state, { videoTrack }) => {
+      const currentStream = state.participantCards.find(
+        card => card.participantId === state.currentParticipantId).stream;
+      currentStream.getVideoTracks().forEach((vt) => {
+        currentStream.removeTrack(vt);
+      });
+      currentStream.addTrack(videoTrack);
+      return state;
     }),
     on(callActions.addParticipant, (state, participant) => {
       return { ...state, participants: [ ...state.participants, participant ] };
     }),
     on(callActions.removeParticipant, (state, { participantId }) => {
-      return { ...state, participants: [ ...state.participants.filter(p => p.id === participantId) ],
+      return { ...state, participants: [ ...state.participants.filter(p => p.id !== participantId) ],
         participantCards: [ ...state.participantCards
           .filter(s => s.participantId !== participantId)
-          .map((participantCard):CallParticipantCard => ({
-            stream: participantCard.stream.clone(),
-            participantId: participantCard.participantId
+          .map((participantCard): CallParticipantCard => ({
+            ...participantCard,
+            stream: participantCard.stream
           }))
         ]
       };
     }),
     on(callActions.addParticipantCard, (state, { stream }) => {
-      return { ...state, participantCards: [ ...state.participantCards, {
-        stream,
-        participantId: state.participants.find(p => p.streamId === stream.id).id
-      }]};
+      if(!state.participantCards.some(p => p.stream.id === stream.id)) {
+        return { ...state, participantCards: [ ...state.participantCards, {
+          stream,
+          participantId: state.participants.find(p => p.streamId === stream.id).id,
+          videoEnabled: true,
+          audioEnabled: true
+        }]};
+      } else {
+        return state;
+      }
     }),
     on(callActions.setLoading, (state) => {
       return { ...state, loading: true, loaded: false };

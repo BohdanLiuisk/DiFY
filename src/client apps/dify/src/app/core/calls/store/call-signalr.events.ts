@@ -9,4 +9,6 @@ export class CallSignalrEvents {
   public readonly callParticipantConnected$ = this.callParticipantConnected.asObservable();
   public readonly participantLeft = new Subject<{ participantId: GUID }>();
   public readonly participantLeft$ = this.participantLeft.asObservable();
+  public readonly updateVideoTrack = new Subject<{ videoTrack: MediaStreamTrack }>();
+  public readonly updateVideoTrack$ = this.updateVideoTrack.asObservable();;
 }

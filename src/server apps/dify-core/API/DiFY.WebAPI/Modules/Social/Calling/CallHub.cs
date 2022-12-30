@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using DiFY.BuildingBlocks.Application;
 using DiFY.Modules.Social.Application.Calling;
@@ -45,8 +46,8 @@ public class CallHub : Hub
         _connectionToCall.Add(Context.ConnectionId, callId);
         _connectionToParticipant.Remove(Context.ConnectionId);
         _connectionToParticipant.Add(Context.ConnectionId, _contextAccessor.UserId);
-        var participant = await _socialModule.ExecuteQueryAsync(
-            new GetCallParticipantQuery(_contextAccessor.UserId));
+        var call = await _socialModule.ExecuteQueryAsync(new GetCallQuery(callId));
+        var participant = call.Participants.FirstOrDefault(p => p.Id == _contextAccessor.UserId);
         await Clients.GroupExcept(callId.ToString(), Context.ConnectionId)
             .SendAsync("OnParticipantJoined", participant);
     }
