@@ -31,13 +31,24 @@ export const callFeature = createFeature({
       return { ...state, call, participants };
     }),
     on(callActions.stopVideoStream, (state) => {
-      const videoTracks = state.participantCards
-        .find(card => card.participantId === state.currentParticipantId).stream.getVideoTracks();
+      const currentCard = state.participantCards.find(card => card.currentUser);
+      const videoTracks = currentCard.stream.getVideoTracks();
       videoTracks.forEach(track => {
         track.enabled = false;
         track.stop();
       });
-      return state;
+      return { ...state, participantCards: [
+        ...state.participantCards.map((participantCard): CallParticipantCard => {
+          if(participantCard.currentUser) {
+            return {
+              ...participantCard,
+              stream: participantCard.stream,
+              videoEnabled: false
+            }
+          }
+          return participantCard;
+        })]
+      };
     }),
     on(callActions.setNewVideoStream, (state, { videoTrack }) => {
       const currentStream = state.participantCards.find(
@@ -46,6 +57,25 @@ export const callFeature = createFeature({
         currentStream.removeTrack(vt);
       });
       currentStream.addTrack(videoTrack);
+      return { ...state, participantCards: [
+        ...state.participantCards.map((participantCard): CallParticipantCard => {
+          if(participantCard.currentUser) {
+            return {
+              ...participantCard,
+              stream: participantCard.stream,
+              videoEnabled: true
+            }
+          }
+          return participantCard;
+      })]
+    };
+    }),
+    on(callActions.destroyMediaStream, (state) => {
+      const currentCard = state.participantCards.find(
+        card => card.participantId === state.currentParticipantId);
+      if(currentCard && currentCard.stream) {
+        currentCard.stream.getTracks().forEach((track) => track.stop());
+      }
       return state;
     }),
     on(callActions.addParticipant, (state, participant) => {
@@ -64,11 +94,14 @@ export const callFeature = createFeature({
     }),
     on(callActions.addParticipantCard, (state, { stream }) => {
       if(!state.participantCards.some(p => p.stream.id === stream.id)) {
+        const participant = state.participants.find(p => p.streamId === stream.id);
+        const currentUser = state.currentParticipantId === participant.id;
         return { ...state, participantCards: [ ...state.participantCards, {
           stream,
-          participantId: state.participants.find(p => p.streamId === stream.id).id,
+          participantId: participant.id,
           videoEnabled: true,
-          audioEnabled: true
+          audioEnabled: true,
+          currentUser
         }]};
       } else {
         return state;

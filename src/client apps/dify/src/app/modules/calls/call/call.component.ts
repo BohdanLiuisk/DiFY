@@ -48,6 +48,7 @@ export class CallComponent extends BaseComponent implements OnInit, OnDestroy {
 
   public override ngOnDestroy(): void {
     super.ngOnDestroy();
+    this.callFacade.destroyMediaStream();
     this.callFacade.clearState();
     this._destroyPeer();
     this.callFacade.leftCallHub();

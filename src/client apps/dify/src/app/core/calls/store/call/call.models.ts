@@ -37,5 +37,6 @@ export interface CallParticipantCard {
   participantId: GUID,
   stream: MediaStream,
   videoEnabled: boolean,
-  audioEnabled: boolean
+  audioEnabled: boolean,
+  currentUser: boolean
 }

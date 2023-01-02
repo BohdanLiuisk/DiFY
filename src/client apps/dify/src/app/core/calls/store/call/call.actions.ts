@@ -10,6 +10,7 @@ export const callActions = createActionGroup({
     'Call Hub Started': emptyProps(),
     'Stop Video Stream': emptyProps(),
     'Enable Video Stream': emptyProps(),
+    'Destroy Media Stream': emptyProps(),
     'Set New Video Stream': props<{ videoTrack: MediaStreamTrack }>(),
     'Set Current Participant Id': props<{ id: GUID }>(),
     'Join Call': props<{ peerId: string }>(),

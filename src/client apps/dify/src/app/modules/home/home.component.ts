@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { AuthUser } from '@core/auth/store/auth.models';
 import { Router } from '@angular/router';
 import { AuthFacade } from '@core/auth/store/auth.facade';

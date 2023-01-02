@@ -59,6 +59,10 @@ export class CallFacade {
     this.store.dispatch(callActions.enableVideoStream());
   }
 
+  public destroyMediaStream(): void {
+    this.store.dispatch(callActions.destroyMediaStream());
+  }
+
   public startCallHub(): void {
     this.store.dispatch(callActions.startCallHub());
   }

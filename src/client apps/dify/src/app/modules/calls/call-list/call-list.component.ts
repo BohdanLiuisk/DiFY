@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { CallColumns, SortDirection } from '@core/calls/store/call-list/call-list.reducer';
 import { filter, map, mergeMap, Observable, Subject, withLatestFrom } from 'rxjs';
 import { PageEvent } from '@angular/material/paginator';

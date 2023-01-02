@@ -2,7 +2,7 @@ import { Inject, Injectable } from "@angular/core";
 import { Actions, concatLatestFrom, createEffect, ofType } from "@ngrx/effects";
 import { CallFacade } from "@core/calls/store/call/call.facade";
 import { callActions } from '@core/calls/store/call/call.actions';
-import { catchError, map, of, switchMap, tap, merge, filter, from } from "rxjs";
+import { catchError, map, of, switchMap, tap, merge, filter, from, exhaustMap } from "rxjs";
 import { callHub } from "./call.hub";
 import { IHttpConnectionOptions } from "@microsoft/signalr";
 import { AuthService } from "@core/auth/auth.service";
@@ -82,11 +82,11 @@ export class CallEffects {
   public readonly enableVideoStream$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(callActions.enableVideoStream),
-      switchMap(() => {
+      exhaustMap(() => {
         return from(navigator.mediaDevices.getUserMedia({
           video: true,
           audio: false
-        })).pipe(switchMap((mediaStream) => {
+        })).pipe(exhaustMap((mediaStream) => {
           const videoTrack = mediaStream.getVideoTracks()[0];
           this.signarEvents.updateVideoTrack.next({ videoTrack })
           return of(callActions.setNewVideoStream({ videoTrack }));

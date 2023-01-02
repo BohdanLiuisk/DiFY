@@ -1,9 +1,8 @@
 <p>call works!</p>
 <p>{{(callFacade.call$ | async).name}}</p>
-<button (click)="callFacade.stopVideoStream()">Disable camera</button>
-<button (click)="callFacade.enableVideoStream()">Enable camera</button>
-<app-call-participant
-  *ngFor="let participantCard of participantCards$ | async"
-  [callParticipant]="participantCard">
-</app-call-participant>
-
+<div class="call-participants">
+  <app-call-participant class="participant"
+    *ngFor="let participantCard of participantCards$ | async"
+    [callParticipant]="participantCard">
+  </app-call-participant>
+</div>
