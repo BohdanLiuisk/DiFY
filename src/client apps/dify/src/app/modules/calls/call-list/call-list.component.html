@@ -1,93 +1,96 @@
-<header class="calls-list-header">
-  <h1 class="calls-list-header-h1">Calls</h1>
-  <button mat-flat-button color="primary" (click)="createNew()">
-    <mat-icon fontIcon="call"></mat-icon>
-    New call
-  </button>
-</header>
-<div class="calls-list-content">
-  <div class="calls-list-row calls-list-row-header">
-    <div class="calls-list-column">
-      <label>Name</label>
+<div class="calls-list">
+  <header class="calls-list-header">
+    <h1 class="calls-list-header-h1">Calls</h1>
+    <button mat-flat-button color="primary" (click)="createNew()">
+      <mat-icon fontIcon="call"></mat-icon>
+      New call
+    </button>
+  </header>
+  <div class="calls-list-content">
+    <div class="calls-list-row calls-list-row-header">
+      <div class="calls-list-column">
+        <label>Name</label>
+      </div>
+      <div class="calls-list-column calls-list-column-sorting">
+        <label>Status</label>
+        <mat-icon
+          [fontIcon]="(getSortIconByColumn(callColumns.active) | async) || 'expand_more'"
+          (click)="columnSorting.next(callColumns.active)">
+        </mat-icon>
+      </div>
+      <div class="calls-list-column">
+        <label>Action</label>
+      </div>
+      <div class="calls-list-column">
+        <label>Active participants</label>
+      </div>
+      <div class="calls-list-column calls-list-column-sorting">
+        <label>Total participants</label>
+        <mat-icon
+          [fontIcon]="(getSortIconByColumn(callColumns.totalParticipants) | async) || 'expand_more'"
+          (click)="columnSorting.next(callColumns.totalParticipants)">
+        </mat-icon>
+      </div>
+      <div class="calls-list-column calls-list-column-sorting">
+        <label>Start date</label>
+        <mat-icon
+          [fontIcon]="(getSortIconByColumn(callColumns.startDate) | async) || 'expand_more'"
+          (click)="columnSorting.next(callColumns.startDate)">
+        </mat-icon>
+      </div>
+      <div class="calls-list-column">
+        <label>End date</label>
+      </div>
     </div>
-    <div class="calls-list-column calls-list-column-sorting">
-      <label>Status</label>
-      <mat-icon
-        [fontIcon]="(getSortIconByColumn(callColumns.active) | async) || 'expand_more'"
-        (click)="columnSorting.next(callColumns.active)">
-      </mat-icon>
-    </div>
-    <div class="calls-list-column">
-      <label>Action</label>
-    </div>
-    <div class="calls-list-column">
-      <label>Active participants</label>
-    </div>
-    <div class="calls-list-column calls-list-column-sorting">
-      <label>Total participants</label>
-      <mat-icon
-        [fontIcon]="(getSortIconByColumn(callColumns.totalParticipants) | async) || 'expand_more'"
-        (click)="columnSorting.next(callColumns.totalParticipants)">
-      </mat-icon>
-    </div>
-    <div class="calls-list-column calls-list-column-sorting">
-      <label>Start date</label>
-      <mat-icon
-        [fontIcon]="(getSortIconByColumn(callColumns.startDate) | async) || 'expand_more'"
-        (click)="columnSorting.next(callColumns.startDate)">
-      </mat-icon>
-    </div>
-    <div class="calls-list-column">
-      <label>End date</label>
-    </div>
+    <ng-container *ngFor="let call of callListFacade.callsList$ | async">
+      <div class="calls-list-row calls-list-row-call">
+        <div class="calls-list-column">
+          <label>{{ call.name }}</label>
+        </div>
+        <div class="calls-list-column">
+          <label class="calls-list-column-status" [ngClass]="call.active ? 'active' : 'ended'">
+            {{ call.active | callStatus }}
+          </label>
+        </div>
+        <div class="calls-list-column">
+          <button
+            (click)="joinCall(call.id)"
+            mat-stroked-button
+            color="primary"
+            [disabled]="call.active ? false : true">
+            Join
+            <mat-icon fontIcon="call"></mat-icon>
+          </button>
+        </div>
+        <div class="calls-list-column">
+          <label>
+            {{ call.activeParticipants }}
+          </label>
+        </div>
+        <div class="calls-list-column">
+          <label>
+            {{ call.totalParticipants }}
+          </label>
+        </div>
+        <div class="calls-list-column">
+          <label>
+            {{ call.startDate | callDate: 'medium' }}
+          </label>
+        </div>
+        <div class="calls-list-column">
+          <label>
+            {{ call.endDate | callDate: 'medium': 'Not ended' }}
+          </label>
+        </div>
+      </div>
+    </ng-container>
   </div>
-  <ng-container *ngFor="let call of callListFacade.callsList$ | async">
-    <div class="calls-list-row calls-list-row-call">
-      <div class="calls-list-column">
-        <label>{{ call.name }}</label>
-      </div>
-      <div class="calls-list-column">
-        <label class="calls-list-column-status" [ngClass]="call.active ? 'active' : 'ended'">
-          {{ call.active | callStatus }}
-        </label>
-      </div>
-      <div class="calls-list-column">
-        <button
-          (click)="joinCall(call.id)"
-          mat-stroked-button
-          color="primary"
-          [disabled]="call.active ? false : true">
-          Join
-          <mat-icon fontIcon="call"></mat-icon>
-        </button>
-      </div>
-      <div class="calls-list-column">
-        <label>
-          {{ call.activeParticipants }}
-        </label>
-      </div>
-      <div class="calls-list-column">
-        <label>
-          {{ call.totalParticipants }}
-        </label>
-      </div>
-      <div class="calls-list-column">
-        <label>
-          {{ call.startDate | callDate: 'medium' }}
-        </label>
-      </div>
-      <div class="calls-list-column">
-        <label>
-          {{ call.endDate | callDate: 'medium': 'Not ended' }}
-        </label>
-      </div>
-    </div>
-  </ng-container>
+  <mat-paginator
+    [length]="callListFacade.totalCount$ | async"
+    [pageSize]="(callListFacade.listConfig$ | async).perPage"
+    [pageSizeOptions]="pageSizeOptions"
+    (page)="pageEvent.next($event)"
+    aria-label="Select page">
+  </mat-paginator>
+
 </div>
-<mat-paginator
-  [length]="callListFacade.totalCount$ | async"
-  [pageSize]="(callListFacade.listConfig$ | async).perPage"
-  [pageSizeOptions]="pageSizeOptions"
-  (page)="pageEvent.next($event)"
-  aria-label="Select page">
-</mat-paginator>

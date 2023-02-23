@@ -1,8 +1,11 @@
-<p>call works!</p>
-<p>{{(callFacade.call$ | async).name}}</p>
-<div class="call-participants">
-  <app-call-participant class="participant"
+<div #participants class="participants">
+  <app-call-participant
     *ngFor="let participantCard of participantCards$ | async"
-    [callParticipant]="participantCard">
+    [participant]="participantCard">
   </app-call-participant>
 </div>
+<footer class="footer">
+  <button mat-fab color="warn">
+    <mat-icon>call_end</mat-icon>
+  </button>
+</footer>

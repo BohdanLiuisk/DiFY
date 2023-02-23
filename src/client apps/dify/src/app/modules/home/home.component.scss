@@ -36,7 +36,6 @@
 
 .main-content {
   grid-area: content;
-  padding: 1rem;
   overflow: auto;
   &::-webkit-scrollbar-thumb {
     border-radius: 6px;
@@ -59,15 +58,14 @@
 
 .main-navigation {
   grid-area: nav;
-  background: $df-base-01;
+  background: linear-gradient(288deg, rgb(47, 25, 55) 35.57%, rgb(69, 38, 80) 92.42%, rgb(69, 38, 80) 92.42%);
   .input-search {
     display: flex;
     margin: 10px;
-    background-color: $df-base-02;
     align-items: center;
     border-radius: 4px;
     &.input-search--focus {
-      background-color: $df-base-03;
+      background-color: #4c1d64;
     }
     input {
       padding: 10px;

@@ -1,6 +1,6 @@
-import { Injectable } from "@angular/core";
-import { Store } from "@ngrx/store";
-import { GUID } from "@shared/custom-types";
+import { Injectable } from '@angular/core';
+import { Store } from '@ngrx/store';
+import { GUID } from '@shared/custom-types';
 import { Observable } from "rxjs";
 import { callActions } from '@core/calls/store/call/call.actions';
 import {
@@ -13,7 +13,8 @@ import {
   selectParticipantByStreamId,
   selectParticipantCards,
   selectParticipants,
-  selectCurrentMediaStream
+  selectCurrentMediaStream,
+  selectParticipantsCount
 } from "@core/calls/store/call/call.selectors";
 import { Call, CallParticipantCard, CallState, Participant } from "@core/calls/store/call/call.models";
 import { filterEmpty } from "@core/utils/pipe.operators";
@@ -27,6 +28,7 @@ export class CallFacade {
   public readonly loading$: Observable<boolean> = this.store.select(selectLoading);
   public readonly participants$: Observable<Participant[]> = this.store.select(selectParticipants).pipe(filterEmpty());
   public readonly participantCards$: Observable<CallParticipantCard[]> = this.store.select(selectParticipantCards).pipe(filterEmpty());
+  public readonly participantCardsCount$: Observable<number> = this.store.select(selectParticipantsCount);
   public readonly currentMediaStream$: Observable<MediaStream> = this.store.select(selectCurrentMediaStream).pipe(filterEmpty());
 
   constructor(private store: Store<CallState>) { }

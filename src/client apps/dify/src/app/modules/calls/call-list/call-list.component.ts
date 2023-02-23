@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { CallColumns, SortDirection } from '@core/calls/store/call-list/call-list.reducer';
 import { filter, map, mergeMap, Observable, Subject, withLatestFrom } from 'rxjs';
 import { PageEvent } from '@angular/material/paginator';
@@ -7,17 +7,22 @@ import { CallListFacade } from '@core/calls/store/call-list/call-list.facade';
 import { Dialog } from '@angular/cdk/dialog';
 import { CreateNewCallComponent } from '../create-new-call/create-new-call.component';
 import { GUID } from '@shared/custom-types';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
 
 @Component({
   selector: 'app-call-list',
   templateUrl: './call-list.component.html',
-  styleUrls: ['./call-list.component.scss']
+  styleUrls: ['./call-list.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CallListComponent extends BaseComponent implements OnInit {
   public callColumns = CallColumns;
   public pageSizeOptions: number[] = [5, 10, 25, 100];
   public columnSorting: Subject<CallColumns> = new Subject<CallColumns>();
   public pageEvent: Subject<PageEvent> = new Subject<PageEvent>();
+  testForm = new FormGroup({
+    testValue: new FormControl(`password`, Validators.required),
+  });
 
   private readonly sortColumnsSeqNumbers: Record<string, number> = {
     [CallColumns.startDate]: 3,

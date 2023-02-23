@@ -1,7 +1,1 @@
-<p>call-participant works!</p>
-<video #participantVideo autoplay="autoplay"></video>
-<audio #participantAudio autoplay></audio>
-<button mat-icon-button (click)="switchCamera()">
-  <mat-icon *ngIf="callParticipant.videoEnabled">videocam_off</mat-icon>
-  <mat-icon *ngIf="!callParticipant.videoEnabled">videocam</mat-icon>
-</button>
+<video class="video-element" #participantVideo autoplay="autoplay"></video>

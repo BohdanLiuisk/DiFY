@@ -1,23 +1,26 @@
-import {Component, OnDestroy, OnInit } from '@angular/core';
+import {AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AuthFacade } from '@core/auth/store/auth.facade';
 import { CallSignalrEvents } from '@core/calls/store/call-signalr.events';
 import { CallFacade } from '@core/calls/store/call/call.facade';
 import { CallParticipantCard } from '@core/calls/store/call/call.models';
 import { BaseComponent } from '@core/components/base.component';
+import { filterEmpty } from '@core/utils/pipe.operators';
 import { environment } from '@env/environment';
 import { GUID } from '@shared/custom-types';
 import Peer from 'peerjs';
-import {  Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-call',
   templateUrl: './call.component.html',
   styleUrls: ['./call.component.scss']
 })
-export class CallComponent extends BaseComponent implements OnInit, OnDestroy {
+export class CallComponent extends BaseComponent implements OnInit, AfterViewInit, OnDestroy {
   public peer: Peer;
   public participantCards$: Observable<CallParticipantCard[]> = this.callFacade.participantCards$.pipe(this.untilThis);
+  public participantsCount$: Observable<number> = this.callFacade.participantCardsCount$.pipe(this.untilThis, filterEmpty());
+  @ViewChild('participants') private _paricipantsDiv: ElementRef;
 
   constructor(
     public readonly callFacade: CallFacade,
@@ -43,6 +46,12 @@ export class CallComponent extends BaseComponent implements OnInit, OnDestroy {
         console.log('joined', loaded);
       });
       this._subscribeSignalrEvents();
+    });
+  }
+
+  public ngAfterViewInit(): void {
+    this.participantsCount$.subscribe(count => {
+      this._paricipantsDiv.nativeElement.style.gridTemplateColumns = `repeat(${count}, 1fr)`;
     });
   }
 
@@ -89,13 +98,9 @@ export class CallComponent extends BaseComponent implements OnInit, OnDestroy {
       call.on('stream', (stream) => {
         this.callFacade.addParticipantCard(stream);
       });
-       this.callFacade.currentMediaStream$.pipe(this.untilThis).subscribe((currentStream) => {
+      this.callFacade.currentMediaStream$.pipe(this.untilThis).subscribe((currentStream) => {
         call.answer(currentStream);
       });
-    });
-    this.peer.on('connection', function(dataConnection) {
-      console.log('new connection', dataConnection);
-      console.log('senders', dataConnection.peerConnection.getSenders());
     });
   }
 

@@ -28,8 +28,10 @@
     "paths": {
       "@env/*": [ "src/environments/*" ],
       "@core/*": [ "src/app/core/*" ],
+      "@glb-components-cdk/*": [ "src/app/glb-components/cdk/*" ],
+      "@glb-components/*": [ "src/app/glb-components/components/*" ],
       "@shared/*": [ "src/app/shared/*" ],
-      "@modules/*": [ "src/app/modules/*" ]
+      "@modules/*": [ "src/app/modules/*" ],
     }
   },
   "angularCompilerOptions": {

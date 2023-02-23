@@ -14,6 +14,9 @@ import { CreateNewCallComponent } from './create-new-call/create-new-call.compon
 import { callFeature } from '@core/calls/store/call/call.reducer';
 import { CallEffects } from '@core/calls/store/call/call.effects';
 import { CallParticipantComponent } from './call-participant/call-participant.component';
+import { GlbComponentsModule } from '@glb-components/glb-components.module';
+import { GlbCdkModule } from '@glb-components-cdk/glb-cdk.module';
+import { MatGridList, MatGridListModule, MatGridTile } from '@angular/material/grid-list';
 
 @NgModule({
   declarations: [
@@ -26,11 +29,14 @@ import { CallParticipantComponent } from './call-participant/call-participant.co
   ],
   imports: [
     SharedModule,
+    GlbComponentsModule,
+    GlbCdkModule,
     MaterialModule,
     CallsRoutingModule,
     StoreModule.forFeature(callListFeature),
     StoreModule.forFeature(callFeature),
     EffectsModule.forFeature([CallListEffects, CallEffects]),
+    MatGridListModule
   ]
 })
 export class CallsModule { }

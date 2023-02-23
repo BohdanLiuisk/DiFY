@@ -1,4 +1,5 @@
-﻿using Autofac;
+﻿using System;
+using Autofac;
 using DiFY.BuildingBlocks.EventBus;
 using DiFY.BuildingBlocks.Infrastructure.EventBus;
 using RabbitMQ.Client;

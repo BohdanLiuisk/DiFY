@@ -1,8 +1,22 @@
-.call {
-  &-participants {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-    grid-template-rows: repeat(auto-fit, minmax(50px, 1fr));
-    gap: 15px;
-  }
+:host {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.participants {
+  flex: 1 0 auto;
+  padding: 10px;
+  display: grid;
+  justify-items: center;
+}
+
+.footer {
+  flex-shrink: 0;
+  height: auto;
+  display: flex;
+  justify-content: center;
+  padding: 7px;
+  border-top: 1px solid rgb(219, 214, 225);
+  background-color: #f3f3f7;
 }

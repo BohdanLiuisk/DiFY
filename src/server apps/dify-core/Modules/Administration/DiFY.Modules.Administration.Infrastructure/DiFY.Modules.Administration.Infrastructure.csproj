@@ -6,7 +6,7 @@
 
     <ItemGroup>
         <PackageReference Include="FluentValidation" Version="10.4.0" />
-        <PackageReference Include="RabbitMQ.Client" Version="6.2.4" />
+        <PackageReference Include="RabbitMQ.Client" Version="6.4.0" />
         <PackageReference Include="Serilog" Version="2.10.0" />
         <PackageReference Include="Serilog.AspNetCore" Version="5.0.0" />
         <ProjectReference Include="..\..\..\BuildingBlocks\DiFY.BuildingBlocks.Application\DiFY.BuildingBlocks.Application.csproj" />

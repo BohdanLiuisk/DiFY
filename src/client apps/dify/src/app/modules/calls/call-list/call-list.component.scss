@@ -1,6 +1,7 @@
 @import "src/app/shared/styles/variables";
 
 .calls-list {
+  padding: 10px;
   &-header {
     display: grid;
     grid-template-columns: minmax(0px, 1fr) auto;
