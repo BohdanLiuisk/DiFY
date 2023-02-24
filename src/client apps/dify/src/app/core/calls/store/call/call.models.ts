@@ -38,5 +38,6 @@ export interface CallParticipantCard {
   stream: MediaStream,
   videoEnabled: boolean,
   audioEnabled: boolean,
-  currentUser: boolean
+  currentUser: boolean,
+  participant: Participant
 }

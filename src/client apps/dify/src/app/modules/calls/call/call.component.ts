@@ -17,9 +17,13 @@ import { Observable } from 'rxjs';
   styleUrls: ['./call.component.scss']
 })
 export class CallComponent extends BaseComponent implements OnInit, AfterViewInit, OnDestroy {
-  public peer: Peer;
-  public participantCards$: Observable<CallParticipantCard[]> = this.callFacade.participantCards$.pipe(this.untilThis);
-  public participantsCount$: Observable<number> = this.callFacade.participantCardsCount$.pipe(this.untilThis, filterEmpty());
+  private _peer: Peer;
+  public participantCards$: Observable<CallParticipantCard[]> = this.callFacade.participantCards$
+    .pipe(this.untilThis);
+  public currentCard$: Observable<CallParticipantCard> = this.callFacade.currentCard$
+    .pipe(this.untilThis);
+  public participantsCount$: Observable<number> = this.callFacade.participantCardsCount$
+    .pipe(this.untilThis, filterEmpty());
   @ViewChild('participants') private _paricipantsDiv: ElementRef;
 
   constructor(
@@ -63,9 +67,17 @@ export class CallComponent extends BaseComponent implements OnInit, AfterViewIni
     this.callFacade.leftCallHub();
   }
 
+  public switchCamera(currentCard: CallParticipantCard) {
+    if(currentCard.videoEnabled) {
+      this.callFacade.stopVideoStream();
+    } else {
+      this.callFacade.enableVideoStream();
+    }
+  }
+
   private _destroyPeer(): void {
-    this.peer?.disconnect();
-    this.peer?.destroy();
+    this._peer?.disconnect();
+    this._peer?.destroy();
   }
 
   private _subscribeSignalrEvents(): void {
@@ -78,9 +90,9 @@ export class CallComponent extends BaseComponent implements OnInit, AfterViewIni
     });
     this.signarEvents.updateVideoTrack$.pipe(this.untilThis).subscribe(({ videoTrack }) => {
       console.log('video track updated', videoTrack);
-      const keys = Object.keys(this.peer.connections);
+      const keys = Object.keys(this._peer.connections);
       keys.forEach(key => {
-        const peerConnection = this.peer.connections[key];
+        const peerConnection = this._peer.connections[key];
         peerConnection?.forEach((pc) => {
           const sender = pc.peerConnection.getSenders().find((s) => {
             return s.track.kind === videoTrack.kind;
@@ -92,9 +104,9 @@ export class CallComponent extends BaseComponent implements OnInit, AfterViewIni
   }
 
   private _configurePeer(): void {
-    this.peer = new Peer(environment.peerOptions);
-    this.peer.on('open', (id) => this._peerOpened(id));
-    this.peer.on('call', (call) => {
+    this._peer = new Peer(environment.peerOptions);
+    this._peer.on('open', (id) => this._peerOpened(id));
+    this._peer.on('call', (call) => {
       call.on('stream', (stream) => {
         this.callFacade.addParticipantCard(stream);
       });
@@ -110,7 +122,7 @@ export class CallComponent extends BaseComponent implements OnInit, AfterViewIni
 
   private _callParticipant(peerId: string): void {
     this.callFacade.currentMediaStream$.pipe(this.untilThis).subscribe((currentStream) => {
-      const call = this.peer.call(peerId, currentStream);
+      const call = this._peer.call(peerId, currentStream);
       call?.on('stream', (stream) => {
         this.callFacade.addParticipantCard(stream);
       });

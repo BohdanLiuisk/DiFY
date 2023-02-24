@@ -29,7 +29,8 @@
       "@env/*": [ "src/environments/*" ],
       "@core/*": [ "src/app/core/*" ],
       "@glb-components-cdk/*": [ "src/app/glb-components/cdk/*" ],
-      "@glb-components/*": [ "src/app/glb-components/components/*" ],
+      "@glb-components/*": [ "src/app/glb-components/components/*"],
+      "@df-components/*": [ "src/app/df-components/*"],
       "@shared/*": [ "src/app/shared/*" ],
       "@modules/*": [ "src/app/modules/*" ],
     }

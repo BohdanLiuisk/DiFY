@@ -101,7 +101,8 @@ export const callFeature = createFeature({
           participantId: participant.id,
           videoEnabled: true,
           audioEnabled: true,
-          currentUser
+          currentUser,
+          participant: state.participants.find(p => p.streamId === stream.id)
         }]};
       } else {
         return state;

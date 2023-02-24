@@ -19,5 +19,5 @@ export const selectParticipantById = (id: GUID) =>  createSelector(selectPartici
   (participants) => participants.find(participant => participant.id === id));
 export const selectCurrentParticipantCard = createSelector(selectParticipantCards, selectCurrentParticipantId,
   (participantCards, currentParticipantId) => participantCards.find(card => card.participantId === currentParticipantId));
-export const selectCurrentMediaStream =  createSelector(selectCurrentParticipantCard, (card) => card.stream);
-export const selectParticipantsCount =  createSelector(selectParticipantCards, (cards) => cards.length);
+export const selectCurrentMediaStream = createSelector(selectCurrentParticipantCard, (card) => card.stream);
+export const selectParticipantsCount = createSelector(selectParticipantCards, (cards) => cards.length);

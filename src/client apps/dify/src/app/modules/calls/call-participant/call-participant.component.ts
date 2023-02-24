@@ -10,7 +10,7 @@ import { BaseComponent } from '@core/components/base.component';
 })
 export class CallParticipantComponent extends BaseComponent implements OnInit, AfterViewInit {
   @ViewChild('participantVideo') private _video: ElementRef;
-  @Input() participant: CallParticipantCard;
+  @Input() participantCard: CallParticipantCard;
 
   constructor(public readonly callFacade: CallFacade) {
     super();
@@ -21,13 +21,13 @@ export class CallParticipantComponent extends BaseComponent implements OnInit, A
   }
 
   public ngAfterViewInit(): void {
-    if(this.participant.stream) {
-      this._video.nativeElement.srcObject = this.participant.stream;
+    if(this.participantCard.stream) {
+      this._video.nativeElement.srcObject = this.participantCard.stream;
     }
   }
 
   public switchCamera(): void {
-    if(this.participant.videoEnabled) {
+    if(this.participantCard.videoEnabled) {
       this.callFacade.stopVideoStream();
     } else {
       this.callFacade.enableVideoStream();

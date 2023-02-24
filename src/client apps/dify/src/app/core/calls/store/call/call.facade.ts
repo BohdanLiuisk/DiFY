@@ -14,7 +14,8 @@ import {
   selectParticipantCards,
   selectParticipants,
   selectCurrentMediaStream,
-  selectParticipantsCount
+  selectParticipantsCount,
+  selectCurrentParticipantCard
 } from "@core/calls/store/call/call.selectors";
 import { Call, CallParticipantCard, CallState, Participant } from "@core/calls/store/call/call.models";
 import { filterEmpty } from "@core/utils/pipe.operators";
@@ -30,6 +31,7 @@ export class CallFacade {
   public readonly participantCards$: Observable<CallParticipantCard[]> = this.store.select(selectParticipantCards).pipe(filterEmpty());
   public readonly participantCardsCount$: Observable<number> = this.store.select(selectParticipantsCount);
   public readonly currentMediaStream$: Observable<MediaStream> = this.store.select(selectCurrentMediaStream).pipe(filterEmpty());
+  public readonly currentCard$: Observable<CallParticipantCard> = this.store.select(selectCurrentParticipantCard).pipe(filterEmpty());
 
   constructor(private store: Store<CallState>) { }
 

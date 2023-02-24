@@ -18,7 +18,7 @@ import { RouterModule } from '@angular/router';
     FormsModule,
     ReactiveFormsModule,
     StickyHeaderComponent,
-    RouterModule,
+    RouterModule
   ]
 })
 export class SharedModule { }
