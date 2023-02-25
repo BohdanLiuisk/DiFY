@@ -1,8 +1,13 @@
 <div class="calls-list">
-  <header class="calls-list-header">
-    <h1 class="calls-list-header-h1">Calls</h1>
-    <button mat-flat-button color="primary" (click)="createNew()">
-      <mat-icon fontIcon="call"></mat-icon>
+  <header class="calls-list-header tui-space_bottom-2">
+    <h2 class="calls-list-header-h2">Calls</h2>
+    <button
+      tuiButton
+      type="button"
+      appearance="primary"
+      size="m"
+      icon="tuiIconPhone"
+      (click)="createNew()">
       New call
     </button>
   </header>
@@ -48,18 +53,23 @@
           <label>{{ call.name }}</label>
         </div>
         <div class="calls-list-column">
-          <label class="calls-list-column-status" [ngClass]="call.active ? 'active' : 'ended'">
-            {{ call.active | callStatus }}
-          </label>
+          <tui-tag
+            size="l"
+            [value]="getCallStatusTag(call)"
+            status="custom"
+            [ngClass]="call.active ? 'call-active-tag' : 'call-ended-tag'">
+          </tui-tag>
         </div>
         <div class="calls-list-column">
           <button
-            (click)="joinCall(call.id)"
-            mat-stroked-button
-            color="primary"
-            [disabled]="call.active ? false : true">
+            tuiButton
+            type="button"
+            appearance="flat"
+            size="m"
+            icon="tuiIconPhone"
+            [disabled]="!call.active"
+            (click)="joinCall(call.id)">
             Join
-            <mat-icon fontIcon="call"></mat-icon>
           </button>
         </div>
         <div class="calls-list-column">
@@ -85,12 +95,12 @@
       </div>
     </ng-container>
   </div>
-  <mat-paginator
-    [length]="callListFacade.totalCount$ | async"
-    [pageSize]="(callListFacade.listConfig$ | async).perPage"
-    [pageSizeOptions]="pageSizeOptions"
-    (page)="pageEvent.next($event)"
-    aria-label="Select page">
-  </mat-paginator>
-
+  <tui-table-pagination
+    [total]="callListFacade.totalCount$ | async"
+    [size]="(callListFacade.listConfig$ | async).perPage"
+    [items]="pageSizeOptions"
+    (sizeChange)="callListFacade.setPerPage($event)"
+    (pageChange)="callListFacade.setPage($event + 1)"
+    class="tui-space_top-2">
+  </tui-table-pagination>
 </div>
