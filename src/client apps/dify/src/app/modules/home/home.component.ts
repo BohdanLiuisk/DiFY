@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AuthUser } from '@core/auth/store/auth.models';
 import { Router } from '@angular/router';
 import { AuthFacade } from '@core/auth/store/auth.facade';
@@ -44,14 +44,14 @@ export class HomeComponent implements OnInit {
         id: 'HOME',
         label: 'Home',
         route: '/home',
-        iconClass: 'fa fa-home',
+        iconClass: 'tuiIconHome'
       },
       {
         id: 'CALLS',
         label: 'Calls',
         route: 'calls',
-        iconClass: 'fa fa-phone',
-        linkActiveExact: false
+        iconClass: 'tuiIconPhone',
+        linkActiveExact: false,
       }
     ];
   }
