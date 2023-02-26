@@ -4,5 +4,5 @@ export const grandTypes = {
 }
 
 export const dify = {
-  emptyString: ''
+  emptyString: ``
 }

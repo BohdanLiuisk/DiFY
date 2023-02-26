@@ -8,24 +8,28 @@
       [search]="currentSearch"
       toggleIconClasses="fa fa-angle-left"
       iconClasses="fa fa-circle-o">
-      <div class="input-search" [ngClass]="{ 'input-search--focus': inputSearchFocus }">
-        <input
-          matInput
-          placeholder="Search..."
-          type="text"
-          (keyup)="currentSearch = $any($event.target).value"
-          (focusin)="inputSearchFocus = true"
-          (focusout)="inputSearchFocus = false"
-          autocomplete="off"
-        />
-        <i class="fa fa-search"></i>
+      <div class="input-search">
+        <tui-input
+          tuiTextfieldSize="s"
+          tuiTextfieldIcon="tuiIconSearch"
+          [tuiTextfieldCleaner]="true"
+          [(ngModel)]="currentSearch">
+          Search...
+          <input type="text" tuiTextfield/>
+        </tui-input>
       </div>
     </df-sidebar-menu>
   </nav>
   <header class="main-header">
-    <span class="material-icons-outlined sidebar-toggle" (click)="sidebarCollapsed = !sidebarCollapsed">
-      {{sidebarCollapsed ? 'chevron_right' : 'chevron_left'}}
-    </span>
+    <button
+      tuiIconButton
+      type="button"
+      appearance="icon"
+      [icon]="sidebarCollapsed ? 'tuiIconChevronRight' : 'tuiIconChevronLeft'"
+      (click)="sidebarCollapsed = !sidebarCollapsed"
+      class="sidebar-toggle"
+      size="s">
+    </button>
   </header>
   <main class="main-content">
     <router-outlet></router-outlet>

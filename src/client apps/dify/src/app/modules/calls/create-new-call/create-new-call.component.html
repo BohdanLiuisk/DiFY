@@ -1,7 +1,23 @@
-<h2 mat-dialog-title>New call</h2>
-<mat-form-field class="name-field">
-  <input matInput placeholder="Name" [formControl]="nameControl">
-</mat-form-field>
-<button mat-flat-button color="primary" (click)="save()">Ok</button>
-
-<button mat-flat-button class="margin-left" (click)="cancel()">Cancel</button>
+<form [formGroup]="newCallForm" (ngSubmit)="submit()">
+  <div class="tui-form__row">
+    <tui-input
+      formControlName="callName"
+      tuiHintContent="Specific name of your call">
+        Name
+      <span class="tui-required"></span>
+    </tui-input>
+    <tui-error
+      formControlName="callName"
+      [error]="[] | tuiFieldError | async">
+    </tui-error>
+  </div>
+  <button
+    tuiButton
+    type="submit"
+    appearance="secondary"
+    size="m"
+    icon="tuiIconPhone"
+    class="tui-space_top-3">
+    Create
+  </button>
+</form>

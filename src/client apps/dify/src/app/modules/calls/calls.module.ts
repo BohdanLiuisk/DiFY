@@ -7,7 +7,6 @@ import { callListFeature } from '@core/calls/store/call-list/call-list.reducer';
 import { CallListEffects } from '@core/calls/store/call-list/call-list.effects';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
-import { MaterialModule } from '@shared/material.module';
 import { CallStatusPipe } from './pipes/call-status.pipe';
 import { CallDatePipe } from './pipes/call-date.pipe';
 import { CreateNewCallComponent } from './create-new-call/create-new-call.component';
@@ -28,7 +27,6 @@ import { TuiModule } from '@shared/tui.module';
   imports: [
     SharedModule,
     TuiModule,
-    MaterialModule,
     CallsRoutingModule,
     StoreModule.forFeature(callListFeature),
     StoreModule.forFeature(callFeature),

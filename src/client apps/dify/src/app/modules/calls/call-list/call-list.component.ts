@@ -1,13 +1,13 @@
-import {ChangeDetectionStrategy, Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { CallColumns, SortDirection } from '@core/calls/store/call-list/call-list.reducer';
-import { filter, map, mergeMap, Observable, Subject, withLatestFrom } from 'rxjs';
-import { PageEvent } from '@angular/material/paginator';
+import { ChangeDetectionStrategy, Component, Inject, Injector, OnInit } from '@angular/core';
+import { Call, CallColumns, SortDirection } from '@core/calls/store/call-list/call-list.reducer';
+import { filter, map, Observable, Subject, withLatestFrom } from 'rxjs';
 import { BaseComponent } from '@core/components/base.component';
 import { CallListFacade } from '@core/calls/store/call-list/call-list.facade';
-import { Dialog } from '@angular/cdk/dialog';
 import { CreateNewCallComponent } from '../create-new-call/create-new-call.component';
 import { GUID } from '@shared/custom-types';
-import {FormControl, FormGroup, Validators} from '@angular/forms';
+import { FormControl, Validators } from '@angular/forms';
+import { TuiDialogService } from '@taiga-ui/core';
+import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 
 @Component({
   selector: 'app-call-list',
@@ -16,13 +16,11 @@ import {FormControl, FormGroup, Validators} from '@angular/forms';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CallListComponent extends BaseComponent implements OnInit {
-  public callColumns = CallColumns;
-  public pageSizeOptions: number[] = [5, 10, 25, 100];
+  public readonly callColumns = CallColumns;
+  public readonly pageSizeOptions: number[] = [5, 10, 25, 100];
   public columnSorting: Subject<CallColumns> = new Subject<CallColumns>();
-  public pageEvent: Subject<PageEvent> = new Subject<PageEvent>();
-  testForm = new FormGroup({
-    testValue: new FormControl(`password`, Validators.required),
-  });
+  public newCallOpened: boolean = false;
+  public newCallNameControl: FormControl<string>;
 
   private readonly sortColumnsSeqNumbers: Record<string, number> = {
     [CallColumns.startDate]: 3,
@@ -30,34 +28,39 @@ export class CallListComponent extends BaseComponent implements OnInit {
     [CallColumns.active]: 1
   }
 
-  constructor(public callListFacade: CallListFacade, private _dialog: Dialog) {
+  private readonly newCallDialog = this.dialogService.open<{ name: string }>(
+    new PolymorpheusComponent(CreateNewCallComponent, this.injector), {
+      dismissible: true,
+      label: 'New call',
+      size: 'm'
+    }
+  );
+
+  constructor(
+    public callListFacade: CallListFacade,
+    @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
+    @Inject(Injector) private readonly injector: Injector,) {
     super();
   }
 
   public ngOnInit(): void {
     this.callListFacade.setPage(1);
     this._subscribeColumnSorting();
-    this._subscribePagination();
+    this.newCallNameControl = new FormControl<string>('', [Validators.required])
   }
 
   public getSortIconByColumn(sortBy: CallColumns): Observable<string> {
     return this.callListFacade.sortOptions$.pipe(
-      mergeMap(options => options),
-      filter(option => option.column === sortBy),
+      map(options => options.find(option => option.column === sortBy)),
+      filter(option => !!option),
       map(({ direction }) => this.getSortIcon(direction))
     );
   }
 
   public createNew(): void {
-    const dialogRef = this._dialog.open<{ name: string }>(CreateNewCallComponent, {
-      disableClose: true,
-      autoFocus: true,
-      restoreFocus: false,
-      width: '370px'
-    });
-    dialogRef.closed.subscribe(result => {
-      if(result && result.name) {
-        this.callListFacade.createNew(result.name);
+    this.newCallDialog.pipe(this.untilThis).subscribe({
+      next: ({ name }) => {
+        this.callListFacade.createNew(name);
       }
     });
   }
@@ -66,29 +69,16 @@ export class CallListComponent extends BaseComponent implements OnInit {
     this.callListFacade.joinCall(callId);
   }
 
-  private getSortIcon(direction: SortDirection): string {
-    if(direction === SortDirection.asc) {
-      return 'expand_less';
-    } else {
-      return 'expand_more';
-    }
+  public getCallStatusTag(call: Call): string {
+    return call.active ? 'Active': 'Ended';
   }
 
-  private _subscribePagination(): void {
-    this.pageEvent.pipe(
-      this.untilThis,
-      filter(pageEvent => pageEvent.previousPageIndex !== pageEvent.pageIndex)
-    ).subscribe(({ pageIndex: page } ) => {
-      this.callListFacade.setPage(page + 1);
-    });
-    this.pageEvent.pipe(
-      this.untilThis,
-      withLatestFrom(this.callListFacade.listConfig$),
-      filter(([pageEvent, listConfig]) => pageEvent.pageSize !== listConfig.perPage),
-      map(([pageEvent]) => pageEvent)
-    ).subscribe(({ pageSize: perPage }) => {
-      this.callListFacade.setPerPage(perPage);
-    });
+  private getSortIcon(direction: SortDirection): string {
+    if(direction === SortDirection.asc) {
+      return 'tuiIconChevronUp';
+    } else {
+      return 'tuiIconChevronDown';
+    }
   }
 
   private _subscribeColumnSorting(): void {
@@ -96,19 +86,13 @@ export class CallListComponent extends BaseComponent implements OnInit {
       this.untilThis,
       withLatestFrom(this.callListFacade.sortOptions$),
       map(([sortBy, sortOptions]) => {
-        const existingOption = sortOptions.filter(sortOption => sortOption.column === sortBy)[0];
-        if(existingOption) {
-          return {
-            ...existingOption,
-            direction: this._getOppositeSortDirection(existingOption.direction)
-          };
-        } else {
-          return {
-            column: sortBy,
-            direction: SortDirection.asc,
-            seqNumber: this.sortColumnsSeqNumbers[sortBy]
-          };
-        }
+        const existingOption = sortOptions.find(option => option.column === sortBy);
+        const direction = existingOption ? this._getOppositeSortDirection(existingOption.direction) : SortDirection.asc;
+        return {
+          column: sortBy,
+          direction,
+          seqNumber: this.sortColumnsSeqNumbers[sortBy]
+        };
       })
     ).subscribe(sortOption => {
       this.callListFacade.addSortOption(sortOption);

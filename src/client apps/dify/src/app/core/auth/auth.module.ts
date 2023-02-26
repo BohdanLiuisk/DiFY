@@ -8,14 +8,11 @@ import { AuthFacade } from '@core/auth/store/auth.facade';
 import { AuthService, authServiceInitProvider } from '@core/auth/auth.service';
 import { JWT_OPTIONS, JwtHelperService } from '@auth0/angular-jwt';
 import { JwtStorageService } from '@core/auth/jwt-storage.service';
-import { MaterialModule } from '@shared/material.module';
-
 @NgModule({
   imports: [
     SharedModule,
     StoreModule.forFeature(AUTH_FEATURE_KEY, authReducer),
-    EffectsModule.forFeature([AuthEffects]),
-    MaterialModule
+    EffectsModule.forFeature([AuthEffects])
   ],
   declarations: [],
   providers: [

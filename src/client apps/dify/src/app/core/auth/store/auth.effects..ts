@@ -1,12 +1,12 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import * as AuthActions from './auth.actions';
 import { AuthService } from '../auth.service';
 import { JwtStorageService } from '@core/auth/jwt-storage.service';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { catchError, exhaustMap, map, of, tap } from 'rxjs';
 import { JwtToken } from '@core/auth/store/auth.models';
-import { MatSnackBar} from '@angular/material/snack-bar';
+import { TuiAlertService, TuiNotification } from '@taiga-ui/core';
 
 @Injectable()
 export class AuthEffects {
@@ -15,7 +15,8 @@ export class AuthEffects {
     private actions$: Actions,
     private authService: AuthService,
     private jwtStorage: JwtStorageService,
-    private snackBar: MatSnackBar
+    @Inject(TuiAlertService)
+    private readonly alertService: TuiAlertService
   ) { }
 
   signUp$ = createEffect(() => {
@@ -111,12 +112,7 @@ export class AuthEffects {
     return this.actions$.pipe(
       ofType(AuthActions.loginFailure),
       tap(({ error: { error: { error_description }} }) => {
-        this.snackBar.open(error_description, 'Ok', {
-          horizontalPosition: 'right',
-          verticalPosition: 'top',
-          panelClass: ['error-snackbar'],
-          duration: 2000
-        });
+        this.alertService.open(error_description, { status: TuiNotification.Error }).subscribe();
       }));
     },
     { dispatch: false }

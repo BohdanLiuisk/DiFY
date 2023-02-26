@@ -1,12 +1,25 @@
 <df-sticky-header>
-  <div class="info-block">
-    <a routerLink="start">DiFy app</a>
-  </div>
-  <div class="actions-block">
-    <button mat-stroked-button color="primary" routerLink="sign-in">Login</button>
-    <button mat-stroked-button color="primary" routerLink="sign-up">Sign up</button>
+  <div class="welcome-header">
+    <h1 class="dify-header tui-text_h6" tuiLink routerLink="start">DiFY app</h1>
+    <div class="action-buttons">
+      <button
+        tuiButton
+        type="button"
+        size="m"
+        appearance="primary"
+        routerLink="sign-in"
+        class="tui-space_right-3">
+        Login
+      </button>
+      <button
+        tuiButton
+        type="button"
+        size="m"
+        appearance="secondary"
+        routerLink="sign-up">
+        Sign up
+      </button>
+    </div>
   </div>
 </df-sticky-header>
-<div class="center-page">
-  <router-outlet></router-outlet>
-</div>
+<router-outlet></router-outlet>
