@@ -1,4 +1,4 @@
-@import "src/app/shared/styles/variables";
+@import 'src/app/shared/styles/variables';
 
 .main-wrapper {
   display: grid;
@@ -19,18 +19,9 @@
   border-bottom: 1px solid $df-border-color-01;
   display: flex;
   .sidebar-toggle {
-    color: $df-text-grey-01;
-    width: 40px;
     height: auto;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     border-right: 1px solid rgb(219, 214, 225);
-    cursor: pointer;
-    transition: all 0.3s ease-out;
-    &:hover {
-      color: $df-text-grey-02;
-    }
+    border-radius: 0;
   }
 }
 
@@ -60,27 +51,10 @@
   grid-area: nav;
   background: linear-gradient(288deg, rgb(47, 25, 55) 35.57%, rgb(69, 38, 80) 92.42%, rgb(69, 38, 80) 92.42%);
   .input-search {
-    display: flex;
-    margin: 10px;
-    align-items: center;
-    border-radius: 4px;
-    &.input-search--focus {
-      background-color: #4c1d64;
-    }
-    input {
-      padding: 10px;
-      color: $df-text-white-01;
-      font: inherit;
-      background: rgba(0,0,0,0);
-      border: none;
-      outline: none;
-      caret-color: $df-text-white-01;
-    }
-    i, input::placeholder {
-      color: $df-text-white-01;
-    }
-    i {
-      margin: 0 10px;
+    width: 220px;
+    tui-input {
+      margin: 7px;
+      border-radius: 4px;
     }
   }
 }

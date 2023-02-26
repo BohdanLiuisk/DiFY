@@ -58,12 +58,9 @@ export class CallListComponent extends BaseComponent implements OnInit {
   }
 
   public createNew(): void {
-    this.newCallDialog.subscribe({
+    this.newCallDialog.pipe(this.untilThis).subscribe({
       next: ({ name }) => {
         this.callListFacade.createNew(name);
-      },
-      complete: () => {
-        console.info('Dialog closed');
       }
     });
   }
@@ -78,9 +75,9 @@ export class CallListComponent extends BaseComponent implements OnInit {
 
   private getSortIcon(direction: SortDirection): string {
     if(direction === SortDirection.asc) {
-      return 'expand_less';
+      return 'tuiIconChevronUp';
     } else {
-      return 'expand_more';
+      return 'tuiIconChevronDown';
     }
   }
 

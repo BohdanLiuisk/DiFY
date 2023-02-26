@@ -1,13 +1,12 @@
-.login-form {
-  width: 330px;
-  padding: 20px;
+:host {
+  display: flex;
+  justify-content: center;
 }
 
-.mat-form-field {
+.tui-form__button {
   width: 100%;
-  margin-bottom: 7px;
 }
 
-.mat-flat-button {
-  width: 100%;
+.tui-row_sme {
+  justify-content: center;
 }

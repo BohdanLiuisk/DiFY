@@ -1,30 +1,41 @@
-import { Component, OnInit } from '@angular/core';
-import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
+import { Component } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { dify } from '@shared/constans/app-settings';
 import { AuthFacade } from '@core/auth/store/auth.facade';
+import { TUI_VALIDATION_ERRORS } from '@taiga-ui/kit';
+import { maxLengthValidator, minLengthValidator } from '@core/utils/validators';
 
 @Component({
   selector: 'app-sign-in',
   templateUrl: './sign-in.component.html',
-  styleUrls: ['./sign-in.component.scss']
+  styleUrls: ['./sign-in.component.scss'],
+  providers: [
+    {
+      provide: TUI_VALIDATION_ERRORS,
+      useValue: {
+          required: 'Value is required',
+          maxlength: maxLengthValidator,
+          minlength: minLengthValidator
+      }
+    }
+  ]
 })
-export class SignInComponent implements OnInit {
+export class SignInComponent {
   public hidePassword: boolean = true;
-  public loginForm: FormGroup;
+  public readonly loginForm: FormGroup = new FormGroup({
+    'username': new FormControl(dify.emptyString, [
+      Validators.required,
+      Validators.minLength(4),
+      Validators.maxLength(15)
+    ]),
+    'password': new FormControl(dify.emptyString, [
+      Validators.required,
+      Validators.minLength(4),
+      Validators.maxLength(20)
+    ]),
+  });
 
   constructor(private authFacade: AuthFacade) { }
-
-  public ngOnInit(): void {
-    this.setUpLoginForm();
-  }
-
-  public get username(): AbstractControl {
-    return this.loginForm.get('username');
-  }
-
-  public get password(): AbstractControl {
-    return this.loginForm.get('password');
-  }
 
   public submit(): void {
     if(this.loginForm.valid) {
@@ -33,21 +44,5 @@ export class SignInComponent implements OnInit {
     } else {
       this.loginForm.markAllAsTouched();
     }
-  }
-
-  private setUpLoginForm(): void {
-    const empty = dify.emptyString;
-    this.loginForm = new FormGroup({
-      'username': new FormControl(empty, [
-        Validators.required,
-        Validators.minLength(4),
-        Validators.maxLength(15)
-      ]),
-      'password': new FormControl(empty, [
-        Validators.required,
-        Validators.minLength(4),
-        Validators.maxLength(20)
-      ]),
-    });
   }
 }

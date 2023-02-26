@@ -1,8 +1,2 @@
-@use '@angular/material' as mat;
-@import url('https://fonts.cdnfonts.com/css/avenir-next-cyr');
-$dify-typography: mat.define-typography-config(
-  $font-family: '"Avenir Next Cyr Medium", sans-serif'
-);
-@include mat.core($dify-typography);
 @import "src/app/shared/styles/global.scss";
 @import "src/app/shared/styles/df-side-menu.scss";

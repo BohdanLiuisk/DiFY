@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { WelcomeComponent } from './welcome.component';
 import { SharedModule } from '@shared/shared.module';
 import { WelcomeRoutingModule } from '@modules/welcome/welcome-routing.module';
-import { MaterialModule } from '@shared/material.module';
+import { TuiModule } from '@shared/tui.module';
 
 @NgModule({
   declarations: [
@@ -10,8 +10,8 @@ import { MaterialModule } from '@shared/material.module';
   ],
   imports: [
     SharedModule,
-    MaterialModule,
-    WelcomeRoutingModule
+    WelcomeRoutingModule,
+    TuiModule
   ]
 })
 export class WelcomeModule { }

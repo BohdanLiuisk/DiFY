@@ -1,21 +1,33 @@
-<form [formGroup]="loginForm" (ngSubmit)="submit()" class="login-form">
-  <mat-form-field appearance="fill" class="login-form-username">
-    <mat-label>Enter login</mat-label>
-    <input matInput formControlName="username" required>
-    <mat-error *ngIf="username.invalid && (username.dirty || username.touched) && username.errors?.['required']">
-      {{"Login is required"}}
-    </mat-error>
-  </mat-form-field>
-  <mat-form-field appearance="fill">
-    <mat-label>Enter password</mat-label>
-    <input matInput formControlName="password" [type]="hidePassword ? 'password' : 'text'">
-    <mat-error *ngIf="password.invalid && (password.dirty || password.touched) && password.errors?.['required']">
-      {{ "Password is required"}}
-    </mat-error>
-    <button type="button" mat-icon-button matSuffix (click)="hidePassword = !hidePassword"
-            [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hidePassword">
-      <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
-    </button>
-  </mat-form-field>
-  <button type="submit" mat-flat-button color="primary">Login</button>
-</form>
+<div class="tui-container tui-space_top-5">
+  <form [formGroup]="loginForm" (ngSubmit)="submit()">
+    <div class="tui-row tui-row_sme">
+      <div class="tui-col_5">
+        <div class="tui-form__row">
+          <tui-input
+            formControlName="username">
+            Username
+            <span class="tui-required"></span>
+          </tui-input>
+          <tui-error formControlName="username"  [error]="[] | tuiFieldError | async"></tui-error>
+        </div>
+        <div class="tui-form__row">
+          <tui-input-password
+            formControlName="password">
+            Password
+            <input tuiTextfield/>
+            <span class="tui-required"></span>
+          </tui-input-password>
+          <tui-error formControlName="password"  [error]="[] | tuiFieldError | async"></tui-error>
+        </div>
+        <div class="tui-form__row">
+          <button
+            tuiButton
+            type="submit"
+            class="tui-form__button">
+            Login
+          </button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

@@ -1,27 +1,16 @@
+.welcome-header {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+  .dify-header {
+    cursor: pointer;
+    color: aliceblue;
+  }
+}
+
 .center-page {
   display: flex;
   justify-content: center;
   height: 100%;
-}
-
-.info-block {
-  flex: 1 1 0;
-  display: flex;
-  align-items: center;
-  a {
-    color: papayawhip;
-    text-decoration: inherit;
-    font-size: 18px;
-  }
-}
-
-.actions-block {
-  display: flex;
-  justify-content: flex-end;
-  flex: 1 1 0;
-  margin: auto 0 auto 0;
-  .mat-stroked-button {
-    color: papayawhip !important;
-    margin-left: 13px !important;
-  }
 }

@@ -1,6 +1,19 @@
 import { NgModule } from '@angular/core';
-import { TuiButtonModule, TuiDialogModule, TuiErrorModule, TuiHintModule } from '@taiga-ui/core';
-import { TuiFieldErrorPipeModule, TuiInputModule, TuiTagModule } from '@taiga-ui/kit';
+import {
+  TuiButtonModule,
+  TuiDialogModule,
+  TuiErrorModule,
+  TuiHintModule,
+  TuiLinkModule,
+  TuiSvgModule,
+  TuiTextfieldControllerModule
+} from '@taiga-ui/core';
+import {
+  TuiFieldErrorPipeModule,
+  TuiInputModule,
+  TuiInputPasswordModule,
+  TuiTagModule
+} from '@taiga-ui/kit';
 import { TuiTablePaginationModule } from '@taiga-ui/addon-table';
 
 @NgModule({
@@ -8,11 +21,14 @@ import { TuiTablePaginationModule } from '@taiga-ui/addon-table';
     TuiButtonModule,
     TuiTagModule,
     TuiTablePaginationModule,
-    TuiDialogModule,
     TuiErrorModule,
     TuiFieldErrorPipeModule,
     TuiInputModule,
-    TuiHintModule
+    TuiHintModule,
+    TuiSvgModule,
+    TuiTextfieldControllerModule,
+    TuiLinkModule,
+    TuiInputPasswordModule
   ],
   exports: [
     TuiButtonModule,
@@ -22,7 +38,11 @@ import { TuiTablePaginationModule } from '@taiga-ui/addon-table';
     TuiErrorModule,
     TuiFieldErrorPipeModule,
     TuiInputModule,
-    TuiHintModule
+    TuiHintModule,
+    TuiSvgModule,
+    TuiTextfieldControllerModule,
+    TuiLinkModule,
+    TuiInputPasswordModule
   ]
 })
 export class TuiModule { }
