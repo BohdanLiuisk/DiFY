@@ -15,8 +15,7 @@
       [menuItem]="menuItem"
       (anchorClicked)="node.onNodeToggleClick()"
       [isActive]="node.isActiveChild">
-      <i toggleIcon [@rotate]="node.isOpen" [class]="node.nodeService.toggleIconClasses">
-      </i>
+      <tui-svg toggleIcon [@rotate]="node.isOpen" [src]="node.nodeService.toggleIconClasses"></tui-svg>
     </df-menu-anchor>
     <df-menu-node
       #node

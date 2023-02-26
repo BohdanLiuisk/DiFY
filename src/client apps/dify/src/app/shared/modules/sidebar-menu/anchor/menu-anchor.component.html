@@ -15,11 +15,11 @@
   </a>
 </ng-container>
 <ng-template #innerItem>
-  <i
-    [class]="menuItem.iconClass || anchorService.iconClasses"
+  <tui-svg
+    [src]="menuItem.iconClass || anchorService.iconClasses"
     *ngIf="menuItem.iconClass || anchorService.iconClasses"
-    class="df-menu-anchor__icon">
-  </i>
+    class="df-menu-anchor__icon tui-space_right-2">
+  </tui-svg>
   <span class="df-menu-anchor__label">{{ menuItem.label }}</span>
   <span
     *ngIf="menuItem.badges || menuItem.children"
