@@ -18,6 +18,9 @@
   &:hover:not(.df-menu-anchor--active) {
     border-left-color: $df-base-04;
   }
+  &:hover {
+    background: $df-base-04;
+  }
 }
 
 .df-menu-node ul .df-menu-anchor {
@@ -106,7 +109,7 @@
   .df-menu-node__label,
   > ul > .df-menu-item:hover > .df-menu-anchor .df-menu-anchor__label {
     line-height: 14px;
-    padding: 12px 15px;
+    padding: 17px 15px;
     color: $df-text-white-01;
     display: block;
     background: $df-base-04;
