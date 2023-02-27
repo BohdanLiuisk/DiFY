@@ -1,4 +1,4 @@
-import { TuiDialogModule, TuiRootModule } from "@taiga-ui/core";
+import { TuiAlertModule, TuiDialogModule, TuiRootModule } from "@taiga-ui/core";
 import { SharedModule } from '@shared/shared.module';
 import { NgModule } from '@angular/core';
 import { AppComponent } from './app.component';
@@ -22,7 +22,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     BrowserModule,
     BrowserAnimationsModule,
     TuiRootModule,
-    TuiDialogModule
+    TuiDialogModule,
+    TuiAlertModule
   ],
   bootstrap: [AppComponent]
 })

@@ -19,9 +19,7 @@ import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 })
 export class CreateNewCallComponent {
   public newCallForm: FormGroup = new FormGroup({
-    callName: new FormControl('',
-      [Validators.required]
-    )
+    callName: new FormControl('',  [Validators.required])
   });
 
   constructor(

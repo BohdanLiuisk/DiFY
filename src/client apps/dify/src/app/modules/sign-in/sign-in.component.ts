@@ -21,7 +21,6 @@ import { maxLengthValidator, minLengthValidator } from '@core/utils/validators';
   ]
 })
 export class SignInComponent {
-  public hidePassword: boolean = true;
   public readonly loginForm: FormGroup = new FormGroup({
     'username': new FormControl(dify.emptyString, [
       Validators.required,

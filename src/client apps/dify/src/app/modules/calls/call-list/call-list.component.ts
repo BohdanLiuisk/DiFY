@@ -5,7 +5,6 @@ import { BaseComponent } from '@core/components/base.component';
 import { CallListFacade } from '@core/calls/store/call-list/call-list.facade';
 import { CreateNewCallComponent } from '../create-new-call/create-new-call.component';
 import { GUID } from '@shared/custom-types';
-import { FormControl, Validators } from '@angular/forms';
 import { TuiDialogService } from '@taiga-ui/core';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 
@@ -20,7 +19,6 @@ export class CallListComponent extends BaseComponent implements OnInit {
   public readonly pageSizeOptions: number[] = [5, 10, 25, 100];
   public columnSorting: Subject<CallColumns> = new Subject<CallColumns>();
   public newCallOpened: boolean = false;
-  public newCallNameControl: FormControl<string>;
 
   private readonly sortColumnsSeqNumbers: Record<string, number> = {
     [CallColumns.startDate]: 3,
@@ -46,14 +44,13 @@ export class CallListComponent extends BaseComponent implements OnInit {
   public ngOnInit(): void {
     this.callListFacade.setPage(1);
     this._subscribeColumnSorting();
-    this.newCallNameControl = new FormControl<string>('', [Validators.required])
   }
 
   public getSortIconByColumn(sortBy: CallColumns): Observable<string> {
     return this.callListFacade.sortOptions$.pipe(
       map(options => options.find(option => option.column === sortBy)),
       filter(option => !!option),
-      map(({ direction }) => this.getSortIcon(direction))
+      map(({ direction }) => this._getSortIcon(direction))
     );
   }
 
@@ -73,7 +70,7 @@ export class CallListComponent extends BaseComponent implements OnInit {
     return call.active ? 'Active': 'Ended';
   }
 
-  private getSortIcon(direction: SortDirection): string {
+  private _getSortIcon(direction: SortDirection): string {
     if(direction === SortDirection.asc) {
       return 'tuiIconChevronUp';
     } else {
