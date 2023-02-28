@@ -5,17 +5,17 @@ import { TUI_VALIDATION_ERRORS } from '@taiga-ui/kit';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 
 @Component({
-    selector: 'app-create-new-call',
-    templateUrl: './create-new-call.component.html',
-    styleUrls: ['./create-new-call.component.scss'],
-    providers: [
-      {
-          provide: TUI_VALIDATION_ERRORS,
-          useValue: {
-              required: 'Value is required'
-          }
+  selector: 'app-create-new-call',
+  templateUrl: './create-new-call.component.html',
+  styleUrls: ['./create-new-call.component.scss'],
+  providers: [
+    {
+      provide: TUI_VALIDATION_ERRORS,
+      useValue: {
+          required: 'Value is required'
       }
-    ]
+    }
+  ]
 })
 export class CreateNewCallComponent {
   public newCallForm: FormGroup = new FormGroup({

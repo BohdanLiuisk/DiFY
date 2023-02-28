@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AuthFacade } from '@core/auth/store/auth.facade';
 import { CallSignalrEvents } from '@core/calls/store/call-signalr.events';
@@ -18,11 +18,11 @@ import { Observable } from 'rxjs';
 })
 export class CallComponent extends BaseComponent implements OnInit, AfterViewInit, OnDestroy {
   private _peer: Peer;
-  public participantCards$: Observable<CallParticipantCard[]> = this.callFacade.participantCards$
+  public readonly participantCards$: Observable<CallParticipantCard[]> = this.callFacade.participantCards$
     .pipe(this.untilThis);
-  public currentCard$: Observable<CallParticipantCard> = this.callFacade.currentCard$
+  public readonly currentCard$: Observable<CallParticipantCard> = this.callFacade.currentCard$
     .pipe(this.untilThis);
-  public participantsCount$: Observable<number> = this.callFacade.participantCardsCount$
+  public readonly participantsCount$: Observable<number> = this.callFacade.participantCardsCount$
     .pipe(this.untilThis, filterEmpty());
   @ViewChild('participants') private _paricipantsDiv: ElementRef;
 

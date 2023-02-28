@@ -13,9 +13,9 @@ import { maxLengthValidator, minLengthValidator } from '@core/utils/validators';
     {
       provide: TUI_VALIDATION_ERRORS,
       useValue: {
-          required: 'Value is required',
-          maxlength: maxLengthValidator,
-          minlength: minLengthValidator
+        required: 'Value is required',
+        maxlength: maxLengthValidator,
+        minlength: minLengthValidator
       }
     }
   ]

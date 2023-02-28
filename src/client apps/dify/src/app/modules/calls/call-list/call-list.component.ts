@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Inject, Injector, OnInit } from '@angular/core';
+import { Component, Inject, Injector, OnInit } from '@angular/core';
 import { Call, CallColumns, SortDirection } from '@core/calls/store/call-list/call-list.reducer';
 import { filter, map, Observable, Subject, withLatestFrom } from 'rxjs';
 import { BaseComponent } from '@core/components/base.component';
@@ -11,13 +11,12 @@ import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 @Component({
   selector: 'app-call-list',
   templateUrl: './call-list.component.html',
-  styleUrls: ['./call-list.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  styleUrls: ['./call-list.component.scss']
 })
 export class CallListComponent extends BaseComponent implements OnInit {
   public readonly callColumns = CallColumns;
   public readonly pageSizeOptions: number[] = [5, 10, 25, 100];
-  public columnSorting: Subject<CallColumns> = new Subject<CallColumns>();
+  public readonly columnSorting: Subject<CallColumns> = new Subject<CallColumns>();
   public newCallOpened: boolean = false;
 
   private readonly sortColumnsSeqNumbers: Record<string, number> = {
@@ -56,9 +55,7 @@ export class CallListComponent extends BaseComponent implements OnInit {
 
   public createNew(): void {
     this.newCallDialog.pipe(this.untilThis).subscribe({
-      next: ({ name }) => {
-        this.callListFacade.createNew(name);
-      }
+      next: ({ name }) => this.callListFacade.createNew(name)
     });
   }
 
