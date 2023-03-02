@@ -19,19 +19,18 @@ export class CallListEffects {
     return this.actions$.pipe(
       ofType(callListActions.createNewCall),
       concatMap(({ name }) => this.callService.createNew(name).pipe(
-        tap(({ callId }) => {
-          this.router.navigate([`home/calls/${callId}`]);
-        })
+        map(({ callId }) =>
+          callListActions.joinCall({ callId })
+        )
       ))
     )
-  }, { dispatch: false }
-  );
+  });
 
   public readonly joinCall = createEffect(() => {
     return this.actions$.pipe(
       ofType(callListActions.joinCall),
       tap(({ callId }) => {
-        this.router.navigate([`home/calls/${callId}`]);
+        this.router.navigate([`home/social/calls/${callId}`]);
       })
     )
   }, { dispatch: false });

@@ -7,8 +7,8 @@ const routes: Routes =  [
     component: HomeComponent,
     children: [
       {
-        path: 'calls',
-        loadChildren: async () => (await import('../calls/calls.module')).CallsModule
+        path: 'social',
+        loadChildren: async () => (await import('../social/social.module')).SocialModule
       }
     ]
   }
