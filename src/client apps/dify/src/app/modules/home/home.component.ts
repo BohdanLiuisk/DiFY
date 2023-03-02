@@ -39,19 +39,27 @@ export class HomeComponent extends BaseComponent implements OnInit {
   private setMenu(): void {
     this.menu = [
       {
+        id: 'HOME',
+        label: 'Home',
+        route: '/home',
+        iconClass: 'tuiIconHome',
+        linkActiveExact: true
+      },
+      {
         id: 'SOCIAL',
         header: 'Social',
       },
       {
-        id: 'HOME',
-        label: 'Home',
-        route: '/home',
-        iconClass: 'tuiIconHome'
+        id: 'Feed',
+        label: 'Feed',
+        route: 'social',
+        iconClass: 'tuiIconFileText',
+        linkActiveExact: true
       },
       {
         id: 'CALLS',
         label: 'Calls',
-        route: 'calls',
+        route: 'social/calls',
         iconClass: 'tuiIconPhone',
         linkActiveExact: false,
       }
