@@ -1,0 +1,15 @@
+@import '@taiga-ui/core/styles/taiga-ui-local.scss';
+
+[tuiWrapper][data-appearance='green-button'] {
+  background: theme('colors.green.300');
+  color: theme('colors.green.800');
+  @include wrapper-hover {
+    background: theme('colors.green.400');
+  }
+  @include wrapper-active {
+    background: theme('colors.green.500');
+  }
+  @include wrapper-disabled {
+      background: #eaecee;
+  }
+}
