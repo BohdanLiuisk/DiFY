@@ -9,6 +9,10 @@ const routes: Routes = [
   {
     path: 'calls',
     loadChildren: async () => (await import('../calls/calls.module')).CallsModule
+  },
+  {
+    path: 'profile',
+    loadChildren: async () => (await import('../user-profile/user-profile.module')).UserProfileModule
   }
 ];
 

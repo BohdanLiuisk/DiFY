@@ -28,15 +28,16 @@ export class HomeComponent extends BaseComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-    this.currentUser$ = this.authFacade.user$.pipe(this.untilThis);
-    this.setMenu();
+    this.authFacade.user$.pipe(this.untilThis).subscribe(user => {
+      this.setMenu(user.id);
+    });
   }
 
   public logout(): void {
     this.authFacade.logout();
   }
 
-  private setMenu(): void {
+  private setMenu(userId): void {
     this.menu = [
       {
         id: 'HOME',
@@ -48,6 +49,13 @@ export class HomeComponent extends BaseComponent implements OnInit {
       {
         id: 'SOCIAL',
         header: 'Social',
+      },
+      {
+        id: 'my_profile',
+        label: 'My profile',
+        route: `social/profile/${userId}`,
+        iconClass: 'tuiIconUser',
+        linkActiveExact: false
       },
       {
         id: 'Feed',

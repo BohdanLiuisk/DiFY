@@ -7,6 +7,7 @@ import { CreateNewCallComponent } from '../create-new-call/create-new-call.compo
 import { GUID } from '@shared/custom-types';
 import { TuiDialogService } from '@taiga-ui/core';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-call-list',
@@ -36,13 +37,18 @@ export class CallListComponent extends BaseComponent implements OnInit {
   constructor(
     public callListFacade: CallListFacade,
     @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
-    @Inject(Injector) private readonly injector: Injector,) {
+    @Inject(Injector) private readonly injector: Injector,
+    private route: ActivatedRoute,
+    private router: Router) {
     super();
   }
 
   public ngOnInit(): void {
     this.callListFacade.setPage(1);
     this._subscribeColumnSorting();
+    this.route.queryParams.pipe(this.untilThis).subscribe(params => {
+      const section = params['section'];
+    });
   }
 
   public getSortIconByColumn(sortBy: CallColumns): Observable<string> {
@@ -65,6 +71,10 @@ export class CallListComponent extends BaseComponent implements OnInit {
 
   public getCallStatusTag(call: Call): string {
     return call.active ? 'Active': 'Ended';
+  }
+
+  public addQueryFiltrationParam(section) {
+    this.router.navigate(['/home/social/calls'], { queryParams: { section } });
   }
 
   private _getSortIcon(direction: SortDirection): string {
