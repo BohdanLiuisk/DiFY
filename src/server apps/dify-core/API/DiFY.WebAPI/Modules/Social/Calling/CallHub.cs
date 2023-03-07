@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using DiFY.BuildingBlocks.Application;
 using DiFY.Modules.Social.Application.Calling;
 using DiFY.Modules.Social.Application.Calling.GetCall;
-using DiFY.Modules.Social.Application.Calling.GetCallParticipant;
 using DiFY.Modules.Social.Application.Calling.JoinCall;
 using DiFY.Modules.Social.Application.Calling.LeftCall;
 using DiFY.Modules.Social.Application.Contracts;

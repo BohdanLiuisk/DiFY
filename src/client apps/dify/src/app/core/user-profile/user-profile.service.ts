@@ -11,7 +11,6 @@ export class UserProfileService {
   constructor(private httpService: CoreHttpService) { }
 
   public getUserProfile(userId: GUID): Observable<UserInfo> {
-    //return this.httpService.getRequest<UserInfo>(`${this.profilePath}/${userId}`);
-    return of({ name: 'Bogdan Liusik' });
+    return this.httpService.getRequest<UserInfo>(`${this.profilePath}/${userId}`);
   }
 }

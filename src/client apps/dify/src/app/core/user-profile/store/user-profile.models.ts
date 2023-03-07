@@ -1,5 +1,13 @@
+import { GUID } from "@shared/custom-types";
+
 export interface UserInfo {
-  name: string;
+  id: GUID;
+  firstName: string;
+  lastName: string;
+  login: string;
+  email: string;
+  createdOn: Date;
+  avatarUrl: string;
 }
 
 export interface UserProfileState {

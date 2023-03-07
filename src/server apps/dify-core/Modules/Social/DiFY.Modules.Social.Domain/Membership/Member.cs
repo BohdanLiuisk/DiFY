@@ -18,6 +18,8 @@ public class Member : Entity, IAggregateRoot
     private string _name;
 
     private DateTime _createdOn;
+
+    private string _avatarUrl;
     
     private Member() { }
     

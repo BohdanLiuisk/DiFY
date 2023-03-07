@@ -4,9 +4,7 @@ import { userProfileActions } from './user-profile.actions';
 import { UserProfileState } from './user-profile.models';
 
 const initialState: UserProfileState = {
-  user: {
-    name: dify.emptyString
-  },
+  user: null,
   loading: false
 }
 
