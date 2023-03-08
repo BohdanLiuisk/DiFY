@@ -8,6 +8,8 @@ export interface UserInfo {
   email: string;
   createdOn: Date;
   avatarUrl: string;
+  currentUser: boolean;
+  online: boolean;
 }
 
 export interface UserProfileState {

@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Dapper;
 using DiFY.BuildingBlocks.Application.Data;
 using DiFY.Modules.Social.Application.Configuration.Queries;
+using DiFY.Modules.Social.Domain.Membership.Abstraction;
 
 namespace DiFY.Modules.Social.Application.Members.GetUserProfile;
 
@@ -10,9 +11,12 @@ public class GetUserProfileQueryHandler : IQueryHandler<GetUserProfileQuery, Get
 {
     private readonly ISqlConnectionFactory _sqlConnectionFactory;
 
-    public GetUserProfileQueryHandler(ISqlConnectionFactory sqlConnectionFactory)
+    private readonly IMemberContext _memberContext;
+
+    public GetUserProfileQueryHandler(ISqlConnectionFactory sqlConnectionFactory, IMemberContext memberContext)
     {
         _sqlConnectionFactory = sqlConnectionFactory;
+        _memberContext = memberContext;
     }
     
     public async Task<GetUserProfileDto> Handle(GetUserProfileQuery query, CancellationToken cancellationToken)
@@ -28,6 +32,9 @@ public class GetUserProfileQueryHandler : IQueryHandler<GetUserProfileQuery, Get
                                          $"[profile].[AvatarUrl] AS [{nameof(GetUserProfileDto.AvatarUrl)}] " +
                                          $"FROM [social].[v_Profile] AS [profile]" +
                                          "WHERE [profile].[Id] = @UserId";
-        return await connection.QueryFirstAsync<GetUserProfileDto>(userProfileSelect, new { query.UserId });
+        var userProfile = await connection.QueryFirstAsync<GetUserProfileDto>(
+            userProfileSelect, new { query.UserId });
+        userProfile.CurrentUser = userProfile.Id == _memberContext.MemberId.Value;
+        return userProfile;
     }
 }

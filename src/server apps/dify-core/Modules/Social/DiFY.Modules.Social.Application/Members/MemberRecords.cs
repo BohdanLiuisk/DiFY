@@ -2,5 +2,21 @@
 
 namespace DiFY.Modules.Social.Application.Members;
 
-public record GetUserProfileDto(Guid Id, string Login, string Email, string FirstName, string LastName, 
-    DateTime CreatedOn, string AvatarUrl);
+public class GetUserProfileDto
+{
+    public Guid Id { get; set; }
+    
+    public string Login { get; set; }
+    
+    public string Email { get; set; }
+    
+    public string FirstName { get; set; }
+    
+    public string LastName { get; set; }
+    
+    public DateTime CreatedOn { get; set; }
+    
+    public string AvatarUrl { get; set; }
+    
+    public bool CurrentUser { get; set; }
+}

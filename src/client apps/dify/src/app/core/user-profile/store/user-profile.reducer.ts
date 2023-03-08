@@ -1,5 +1,4 @@
 import { createFeature, createReducer, on } from '@ngrx/store';
-import { dify } from '@shared/constans/app-settings';
 import { userProfileActions } from './user-profile.actions';
 import { UserProfileState } from './user-profile.models';
 
@@ -16,7 +15,10 @@ export const userProfileFeature = createFeature({
       return {
         ...state,
         loading: false,
-        user
+        user: {
+          ...user,
+          online: true
+        }
       };
     })
   )

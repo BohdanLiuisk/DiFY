@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { Roles } from '@core/auth/roles';
 import { Menu, MenuModes } from '@shared/modules/sidebar-menu/sidebar-menu.types';
 import { BaseComponent } from '@core/components/base.component';
+import { filterEmpty } from '@core/utils/pipe.operators';
 
 @Component({
   selector: 'app-home',
@@ -28,7 +29,7 @@ export class HomeComponent extends BaseComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-    this.authFacade.user$.pipe(this.untilThis).subscribe(user => {
+    this.authFacade.user$.pipe(this.untilThis, filterEmpty()).subscribe(user => {
       this.setMenu(user.id);
     });
   }
