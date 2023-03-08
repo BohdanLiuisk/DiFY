@@ -19,4 +19,6 @@ public class GetUserProfileDto
     public string AvatarUrl { get; set; }
     
     public bool CurrentUser { get; set; }
+    
+    public bool Online { get; set; }
 }

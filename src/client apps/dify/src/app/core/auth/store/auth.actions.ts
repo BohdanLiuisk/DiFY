@@ -37,3 +37,8 @@ export const getAuthUserFailure = createAction('[Auth] Auth User Failure');
 export const refreshTokenRequest = createAction('[Auth] Refresh Token Request');
 export const refreshTokenSuccess = createAction('[Auth] Refresh Token Success');
 export const refreshTokenFailure = createAction('[Auth] Refresh Token Failure');
+export const difyHubStarted = createAction('[Auth] Dify Hub Started');
+export const difyHubStatus = createAction(
+  '[Auth] Dify Hub Status',
+  props<{ status: string }>()
+);

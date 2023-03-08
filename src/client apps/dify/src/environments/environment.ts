@@ -18,5 +18,15 @@ export const environment = {
         { urls: 'stun:stun2.l.google.com:19302' }
       ],
     },
+  },
+  hubs: {
+    callHub: {
+      hubName: "call",
+      hubUrl: "http://localhost:5050/hubs/call"
+    },
+    difyHub: {
+      hubName: "dify",
+      hubUrl: "http://localhost:5050/hubs/dify"
+    }
   }
 };

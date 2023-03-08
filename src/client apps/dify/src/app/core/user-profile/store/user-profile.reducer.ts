@@ -15,11 +15,11 @@ export const userProfileFeature = createFeature({
       return {
         ...state,
         loading: false,
-        user: {
-          ...user,
-          online: true
-        }
+        user
       };
+    }),
+    on(userProfileActions.clearState, () => {
+      return initialState;
     })
   )
 });

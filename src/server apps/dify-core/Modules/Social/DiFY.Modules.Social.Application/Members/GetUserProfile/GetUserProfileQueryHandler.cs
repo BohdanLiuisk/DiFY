@@ -13,10 +13,16 @@ public class GetUserProfileQueryHandler : IQueryHandler<GetUserProfileQuery, Get
 
     private readonly IMemberContext _memberContext;
 
-    public GetUserProfileQueryHandler(ISqlConnectionFactory sqlConnectionFactory, IMemberContext memberContext)
+    private readonly IRedisConnectionFactory _redisConnectionFactory;
+
+    public GetUserProfileQueryHandler(
+        ISqlConnectionFactory sqlConnectionFactory, 
+        IMemberContext memberContext,
+        IRedisConnectionFactory redisConnectionFactory)
     {
         _sqlConnectionFactory = sqlConnectionFactory;
         _memberContext = memberContext;
+        _redisConnectionFactory = redisConnectionFactory;
     }
     
     public async Task<GetUserProfileDto> Handle(GetUserProfileQuery query, CancellationToken cancellationToken)
@@ -35,6 +41,9 @@ public class GetUserProfileQueryHandler : IQueryHandler<GetUserProfileQuery, Get
         var userProfile = await connection.QueryFirstAsync<GetUserProfileDto>(
             userProfileSelect, new { query.UserId });
         userProfile.CurrentUser = userProfile.Id == _memberContext.MemberId.Value;
+        var redisDb = await _redisConnectionFactory.GetConnectionAsync();
+        var onlineValue = await redisDb.GetStringAsync($"online-{query.UserId}");
+        userProfile.Online = !string.IsNullOrEmpty(onlineValue);
         return userProfile;
     }
 }
