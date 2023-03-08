@@ -17,5 +17,6 @@ public class MemberEntityTypeConfiguration : IEntityTypeConfiguration<Member>
         builder.Property<string>("_lastName").HasColumnName("LastName");
         builder.Property<string>("_name").HasColumnName("Name");
         builder.Property<DateTime>("_createdOn").HasColumnName("CreatedOn");
+        builder.Property<string>("_avatarUrl").HasColumnName("AvatarUrl");
     }
 }

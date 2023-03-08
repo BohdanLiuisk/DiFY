@@ -1,3 +1,96 @@
-<ng-container *ngIf="user$ | async as user">
-  <p>{{ user.name }}</p>
-</ng-container>
+<div class="m-3 user-profile">
+  <div class="flex flex-row h-max border border-solid border-gray-300 rounded-lg">
+    <div class="basis-1/5 flex flex-col justify-center items-center border-r border-solid border-gray-300 p-4">
+      <div style="max-width: 270px" class="rounded-full">
+        <img
+          class="max-w-full h-auto rounded-full"
+          src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+          alt="profile-avatar">
+      </div>
+      <button
+        tuiButton
+        type="button"
+        appearance="primary"
+        class="w-full mt-2">
+        Message
+      </button>
+    </div>
+    <div class="basis-4/5 p-4">
+      <div>
+        Description
+        <ng-container *ngIf="user$ | async as user">
+          <p>{{ user.firstName }}</p>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+  <div class="flex flex-row relative mt-3">
+    <div class="basis-4/5">
+      <div class="border border-solid border-gray-300 rounded-lg p-3">
+        Media content
+      </div>
+      <div class="border border-solid border-gray-300 rounded-lg p-3 mt-3">
+        What's new
+      </div>
+      <div class="border border-solid border-gray-300 rounded-t-lg p-3 mt-3">
+        Posts filtration
+      </div>
+      <div class="border-x border-b border-solid border-gray-300 rounded-b-lg p-3">
+        First post
+        <p>Lorem ipsum dolor sit amet, consectetur</p>
+        <p>adipisicing elit. Facere ipsum inventore </p>
+        <p>enim placeat rem corrupti voluptate iste neque repellendus a.</p>
+        <p>Lorem ipsum dolor sit amet, consectetur</p>
+        <p>adipisicing elit. Facere ipsum inventore </p>
+        <p>enim placeat rem corrupti voluptate iste neque repellendus a.</p>
+        <p>Lorem ipsum dolor sit amet, consectetur</p>
+        <p>adipisicing elit. Facere ipsum inventore </p>
+        <p>enim placeat rem corrupti voluptate iste neque repellendus a.</p>
+      </div>
+      <div class="border border-solid border-gray-300 rounded-lg p-3 mt-3">
+        Second post
+        <p>Lorem ipsum dolor sit amet, consectetur</p>
+        <p>adipisicing elit. Facere ipsum inventore </p>
+        <p>enim placeat rem corrupti voluptate iste neque repellendus a.</p>
+        <p>Lorem ipsum dolor sit amet, consectetur</p>
+        <p>adipisicing elit. Facere ipsum inventore </p>
+        <p>enim placeat rem corrupti voluptate iste neque repellendus a.</p>
+        <p>Lorem ipsum dolor sit amet, consectetur</p>
+        <p>adipisicing elit. Facere ipsum inventore </p>
+        <p>enim placeat rem corrupti voluptate iste neque repellendus a.</p>
+      </div>
+      <div class="border border-solid border-gray-300 rounded-lg p-3 mt-3">
+        Third post
+        <p>Lorem ipsum dolor sit amet, consectetur</p>
+        <p>adipisicing elit. Facere ipsum inventore </p>
+        <p>enim placeat rem corrupti voluptate iste neque repellendus a.</p>
+        <p>Lorem ipsum dolor sit amet, consectetur</p>
+        <p>adipisicing elit. Facere ipsum inventore </p>
+        <p>enim placeat rem corrupti voluptate iste neque repellendus a.</p>
+        <p>Lorem ipsum dolor sit amet, consectetur</p>
+        <p>adipisicing elit. Facere ipsum inventore </p>
+        <p>enim placeat rem corrupti voluptate iste neque repellendus a.</p>
+      </div>
+      <div class="border border-solid border-gray-300 rounded-lg p-3 mt-3">
+        Fourth post
+        <p>Lorem ipsum dolor sit amet, consectetur</p>
+        <p>adipisicing elit. Facere ipsum inventore </p>
+        <p>enim placeat rem corrupti voluptate iste neque repellendus a.</p>
+        <p>Lorem ipsum dolor sit amet, consectetur</p>
+        <p>adipisicing elit. Facere ipsum inventore </p>
+        <p>enim placeat rem corrupti voluptate iste neque repellendus a.</p>
+        <p>Lorem ipsum dolor sit amet, consectetur</p>
+        <p>adipisicing elit. Facere ipsum inventore </p>
+        <p>enim placeat rem corrupti voluptate iste neque repellendus a.</p>
+      </div>
+    </div>
+    <div class="basis-1/5 ml-3 h-max sticky top-3">
+      <div class="border border-solid border-gray-300 rounded-lg p-3">
+        Friends
+      </div>
+      <div class="border border-solid border-gray-300 rounded-lg p-3 mt-3">
+        Following
+      </div>
+    </div>
+  </div>
+</div>
