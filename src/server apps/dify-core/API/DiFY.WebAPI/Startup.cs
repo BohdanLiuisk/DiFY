@@ -150,7 +150,7 @@ namespace DiFY.WebAPI
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
-                endpoints.MapHub<SocialHub>("/hubs/social");
+                endpoints.MapHub<DifyHub>("/hubs/dify");
                 endpoints.MapHub<CallHub>("/hubs/call");
             });
         }
@@ -187,7 +187,8 @@ namespace DiFY.WebAPI
                     {
                         var path = context.HttpContext.Request.Path;
                         var accessToken = context.Request.Query["access_token"];
-                        if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/hubs/call"))
+                        var isHub = path.StartsWithSegments("/hubs/call") || path.StartsWithSegments("/hubs/dify");
+                        if (!string.IsNullOrEmpty(accessToken) && isHub)
                         {
                             context.Token = accessToken;
                         }

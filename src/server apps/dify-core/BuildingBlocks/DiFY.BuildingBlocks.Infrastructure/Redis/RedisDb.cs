@@ -14,12 +14,27 @@ public class RedisDb : IRedisDb
         _database = database;
     }
     
-    public async Task SetAsync<T>(string key, T value)
+    public async Task SetStringAsync(string key, string value)
+    {
+        await _database.StringSetAsync(key, value);
+    }
+
+    public async Task DeleteKeyAsync(string key)
+    {
+        await _database.KeyDeleteAsync(key);
+    } 
+    
+    public async Task<string> GetStringAsync(string key)
+    {
+        return await _database.StringGetAsync(key);
+    }
+    
+    public async Task SetJsonAsync<T>(string key, T value)
     {
         await _database.StringSetAsync(key, JsonConvert.SerializeObject(value));
     }
 
-    public async Task<T> GetAsync<T>(string key)
+    public async Task<T> GetJsonAsync<T>(string key)
     {
         var value = await _database.StringGetAsync(key);
         return value.IsNullOrEmpty ? default : JsonConvert.DeserializeObject<T>(value);

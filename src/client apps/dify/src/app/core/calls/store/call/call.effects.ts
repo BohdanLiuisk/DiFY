@@ -3,7 +3,6 @@ import { Actions, concatLatestFrom, createEffect, ofType } from "@ngrx/effects";
 import { CallFacade } from "@core/calls/store/call/call.facade";
 import { callActions } from '@core/calls/store/call/call.actions';
 import { catchError, map, of, switchMap, tap, merge, filter, from, exhaustMap } from "rxjs";
-import { callHub } from "./call.hub";
 import { IHttpConnectionOptions } from "@microsoft/signalr";
 import { AuthService } from "@core/auth/auth.service";
 import { CallSignalrEvents } from "@core/calls/store/call-signalr.events";
@@ -12,6 +11,9 @@ import { GUID } from "@shared/custom-types";
 import { createHub, findHub, removeHub } from "@core/signalr/signalr";
 import { TuiAlertService, TuiNotification } from "@taiga-ui/core";
 import { NavigationService } from "@core/services/navigation.service";
+import { environment } from "@env/environment";
+
+const callHub = environment.hubs.callHub;
 
 @Injectable()
 export class CallEffects {

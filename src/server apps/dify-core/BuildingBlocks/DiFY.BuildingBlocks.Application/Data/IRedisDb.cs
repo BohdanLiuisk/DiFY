@@ -4,7 +4,13 @@ namespace DiFY.BuildingBlocks.Application.Data;
 
 public interface IRedisDb
 {
-    Task SetAsync<T>(string key, T value);
+    Task SetStringAsync(string key, string value);
+    
+    Task<string> GetStringAsync(string key);
+    
+    Task SetJsonAsync<T>(string key, T value);
 
-    Task<T> GetAsync<T>(string key);
+    Task<T> GetJsonAsync<T>(string key);
+
+    Task DeleteKeyAsync(string key);
 }

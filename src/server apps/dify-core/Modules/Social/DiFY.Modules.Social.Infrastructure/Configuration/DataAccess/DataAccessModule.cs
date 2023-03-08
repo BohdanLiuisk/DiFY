@@ -50,7 +50,7 @@ namespace DiFY.Modules.Social.Infrastructure.Configuration.DataAccess
                 .As<IRedisConnectionFactory>()
                 .WithParameter("redisHost", _redisHost)
                 .WithParameter("db", 1)
-                .InstancePerLifetimeScope();
+                .SingleInstance();
         }
     }
 }
