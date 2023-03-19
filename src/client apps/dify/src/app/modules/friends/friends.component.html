@@ -1,0 +1,132 @@
+<div class="flex flex-row relative m-3">
+  <div class="basis-3/4">
+    <ng-container *ngIf="currentSection === sections.all">
+      <div class="border border-solid border-gray-300 rounded-lg py-2 px-5">
+        <div class="flex flex-row justify-between items-center border-b border-solid border-gray-300 py-3">
+          <span>Friendship requests <code>2</code></span>
+          <button
+            type="button"
+            tuiButton
+            iconRight="tuiIconChevronRight"
+            appearance="secondary"
+            size="s">
+            Show all
+          </button>
+        </div>
+        <div class="flex flex-row mt-2 items-center">
+          <div class="mr-3 flex items-center">
+            <div class="avatar online">
+              <div class="w-32 rounded-full">
+                <img src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg"/>
+              </div>
+            </div>
+          </div>
+          <div class="py-3">
+            <a tuiLink routerLink="/home/social/profile/819D552D-FE0C-4B1B-A45F-AF1E2E2AD7D8">
+              Ania Korets
+            </a>
+            <div class="flex flex-row mt-3">
+              <button
+                type="button"
+                tuiButton
+                size="m">
+                Accept
+              </button>
+              <button
+                type="button"
+                tuiButton
+                size="m"
+                appearance="secondary"
+                class="ml-2">
+                Keep as follower
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+    <div class="border border-solid border-gray-300 rounded-lg p-3 mt-3">
+      <div class="flex flex-row justify-between">
+        <div>
+          <button
+            type="button"
+            tuiButton
+            size="s"
+            (click)="myFriendsFilter = 'all'"
+            [pseudoFocus]="myFriendsFilter === 'all'"
+            appearance="whiteblock">
+            All friens
+          </button>
+          <button
+            type="button"
+            tuiButton
+            size="s"
+            (click)="myFriendsFilter = 'online'"
+            [pseudoFocus]="myFriendsFilter === 'online'"
+            appearance="whiteblock"
+            class="ml-2">
+            Online
+          </button>
+        </div>
+        <button
+          type="button"
+          tuiButton
+          size="s">
+          Find friends
+        </button>
+      </div>
+      <div class="flex flex-row justify-between mt-2 relative">
+        <div class="flex p-3 w-full border-y border-l border-solid border-gray-300 rounded-l-lg">
+          <input [(ngModel)]="friendsSearch" class="w-full focus:outline-none" type="text" placeholder="Search friends"/>
+        </div>
+        <div class="flex flex-row">
+          <ng-container *ngIf="!friendsSearch">
+            <span class="flex" (tuiActiveZoneChange)="onSearchParamsActiveZone($event)">
+              <button
+                type="button"
+                class="h-auto rounded-none border-l border-y border-solid border-gray-300"
+                tuiButton
+                appearance="flat"
+                size="s"
+                [tuiDropdown]="searchParams"
+                [tuiDropdownManual]="searchParamsOpened"
+                (click)="searchParamsOpened = !searchParamsOpened">
+                Parameters
+                <tui-svg
+                  src="tuiIconChevronDown"
+                  class="chevron"
+                  [class.chevron-up]="searchParamsOpened">
+                </tui-svg>
+              </button>
+            </span>
+          </ng-container>
+          <ng-container *ngIf="friendsSearch">
+            <button
+              type="button"
+              class="rounded-none border-y border-solid border-gray-300"
+              tuiIconButton
+              appearance="icon"
+              (click)="friendsSearch = ''"
+              icon="tuiIconCloseLarge">
+            </button>
+          </ng-container>
+          <button
+            type="button"
+            tuiIconButton
+            icon="tuiIconSearch"
+            appearance="secondary"
+            class="border border-solid border-gray-300 rounded-r-lg rounded-l-none">
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="basis-1/4 ml-3 h-max sticky top-3">
+    <div class="border border-solid border-gray-300 rounded-lg p-3">
+      <app-friends-sections-filtration></app-friends-sections-filtration>
+    </div>
+  </div>
+</div>
+<ng-template #searchParams>
+  <div class="dropdown h-96 w-96">But there is nothing to choose...</div>
+</ng-template>

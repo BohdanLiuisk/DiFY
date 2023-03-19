@@ -1,0 +1,39 @@
+<button
+  type="button"
+  class="flex flex-row justify-between w-full p-2 hover:bg-slate-100 rounded-lg">
+  <div class="flex flex-row">
+    <span>My friends</span>
+    <tui-svg
+      (click)="categoryDropdownOpened = !categoryDropdownOpened"
+      src="tuiIconChevronDown"
+      class="chevron ml-1 opacity-60"
+      [class.chevron-up]="categoryDropdownOpened">
+    </tui-svg>
+  </div>
+  <tui-svg
+    class="opacity-60 hover:opacity-80 tooltip"
+    data-tip="Calendar"
+    src="tuiIconCalendar">
+  </tui-svg>
+</button>
+<ng-container *ngIf="categoryDropdownOpened && friendCategories" >
+  <ng-container *ngFor="let category of friendCategories">
+    <button type="button" class="text-start w-full py-2 pl-5 pr-2 hover:bg-slate-100 rounded-lg">
+      {{ category.name }}
+    </button>
+  </ng-container>
+  <button type="button" class="flex flex-row w-full py-2 pl-4 pr-2 hover:bg-slate-100 rounded-lg">
+    <tui-svg
+      src="tuiIconPlus"
+      class="mr-1 opacity-60">
+    </tui-svg>
+    <span>Create new category</span>
+  </button>
+</ng-container>
+<button type="button" class="flex flex-row justify-between w-full p-2 hover:bg-slate-100 rounded-lg">
+  <span>Frienship requests</span>
+  <div class="badge badge-info">4</div>
+</button>
+<button type="button" class="text-start w-full p-2 hover:bg-slate-100 rounded-lg">
+  Find friends
+</button>

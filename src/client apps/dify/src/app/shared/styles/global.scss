@@ -1,3 +1,12 @@
+@import '@taiga-ui/core/styles/taiga-ui-local.scss';
+
 * {
   box-sizing: border-box;
+}
+
+.chevron {
+  @include transition(transform);
+  &-up {
+    transform: rotate(180deg);
+  }
 }

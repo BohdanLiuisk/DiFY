@@ -26,6 +26,7 @@
 }
 
 .main-content {
+  font: var(--tui-font-text-m);
   grid-area: content;
   overflow: auto;
   &::-webkit-scrollbar-thumb {
