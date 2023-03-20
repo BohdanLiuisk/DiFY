@@ -3,7 +3,7 @@
     <ng-container *ngIf="currentSection === sections.all">
       <div class="border border-solid border-gray-300 rounded-lg py-2 px-5">
         <div class="flex flex-row justify-between items-center border-b border-solid border-gray-300 py-3">
-          <span>Friendship requests <code>2</code></span>
+          <span>Friendship requests <code>4</code></span>
           <button
             type="button"
             tuiButton
@@ -23,7 +23,7 @@
           </div>
           <div class="py-3">
             <a tuiLink routerLink="/home/social/profile/819D552D-FE0C-4B1B-A45F-AF1E2E2AD7D8">
-              Ania Korets
+              Mad Max
             </a>
             <div class="flex flex-row mt-3">
               <button
@@ -55,7 +55,7 @@
             (click)="myFriendsFilter = 'all'"
             [pseudoFocus]="myFriendsFilter === 'all'"
             appearance="whiteblock">
-            All friens
+            All friends
           </button>
           <button
             type="button"
@@ -118,6 +118,9 @@
             class="border border-solid border-gray-300 rounded-r-lg rounded-l-none">
           </button>
         </div>
+      </div>
+      <div class="mt-2">
+        <app-friend-tile *ngFor="let friendTile of friendTiles" [friendTile]="friendTile"></app-friend-tile>
       </div>
     </div>
   </div>

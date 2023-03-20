@@ -4,11 +4,13 @@ import { TuiModule } from '@shared/tui.module';
 import { FriendsRoutingModule } from './friends-routing.module';
 import { FriendsComponent } from './friends.component';
 import { FriendsSectionsFiltrationComponent } from './friends-sections-filtration/friends-sections-filtration.component';
+import { FriendTileComponent } from './friend-tile/friend-tile.component';
 
 @NgModule({
   declarations: [
     FriendsComponent,
-    FriendsSectionsFiltrationComponent
+    FriendsSectionsFiltrationComponent,
+    FriendTileComponent
   ],
   imports: [
     SharedModule,

@@ -10,3 +10,11 @@
     transform: rotate(180deg);
   }
 }
+
+.avatar-online-bottom-left.avatar.online:before, .avatar-online-bottom-left.avatar.offline:before{
+  width: 10%;
+  height: 10%;
+  top: auto;
+  bottom: 7%;
+  right: 13%;
+}
