@@ -1,0 +1,60 @@
+<div class="flex flex-row justify-between border-b border-solid border-gray-300 p-2">
+  <div class="flex flex-row">
+    <div class="mr-2 flex items-center">
+      <div class="avatar-online-bottom-left avatar" [class.online]="friendTile.online">
+        <div class="w-32 rounded-full">
+          <img [src]="friendTile.avatarUrl"/>
+        </div>
+      </div>
+    </div>
+    <div class="flex flex-col justify-between">
+      <div class="flex flex-col justify-center">
+        <a tuiLink [routerLink]="'/home/social/profile/' + friendTile.id">
+          {{ friendTile.name }}
+        </a>
+        <p>{{ friendTile.workplace }}</p>
+        <div class="flex flex-row mt-2">
+          <tui-tag
+            *ngFor="let tag of friendTile.tags"
+            [value]="tag.name"
+            class="mr-2 {{tag.color}}"
+            [hoverable]="true">
+          </tui-tag>
+        </div>
+      </div>
+      <div class="flex flex-row">
+        <button
+          type="button"
+          tuiButton
+          appearance="secondary"
+          size="s"
+          class="mr-2">
+          Write message
+        </button>
+        <button
+          type="button"
+          tuiButton
+          icon="tuiIconPhone"
+          size="s">
+          Call
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="flex flex-col">
+    <button
+      type="button"
+      tuiButton
+      size="s"
+      class="mb-2">
+      Unfriend
+    </button>
+    <button
+      type="button"
+      tuiButton
+      appearance="secondary"
+      size="s">
+      Edit tags
+    </button>
+  </div>
+</div>

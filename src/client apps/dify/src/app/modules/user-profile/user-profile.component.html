@@ -1,5 +1,5 @@
 <ng-container *ngIf="user$ | async as user">
-  <div class="m-3 user-profile">
+  <div class="m-3">
     <div class="flex flex-row h-max border border-solid border-gray-300 rounded-lg">
       <div class="basis-1/5 flex flex-col justify-center items-center border-r border-solid border-gray-300 p-4">
         <div class="avatar" [ngClass]="user.online ? 'online': 'offline'">

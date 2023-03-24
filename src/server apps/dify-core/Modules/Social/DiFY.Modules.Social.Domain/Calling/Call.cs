@@ -83,13 +83,11 @@ public class Call : Entity, IAggregateRoot
         _dropperId = dropperId;
         _active = false;
         _endDate = endDate;
-        var duration = (_endDate - _startDate)?.TotalMinutes;
-        _duration = Duration.Of(duration);
-        _participants.Where(p => p.IsActive()).Select(p => 
-        { 
-            p.MarkAsNotActive();
-            return p;
-        }).ToList();
-        return CallSummary.CreateNew(Duration.Of(duration), Participants.Count);
+        _duration = Duration.Of(_startDate, endDate);
+        _participants
+            .Where(p => p.IsActive())
+            .ToList()
+            .ForEach(p => p.MarkAsNotActive());
+        return CallSummary.CreateNew(_duration, Participants.Count);
     }
 }

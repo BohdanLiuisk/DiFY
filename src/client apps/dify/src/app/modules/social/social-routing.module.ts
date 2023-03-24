@@ -13,6 +13,10 @@ const routes: Routes = [
   {
     path: 'profile',
     loadChildren: async () => (await import('../user-profile/user-profile.module')).UserProfileModule
+  },
+  {
+    path: 'friends',
+    loadChildren: async () => (await import('../friends/friends.module')).FriendsModule
   }
 ];
 

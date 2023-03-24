@@ -1,9 +1,12 @@
 import { NgModule } from '@angular/core';
 import {
   TuiButtonModule,
-  TuiDialogModule,
+  TuiDataListModule,
+  TuiDialogModule, TuiDropdownModule,
   TuiErrorModule,
+  TuiGroupModule,
   TuiHintModule,
+  TuiHostedDropdownModule,
   TuiLinkModule,
   TuiSvgModule,
   TuiTextfieldControllerModule
@@ -15,6 +18,7 @@ import {
   TuiTagModule
 } from '@taiga-ui/kit';
 import { TuiTablePaginationModule } from '@taiga-ui/addon-table';
+import { TuiActiveZoneModule } from '@taiga-ui/cdk';
 
 @NgModule({
   imports: [
@@ -28,7 +32,12 @@ import { TuiTablePaginationModule } from '@taiga-ui/addon-table';
     TuiSvgModule,
     TuiTextfieldControllerModule,
     TuiLinkModule,
-    TuiInputPasswordModule
+    TuiInputPasswordModule,
+    TuiGroupModule,
+    TuiHostedDropdownModule,
+    TuiActiveZoneModule,
+    TuiDataListModule,
+    TuiDropdownModule
   ],
   exports: [
     TuiButtonModule,
@@ -42,7 +51,12 @@ import { TuiTablePaginationModule } from '@taiga-ui/addon-table';
     TuiSvgModule,
     TuiTextfieldControllerModule,
     TuiLinkModule,
-    TuiInputPasswordModule
+    TuiInputPasswordModule,
+    TuiGroupModule,
+    TuiHostedDropdownModule,
+    TuiActiveZoneModule,
+    TuiDataListModule,
+    TuiDropdownModule
   ]
 })
 export class TuiModule { }

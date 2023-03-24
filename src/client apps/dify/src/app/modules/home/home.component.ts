@@ -66,6 +66,13 @@ export class HomeComponent extends BaseComponent implements OnInit {
         linkActiveExact: true
       },
       {
+        id: 'friends',
+        label: 'Friends',
+        route: 'social/friends',
+        iconClass: 'tuiIconUsers',
+        linkActiveExact: true
+      },
+      {
         id: 'CALLS',
         label: 'Calls',
         route: 'social/calls',
