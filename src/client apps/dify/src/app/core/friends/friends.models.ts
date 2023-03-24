@@ -1,4 +1,4 @@
-import {GUID} from '@shared/custom-types';
+import { GUID } from '@shared/custom-types';
 
 export interface FriendCategory {
   id: number;
@@ -17,4 +17,12 @@ export interface FriendTile {
 export interface FriendTag {
   name: string;
   color: string;
+}
+
+export interface MayKnownMan {
+  id: string;
+  name: string;
+  avatarUrl: string;
+  online: boolean;
+  mutualFriends: number;
 }

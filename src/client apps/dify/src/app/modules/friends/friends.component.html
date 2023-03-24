@@ -15,7 +15,7 @@
         </div>
         <div class="flex flex-row mt-2 items-center">
           <div class="mr-3 flex items-center">
-            <div class="avatar online">
+            <div class="avatar-online-bottom-left avatar online">
               <div class="w-32 rounded-full">
                 <img src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg"/>
               </div>
@@ -53,19 +53,19 @@
             tuiButton
             size="s"
             (click)="myFriendsFilter = 'all'"
-            [pseudoFocus]="myFriendsFilter === 'all'"
+            [class.shadow-lg]="myFriendsFilter == 'all'"
             appearance="whiteblock">
-            All friends
+            All friends 2
           </button>
           <button
             type="button"
             tuiButton
             size="s"
             (click)="myFriendsFilter = 'online'"
-            [pseudoFocus]="myFriendsFilter === 'online'"
             appearance="whiteblock"
-            class="ml-2">
-            Online
+            class="ml-2"
+            [class.shadow-lg]="myFriendsFilter == 'online'">
+            Online 1
           </button>
         </div>
         <button
@@ -127,6 +127,9 @@
   <div class="basis-1/4 ml-3 h-max sticky top-3">
     <div class="border border-solid border-gray-300 rounded-lg p-3">
       <app-friends-sections-filtration></app-friends-sections-filtration>
+    </div>
+    <div class="border border-solid border-gray-300 rounded-lg p-3 mt-3">
+      <app-may-known-people></app-may-known-people>
     </div>
   </div>
 </div>

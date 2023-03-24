@@ -1,0 +1,38 @@
+<h1 class="mb-1">People you may know</h1>
+<div
+  *ngFor="let man of peoples; let lastElement = last"
+  [ngClass]="{'mb-1': !lastElement}"
+  class="flex justify-between items-center">
+  <div class="flex items-center">
+    <div class="flex items-center mr-1">
+      <div class="avatar-online-bottom-left avatar" [class.online]="man.online">
+        <div class="w-14 rounded-full">
+          <img alt="avatar" [src]="man.avatarUrl"/>
+        </div>
+      </div>
+    </div>
+    <div class="flex flex-col">
+      <a tuiLink [routerLink]="'/home/social/profile/' + man.id">
+        {{ man.name }}
+      </a>
+      <p>{{ man.mutualFriends }} mutual friends</p>
+    </div>
+  </div>
+  <div>
+    <button
+      type="button"
+      size="xl"
+      tuiIconButton
+      appearance="flat"
+      icon="tuiIconUserPlusLarge">
+    </button>
+  </div>
+</div>
+<button
+  type="button"
+  tuiButton
+  appearance="secondary"
+  size="s"
+  class="w-full	mt-1">
+  Show all
+</button>
