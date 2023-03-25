@@ -19,7 +19,6 @@ export class FriendsComponent extends BaseComponent {
   public readonly friendRequestPreview: FriendRequestTile = {
     id: guid('9f655687-ed72-46d5-99de-1efcd9ed626d'),
     name: 'Coby Conrad',
-    avatarUrl: 'https://i.gyazo.com/38d9a386346afc009c0fbd03d0e7e552.jpg',
-    direction: ''
+    avatarUrl: 'https://i.gyazo.com/38d9a386346afc009c0fbd03d0e7e552.jpg'
   };
 }

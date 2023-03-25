@@ -8,6 +8,7 @@ import { FriendTileComponent } from './friend-tile/friend-tile.component';
 import { MayKnownPeopleComponent } from './may-known-people/may-known-people.component';
 import { MyFriendsListComponent } from './my-friends-list/my-friends-list.component';
 import { FriendRequestTileComponent } from './friend-request-tile/friend-request-tile.component';
+import { FriendRequestListComponent } from './friend-request-list/friend-request-list.component';
 
 @NgModule({
   declarations: [
@@ -16,7 +17,8 @@ import { FriendRequestTileComponent } from './friend-request-tile/friend-request
     FriendTileComponent,
     MayKnownPeopleComponent,
     MyFriendsListComponent,
-    FriendRequestTileComponent
+    FriendRequestTileComponent,
+    FriendRequestListComponent
   ],
   imports: [
     SharedModule,

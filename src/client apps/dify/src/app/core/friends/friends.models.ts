@@ -15,10 +15,9 @@ export interface FriendTile {
 }
 
 export interface FriendRequestTile {
-  id:GUID;
+  id: GUID;
   name: string;
   avatarUrl: string;
-  direction: string;
 }
 
 export interface FriendTag {
