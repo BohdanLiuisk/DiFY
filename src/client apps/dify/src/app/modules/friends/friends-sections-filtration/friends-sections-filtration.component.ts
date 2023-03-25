@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { FriendCategory } from '@core/friends/friends.models';
+import { FriendshipSections } from '@core/friends/friends.setting';
 
 @Component({
   selector: 'app-friends-sections-filtration',
@@ -7,6 +8,11 @@ import { FriendCategory } from '@core/friends/friends.models';
   styleUrls: ['./friends-sections-filtration.component.scss']
 })
 export class FriendsSectionsFiltrationComponent {
+  @Output('sectionFiltration') public sectionFiltration: EventEmitter<FriendshipSections> =
+    new EventEmitter<FriendshipSections>();
+  @Output('categoryFilter') public categoryFilter: EventEmitter<FriendCategory> =
+    new EventEmitter<FriendCategory>();
+  public readonly sections = FriendshipSections;
   public categoryDropdownOpened: boolean = false;
 
   public friendCategories: FriendCategory[] = [

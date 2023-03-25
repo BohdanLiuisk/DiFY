@@ -1,8 +1,7 @@
 export enum FriendshipSections {
-  'all',
-  'requests',
-  'find',
-  'category'
+  myFriends,
+  friendRequest,
+  findFriends
 }
 
 export const myFriendsFiltration = {

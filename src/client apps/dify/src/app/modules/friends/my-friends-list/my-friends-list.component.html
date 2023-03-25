@@ -1,0 +1,58 @@
+<div class="flex flex-row justify-between items-center">
+  <ng-content select="[leftHeaderContent]"></ng-content>
+  <ng-content select="[rightHeaderContent]"></ng-content>
+</div>
+<div class="flex flex-row justify-between mt-3 relative">
+  <div class="flex p-3 w-full border-y border-l border-solid border-gray-300 rounded-l-lg">
+    <input [(ngModel)]="friendsSearch" class="w-full focus:outline-none" type="text" placeholder="Search friends"/>
+  </div>
+  <div class="flex flex-row">
+    <ng-container *ngIf="!friendsSearch">
+      <span class="flex" (tuiActiveZoneChange)="onSearchParamsActiveZone($event)">
+        <button
+          type="button"
+          class="h-auto rounded-none border-l border-y border-solid border-gray-300"
+          tuiButton
+          appearance="flat"
+          size="s"
+          [tuiDropdown]="searchParams"
+          [tuiDropdownManual]="searchParamsOpened"
+          (click)="searchParamsOpened = !searchParamsOpened">
+          Parameters
+          <tui-svg
+            src="tuiIconChevronDown"
+            class="chevron"
+            [class.chevron-up]="searchParamsOpened">
+          </tui-svg>
+        </button>
+      </span>
+    </ng-container>
+    <ng-container *ngIf="friendsSearch">
+      <button
+        type="button"
+        class="rounded-none border-y border-solid border-gray-300"
+        tuiIconButton
+        appearance="icon"
+        (click)="friendsSearch = ''"
+        icon="tuiIconCloseLarge">
+      </button>
+    </ng-container>
+    <button
+      type="button"
+      tuiIconButton
+      icon="tuiIconSearch"
+      appearance="secondary"
+      class="border border-solid border-gray-300 rounded-r-lg rounded-l-none">
+    </button>
+  </div>
+</div>
+<div class="mt-2">
+  <div
+    *ngFor="let friendTile of friendTiles; last as isLast"
+    [ngClass]="{ 'border-b border-solid border-gray-300': !isLast }">
+    <app-friend-tile [friendTile]="friendTile"></app-friend-tile>
+  </div>
+</div>
+<ng-template #searchParams>
+  <div class="dropdown h-96 w-96">But there is nothing to choose...</div>
+</ng-template>

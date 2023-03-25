@@ -1,138 +1,107 @@
 <div class="flex flex-row relative m-3">
   <div class="basis-3/4">
-    <ng-container *ngIf="currentSection === sections.all">
-      <div class="border border-solid border-gray-300 rounded-lg py-2 px-5">
-        <div class="flex flex-row justify-between items-center border-b border-solid border-gray-300 py-3">
-          <span>Friendship requests <code>4</code></span>
-          <button
-            type="button"
-            tuiButton
-            iconRight="tuiIconChevronRight"
-            appearance="secondary"
-            size="s">
-            Show all
-          </button>
-        </div>
-        <div class="flex flex-row mt-2 items-center">
-          <div class="mr-3 flex items-center">
-            <div class="avatar-online-bottom-left avatar online">
-              <div class="w-32 rounded-full">
-                <img src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg"/>
-              </div>
-            </div>
-          </div>
-          <div class="py-3">
-            <a tuiLink routerLink="/home/social/profile/819D552D-FE0C-4B1B-A45F-AF1E2E2AD7D8">
-              Mad Max
-            </a>
-            <div class="flex flex-row mt-3">
+    <ng-container [ngSwitch]="currentSection">
+      <ng-container *ngSwitchCase="friendsSections.myFriends">
+        <ng-container *ngIf="friendRequestPreview">
+          <div class="border border-solid border-gray-300 rounded-lg py-2 px-5 mb-3">
+            <div class="flex flex-row justify-between items-center border-b border-solid border-gray-300 py-3 mb-2">
+              <span>Friendship requests <code>4</code></span>
               <button
+                (click)="currentSection = sections.friendRequest"
                 type="button"
                 tuiButton
-                size="m">
-                Accept
-              </button>
-              <button
-                type="button"
-                tuiButton
-                size="m"
+                iconRight="tuiIconChevronRight"
                 appearance="secondary"
-                class="ml-2">
-                Keep as follower
+                size="s">
+                Show all
               </button>
             </div>
+            <app-friend-request-tile [friendRequestTile]="friendRequestPreview">
+              <div actions class="flex flex-row mt-3">
+                <button
+                  type="button"
+                  tuiButton
+                  size="m">
+                  Accept
+                </button>
+                <button
+                  type="button"
+                  tuiButton
+                  size="m"
+                  appearance="secondary"
+                  class="ml-2">
+                  Keep as follower
+                </button>
+              </div>
+            </app-friend-request-tile>
           </div>
-        </div>
-      </div>
-    </ng-container>
-    <div class="border border-solid border-gray-300 rounded-lg p-3 mt-3">
-      <div class="flex flex-row justify-between">
-        <div>
-          <button
-            type="button"
-            tuiButton
-            size="s"
-            (click)="myFriendsFilter = 'all'"
-            [class.shadow-lg]="myFriendsFilter == 'all'"
-            appearance="whiteblock">
-            All friends 2
-          </button>
-          <button
-            type="button"
-            tuiButton
-            size="s"
-            (click)="myFriendsFilter = 'online'"
-            appearance="whiteblock"
-            class="ml-2"
-            [class.shadow-lg]="myFriendsFilter == 'online'">
-            Online 1
-          </button>
-        </div>
-        <button
-          type="button"
-          tuiButton
-          size="s">
-          Find friends
-        </button>
-      </div>
-      <div class="flex flex-row justify-between mt-2 relative">
-        <div class="flex p-3 w-full border-y border-l border-solid border-gray-300 rounded-l-lg">
-          <input [(ngModel)]="friendsSearch" class="w-full focus:outline-none" type="text" placeholder="Search friends"/>
-        </div>
-        <div class="flex flex-row">
-          <ng-container *ngIf="!friendsSearch">
-            <span class="flex" (tuiActiveZoneChange)="onSearchParamsActiveZone($event)">
+        </ng-container>
+        <div class="border border-solid border-gray-300 rounded-lg p-3">
+          <app-my-friends-list>
+            <div *ngIf="!categoryFilter; else categoryInfo" leftHeaderContent>
               <button
                 type="button"
-                class="h-auto rounded-none border-l border-y border-solid border-gray-300"
                 tuiButton
-                appearance="flat"
                 size="s"
-                [tuiDropdown]="searchParams"
-                [tuiDropdownManual]="searchParamsOpened"
-                (click)="searchParamsOpened = !searchParamsOpened">
-                Parameters
-                <tui-svg
-                  src="tuiIconChevronDown"
-                  class="chevron"
-                  [class.chevron-up]="searchParamsOpened">
-                </tui-svg>
+                (click)="myFriendsFilter = 'all'"
+                [class.shadow-lg]="myFriendsFilter == 'all'"
+                appearance="whiteblock">
+                All friends 2
               </button>
-            </span>
-          </ng-container>
-          <ng-container *ngIf="friendsSearch">
+              <button
+                type="button"
+                tuiButton
+                size="s"
+                (click)="myFriendsFilter = 'online'"
+                appearance="whiteblock"
+                class="ml-2"
+                [class.shadow-lg]="myFriendsFilter == 'online'">
+                Online 1
+              </button>
+            </div>
+            <ng-template #categoryInfo>
+              <p leftHeaderContent>{{ categoryFilter.name }} 1</p>
+            </ng-template>
             <button
+              *ngIf="!categoryFilter; else editCategory"
+              (click)="currentSection = sections.findFriends"
+              rightHeaderContent
               type="button"
-              class="rounded-none border-y border-solid border-gray-300"
-              tuiIconButton
-              appearance="icon"
-              (click)="friendsSearch = ''"
-              icon="tuiIconCloseLarge">
+              tuiButton
+              size="s">
+              Find friends
             </button>
-          </ng-container>
-          <button
-            type="button"
-            tuiIconButton
-            icon="tuiIconSearch"
-            appearance="secondary"
-            class="border border-solid border-gray-300 rounded-r-lg rounded-l-none">
-          </button>
+            <ng-template #editCategory>
+              <button
+                rightHeaderContent
+                type="button"
+                tuiButton
+                size="s">
+                Edit
+              </button>
+            </ng-template>
+          </app-my-friends-list>
         </div>
-      </div>
-      <div class="mt-2">
-        <app-friend-tile *ngFor="let friendTile of friendTiles" [friendTile]="friendTile"></app-friend-tile>
-      </div>
-    </div>
+      </ng-container>
+      <ng-container *ngSwitchCase="friendsSections.friendRequest">
+        <p>Friend requests</p>
+      </ng-container>
+      <ng-container *ngSwitchCase="friendsSections.findFriends">
+        <p>Find requests</p>
+      </ng-container>
+    </ng-container>
   </div>
   <div class="basis-1/4 ml-3 h-max sticky top-3">
     <div class="border border-solid border-gray-300 rounded-lg p-3">
-      <app-friends-sections-filtration></app-friends-sections-filtration>
+      <app-friends-sections-filtration
+        (sectionFiltration)="currentSection = $event; categoryFilter = null"
+        (categoryFilter)="categoryFilter = $event">
+      </app-friends-sections-filtration>
     </div>
-    <div class="border border-solid border-gray-300 rounded-lg p-3 mt-3">
+    <div
+      *ngIf="currentSection != friendsSections.findFriends"
+      class="border border-solid border-gray-300 rounded-lg p-3 mt-3">
       <app-may-known-people></app-may-known-people>
     </div>
   </div>
 </div>
-<ng-template #searchParams>
-  <div class="dropdown h-96 w-96">But there is nothing to choose...</div>
-</ng-template>

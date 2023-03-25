@@ -7,7 +7,7 @@ import { MayKnownMan } from '@core/friends/friends.models';
   styleUrls: ['./may-known-people.component.scss']
 })
 export class MayKnownPeopleComponent {
-  @Input('peoples') peoples: MayKnownMan[] = [
+  @Input('peoples') public peoples: MayKnownMan[] = [
     {
       id: '9f655687-ed72-46d5-99de-1efcd9ed626d',
       name: 'Kamilla Daychenko',
