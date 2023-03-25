@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { FriendTile } from '@core/friends/friends.models';
 import { guid } from '@shared/custom-types';
 
@@ -9,9 +9,7 @@ import { guid } from '@shared/custom-types';
 })
 export class MyFriendsListComponent {
   public friendsSearch: string = ``;
-
   public searchParamsOpened: boolean = false;
-
   @Input('friendTiles') public friendTiles: FriendTile[] = [
     {
       id: guid('9f655687-ed72-46d5-99de-1efcd9ed626d'),
