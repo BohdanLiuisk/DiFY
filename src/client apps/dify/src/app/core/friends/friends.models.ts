@@ -14,6 +14,13 @@ export interface FriendTile {
   tags: FriendTag[];
 }
 
+export interface FriendRequestTile {
+  id:GUID;
+  name: string;
+  avatarUrl: string;
+  direction: string;
+}
+
 export interface FriendTag {
   name: string;
   color: string;
