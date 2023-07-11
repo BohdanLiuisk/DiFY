@@ -1,5 +1,5 @@
 ﻿using System.Security.Claims;
-using Dify.Core.Application.Common.Interfaces;
+using Dify.Core.Application.Common;
 using Dify.Core.Application.IdentityServer;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -29,10 +29,11 @@ public class AuthenticateCommandHandler : IRequestHandler<AuthenticateCommand, A
         }
         var claims = new List<Claim>
         {
-            new(CustomClaimTypes.Name, user.Login),
+            new(CustomClaimTypes.Name, user.Name),
+            new(CustomClaimTypes.Login, user.Login),
             new(CustomClaimTypes.Email, user.Email)
         };
-        var authenticateUserDto = new AuthenticatedUser(user.Id, user.Login, user.Email, claims , user.Password);
+        var authenticateUserDto = new AuthenticatedUser(user.Id, user.Login, user.Email, user.Password, claims);
         return new AuthenticationResult(authenticateUserDto);
     }
 }

@@ -3,17 +3,14 @@ using IdentityServer4.Models;
 using IdentityServer4.Validation;
 using MediatR;
 
-namespace Dify.Core.WebApi.Auth;
+namespace Dify.Core.Infrastructure.Auth;
 
 public class ResourceOwnerPasswordValidator : IResourceOwnerPasswordValidator
 {
-    private readonly ILogger<ResourceOwnerPasswordValidator> _logger;
-    
     private readonly IMediator _mediator;
     
-    public ResourceOwnerPasswordValidator(ILogger<ResourceOwnerPasswordValidator> logger, IMediator mediator)
+    public ResourceOwnerPasswordValidator(IMediator mediator)
     {
-        _logger = logger;
         _mediator = mediator;
     }
     

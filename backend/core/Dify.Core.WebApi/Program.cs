@@ -14,7 +14,7 @@ builder.Configuration
 
 builder.Services.AddInfrastructureServices(builder.Configuration);
 builder.Services.AddApplicationServices();
-builder.Services.ConfigureIdentityServer(builder.Configuration);
+builder.Services.AddIdentityServerAuthentication();
 builder.Services.AddSwagger();
 builder.Services.AddControllers();
 

@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Dify.Core.Infrastructure.Migrations.IdentityServer.PersistedGrantDb
 {
     [DbContext(typeof(PersistedGrantDbContext))]
-    [Migration("20230711210636_InitialIdentityServerPersistedGrantDbMigration")]
+    [Migration("20230711234744_InitialIdentityServerPersistedGrantDbMigration")]
     partial class InitialIdentityServerPersistedGrantDbMigration
     {
         /// <inheritdoc />
@@ -44,6 +44,10 @@ namespace Dify.Core.Infrastructure.Migrations.IdentityServer.PersistedGrantDb
                         .HasMaxLength(50000)
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Description")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
                     b.Property<string>("DeviceCode")
                         .IsRequired()
                         .HasMaxLength(200)
@@ -52,6 +56,10 @@ namespace Dify.Core.Infrastructure.Migrations.IdentityServer.PersistedGrantDb
                     b.Property<DateTime?>("Expiration")
                         .IsRequired()
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("SessionId")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("SubjectId")
                         .HasMaxLength(200)
@@ -78,6 +86,9 @@ namespace Dify.Core.Infrastructure.Migrations.IdentityServer.PersistedGrantDb
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
+                    b.Property<DateTime?>("ConsumedTime")
+                        .HasColumnType("datetime2");
+
                     b.Property<DateTime>("CreationTime")
                         .HasColumnType("datetime2");
 
@@ -86,8 +97,16 @@ namespace Dify.Core.Infrastructure.Migrations.IdentityServer.PersistedGrantDb
                         .HasMaxLength(50000)
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Description")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
                     b.Property<DateTime?>("Expiration")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("SessionId")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("SubjectId")
                         .HasMaxLength(200)
@@ -103,6 +122,8 @@ namespace Dify.Core.Infrastructure.Migrations.IdentityServer.PersistedGrantDb
                     b.HasIndex("Expiration");
 
                     b.HasIndex("SubjectId", "ClientId", "Type");
+
+                    b.HasIndex("SubjectId", "SessionId", "Type");
 
                     b.ToTable("PersistedGrants", (string)null);
                 });

@@ -1,4 +1,4 @@
-﻿using Dify.Core.Application.Common.Interfaces;
+﻿using Dify.Core.Application.Common;
 using Dify.Core.Domain.Entities;
 using Dify.Core.Infrastructure.Context.EntityConfigurations;
 using Microsoft.EntityFrameworkCore;

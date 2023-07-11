@@ -9,7 +9,10 @@ public static class IdentityServerConfig
     {
         return new List<ApiResource>()
         {
-            new ("DiFYCoreAPI", "DiFY Core API")
+            new ("DiFYCoreAPI", "DiFY Core API") 
+            {
+                Scopes = { "DiFYCoreAPI" }
+            }
         };
     }
 
@@ -46,6 +49,14 @@ public static class IdentityServerConfig
                 },
                 AllowOfflineAccess = true
             }
+        };
+    }
+    
+    public static IEnumerable<ApiScope> GetApiScopes()
+    {
+        return new List<ApiScope>
+        {
+            new ("DiFYCoreAPI", "DiFY Core API")
         };
     }
 }

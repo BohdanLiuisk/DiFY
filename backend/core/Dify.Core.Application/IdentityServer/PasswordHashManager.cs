@@ -1,72 +1,51 @@
-﻿using System.Runtime.CompilerServices;
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 
 namespace Dify.Core.Application.IdentityServer;
 
 public static class PasswordHashManager
 {
+    private const int SaltSize = 0x10; // 16 bytes
+    private const int HashSize = 0x20; // 32 bytes
+    private const int Iterations = 0x3e8; // 1000 iterations
+    
     public static string HashPassword(string password)
     {
-        byte[] salt;
-        byte[] buffer2;
         if (password == null)
         {
             throw new ArgumentNullException(nameof(password));
         }
-        using (var bytes = new Rfc2898DeriveBytes(password, 0x10, 0x3e8))
+        byte[] salt, hash;
+        using (var pbkdf2 = new Rfc2898DeriveBytes(password, SaltSize, Iterations, HashAlgorithmName.SHA256))
         {
-            salt = bytes.Salt;
-            buffer2 = bytes.GetBytes(0x20);
+            salt = pbkdf2.Salt;
+            hash = pbkdf2.GetBytes(HashSize);
         }
-        var dst = new byte[0x31];
-        Buffer.BlockCopy(salt, 0, dst, 1, 0x10);
-        Buffer.BlockCopy(buffer2, 0, dst, 0x11, 0x20);
-        return Convert.ToBase64String(dst);
+        byte[] hashBytes = new byte[SaltSize + HashSize + 1];
+        Buffer.BlockCopy(salt, 0, hashBytes, 1, SaltSize);
+        Buffer.BlockCopy(hash, 0, hashBytes, SaltSize + 1, HashSize);
+        return Convert.ToBase64String(hashBytes);
     }
 
     public static bool VerifyHashedPassword(string hashedPassword, string password)
     {
-        byte[] buffer4;
-        if (hashedPassword == null)
+        if (hashedPassword == null || password == null)
+        {
+            throw new ArgumentNullException(hashedPassword == null ? nameof(hashedPassword) : nameof(password));
+        }
+        byte[] hashBytes = Convert.FromBase64String(hashedPassword);
+        if (hashBytes.Length != SaltSize + HashSize + 1 || hashBytes[0] != 0)
         {
             return false;
         }
-        if (password == null)
+        byte[] salt = new byte[SaltSize];
+        Buffer.BlockCopy(hashBytes, 1, salt, 0, SaltSize);
+        byte[] storedHash = new byte[HashSize];
+        Buffer.BlockCopy(hashBytes, SaltSize + 1, storedHash, 0, HashSize);
+        byte[] computedHash;
+        using (var pbkdf2 = new Rfc2898DeriveBytes(password, salt, Iterations, HashAlgorithmName.SHA256))
         {
-            throw new ArgumentNullException(nameof(password));
+            computedHash = pbkdf2.GetBytes(HashSize);
         }
-        var src = Convert.FromBase64String(hashedPassword);
-        if ((src.Length != 0x31) || (src[0] != 0))
-        {
-            return false;
-        }
-        var dst = new byte[0x10];
-        Buffer.BlockCopy(src, 1, dst, 0, 0x10);
-        var buffer3 = new byte[0x20];
-        Buffer.BlockCopy(src, 0x11, buffer3, 0, 0x20);
-        using (var bytes = new Rfc2898DeriveBytes(password, dst, 0x3e8))
-        {
-            buffer4 = bytes.GetBytes(0x20);
-        }
-        return ByteArraysEqual(buffer3, buffer4);
-    }
-
-    [MethodImpl(MethodImplOptions.NoOptimization)]
-    private static bool ByteArraysEqual(byte[] a, byte[] b)
-    {
-        if (ReferenceEquals(a, b))
-        {
-            return true;
-        }
-        if (a == null || b == null || a.Length != b.Length)
-        {
-            return false;
-        }
-        var areSame = true;
-        for (var i = 0; i < a.Length; i++)
-        {
-            areSame &= a[i] == b[i];
-        }
-        return areSame;
+        return storedHash.SequenceEqual(computedHash);
     }
 }

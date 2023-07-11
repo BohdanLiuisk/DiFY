@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using Dify.Core.Application.MappingProfiles;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -10,6 +11,7 @@ public static class ConfigureServices
         {
             cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
         });
+        services.AddAutoMapper(typeof(UsersProfile));
         return services;
     }
 }

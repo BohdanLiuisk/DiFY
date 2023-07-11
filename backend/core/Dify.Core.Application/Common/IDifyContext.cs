@@ -1,7 +1,7 @@
 ﻿using Dify.Core.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace Dify.Core.Application.Common.Interfaces;
+namespace Dify.Core.Application.Common;
 
 public interface IDifyContext
 {
