@@ -10,9 +10,6 @@ public static class IdentityServerConfig
         return new List<ApiResource>()
         {
             new ("DiFYCoreAPI", "DiFY Core API")
-            {
-                Scopes = { new Scope("DiFYCoreAPI") }
-            }
         };
     }
 
