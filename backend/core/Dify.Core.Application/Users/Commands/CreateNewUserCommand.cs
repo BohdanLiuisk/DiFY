@@ -4,7 +4,15 @@ using Dify.Core.Application.IdentityServer;
 using Dify.Core.Domain.Entities;
 using MediatR;
 
-namespace Dify.Core.Application.Users.Commands.CreateNewUser;
+namespace Dify.Core.Application.Users.Commands;
+
+public record CreateNewUserCommand(
+    string FirstName,
+    string LastName,
+    string Login, 
+    string Password, 
+    string Email
+) : IRequest<int>;
 
 public class CreateNewUserCommandHandler : IRequestHandler<CreateNewUserCommand, int> 
 {

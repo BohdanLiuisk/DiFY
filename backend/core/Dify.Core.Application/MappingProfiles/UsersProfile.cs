@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Dify.Common.Dto;
-using Dify.Core.Application.Users.Commands.CreateNewUser;
+using Dify.Core.Application.Users.Commands;
 using Dify.Core.Domain.Entities;
 
 namespace Dify.Core.Application.MappingProfiles;

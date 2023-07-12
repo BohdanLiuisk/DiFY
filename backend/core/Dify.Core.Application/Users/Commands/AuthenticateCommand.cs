@@ -1,10 +1,17 @@
 ﻿using System.Security.Claims;
+using Dify.Common.Dto;
+using Dify.Common.Models;
 using Dify.Core.Application.Common;
 using Dify.Core.Application.IdentityServer;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace Dify.Core.Application.Users.Commands.AuthenticateCommand;
+namespace Dify.Core.Application.Users.Commands;
+
+public record AuthenticateCommand(
+    string Login, 
+    string Password
+) : IRequest<AuthenticationResult>;
 
 public class AuthenticateCommandHandler : IRequestHandler<AuthenticateCommand, AuthenticationResult> 
 {
@@ -34,7 +41,7 @@ public class AuthenticateCommandHandler : IRequestHandler<AuthenticateCommand, A
             new(CustomClaimTypes.Email, user.Email),
             new(CustomClaimTypes.UserId, user.Id.ToString()),
         };
-        var authenticateUserDto = new AuthenticatedUser(user.Id, user.Login, user.Email, user.Password, claims);
+        var authenticateUserDto = new AuthenticatedUserDto(user.Id, user.Login, user.Email, user.Password, claims);
         return new AuthenticationResult(authenticateUserDto);
     }
 }

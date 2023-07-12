@@ -1,4 +1,4 @@
-﻿namespace Dify.Common;
+﻿namespace Dify.Common.Models;
 
 public abstract class BaseQueryResponse
 {

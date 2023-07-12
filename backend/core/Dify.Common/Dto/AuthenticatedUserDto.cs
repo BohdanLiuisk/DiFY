@@ -1,8 +1,8 @@
 ﻿using System.Security.Claims;
 
-namespace Dify.Core.Application.Users.Commands.AuthenticateCommand;
+namespace Dify.Common.Dto;
 
-public record AuthenticatedUser(
+public record AuthenticatedUserDto(
     int Id, 
     string Login, 
     string Email, 

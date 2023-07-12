@@ -1,12 +1,14 @@
 ﻿using AutoMapper;
-using Dify.Common;
 using Dify.Common.Dto;
+using Dify.Common.Models;
 using Dify.Core.Application.Common;
 using Dify.Core.Application.Common.Exceptions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace Dify.Core.Application.Users.Queries.GetUserById;
+namespace Dify.Core.Application.Users.Queries;
+
+public record GetUserByIdQuery(int Id) : IRequest<QueryResponse<UserDto>>;
 
 public class GetUserByIdQueryHandler : IRequestHandler<GetUserByIdQuery, QueryResponse<UserDto>>
 {

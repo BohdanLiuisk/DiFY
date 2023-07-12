@@ -1,4 +1,6 @@
-﻿namespace Dify.Core.Application.Users.Commands.AuthenticateCommand;
+﻿using Dify.Common.Dto;
+
+namespace Dify.Common.Models;
 
 public class AuthenticationResult
 {
@@ -8,16 +10,16 @@ public class AuthenticationResult
         AuthenticationError = authenticationError;
     }
     
-    public AuthenticationResult(AuthenticatedUser user)
+    public AuthenticationResult(AuthenticatedUserDto userDto)
     {
         IsAuthenticated = true;
-        User = user;
+        UserDto = userDto;
     }
         
     public bool IsAuthenticated { get; }
 
     public string AuthenticationError { get; }
         
-    public AuthenticatedUser User { get; }
+    public AuthenticatedUserDto UserDto { get; }
 }
 

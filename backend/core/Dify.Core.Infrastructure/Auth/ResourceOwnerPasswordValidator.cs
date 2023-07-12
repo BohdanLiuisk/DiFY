@@ -1,4 +1,4 @@
-﻿using Dify.Core.Application.Users.Commands.AuthenticateCommand;
+﻿using Dify.Core.Application.Users.Commands;
 using IdentityServer4.Models;
 using IdentityServer4.Validation;
 using MediatR;
@@ -24,8 +24,8 @@ public class ResourceOwnerPasswordValidator : IResourceOwnerPasswordValidator
             return;
         }
         context.Result = new GrantValidationResult(
-            subject: authenticationResult.User.Id.ToString(),
+            subject: authenticationResult.UserDto.Id.ToString(),
             authenticationMethod: "forms",
-            claims: authenticationResult.User.Claims);
+            claims: authenticationResult.UserDto.Claims);
     }
 }

@@ -1,7 +1,8 @@
-﻿using Dify.Common;
-using Dify.Common.Dto;
-using Dify.Core.Application.Users.Commands.CreateNewUser;
-using Dify.Core.Application.Users.Queries.GetUserById;
+﻿using Dify.Common.Dto;
+using Dify.Common.Models;
+using Dify.Core.Application.Common;
+using Dify.Core.Application.Users.Commands;
+using Dify.Core.Application.Users.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -20,6 +21,14 @@ public class UsersController : ControllerBase
         _mediator = mediator;
     }
     
+    [AllowAnonymous]
+    [HttpPost("createNew")]
+    public async Task<ActionResult<int>> CreateUser(CreateNewUserCommand newUser)
+    {
+        var userId = await _mediator.Send(newUser);
+        return Ok(userId);
+    }
+    
     [HttpGet("getById/{id}")]
     public async Task<ActionResult<QueryResponse<UserDto>>> GetUser(int id)
     {
@@ -27,11 +36,11 @@ public class UsersController : ControllerBase
         return Ok(user);
     }
     
-    [AllowAnonymous]
-    [HttpPost("createNew")]
-    public async Task<ActionResult<int>> CreateUser(CreateNewUserCommand newUser)
+    [HttpGet("getUsers")]
+    public async Task<ActionResult<QueryResponse<PaginatedList<UserDto>>>> GetUsers(int pageNumber, int pageSize)
     {
-        var userId = await _mediator.Send(newUser);
-        return Ok(userId);
+        var users = await _mediator.Send(
+            new GetPaginatedUsersQuery(pageNumber, pageSize));
+        return Ok(users);
     }
 }
