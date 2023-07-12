@@ -15,8 +15,7 @@ builder.Configuration
 builder.Services.AddInfrastructureServices(builder.Configuration);
 builder.Services.AddApplicationServices();
 builder.Services.AddIdentityServerAuthentication();
-builder.Services.AddSwagger();
-builder.Services.AddControllers();
+builder.Services.AddWebApiServices();
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()

@@ -31,7 +31,8 @@ public class AuthenticateCommandHandler : IRequestHandler<AuthenticateCommand, A
         {
             new(CustomClaimTypes.Name, user.Name),
             new(CustomClaimTypes.Login, user.Login),
-            new(CustomClaimTypes.Email, user.Email)
+            new(CustomClaimTypes.Email, user.Email),
+            new(CustomClaimTypes.UserId, user.Id.ToString()),
         };
         var authenticateUserDto = new AuthenticatedUser(user.Id, user.Login, user.Email, user.Password, claims);
         return new AuthenticationResult(authenticateUserDto);

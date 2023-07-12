@@ -1,10 +1,21 @@
-﻿using Microsoft.OpenApi.Models;
+﻿using Dify.Core.Application.Common;
+using Dify.Core.WebApi.Services;
+using Microsoft.OpenApi.Models;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
 public static class ServicesExtensions
 {
-    public static IServiceCollection AddSwagger(this IServiceCollection services)
+    public static IServiceCollection AddWebApiServices(this IServiceCollection services)
+    {
+        services.AddSwagger();
+        services.AddHttpContextAccessor();
+        services.AddScoped<ICurrentUser, CurrentUser>();
+        services.AddControllers();
+        return services;
+    }
+    
+    private static IServiceCollection AddSwagger(this IServiceCollection services)
     {
         services.AddSwaggerGen(options =>
         {

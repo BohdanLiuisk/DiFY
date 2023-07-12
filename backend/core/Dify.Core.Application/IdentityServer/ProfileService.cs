@@ -10,6 +10,8 @@ public class ProfileService : IProfileService
         context.IssuedClaims.AddRange(context.Subject.Claims.Where(claim => claim.Type == CustomClaimTypes.Roles).ToList());
         context.IssuedClaims.Add(context.Subject.Claims.Single(claim => claim.Type == CustomClaimTypes.Name));
         context.IssuedClaims.Add(context.Subject.Claims.Single(claim => claim.Type == CustomClaimTypes.Email));
+        context.IssuedClaims.Add(context.Subject.Claims.Single(claim => claim.Type == CustomClaimTypes.Login));
+        context.IssuedClaims.Add(context.Subject.Claims.Single(claim => claim.Type == CustomClaimTypes.UserId));
         return Task.CompletedTask;
     }
 
