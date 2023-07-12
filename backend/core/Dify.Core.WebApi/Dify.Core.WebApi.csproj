@@ -18,6 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Dify.Common\Dify.Common.csproj" />
     <ProjectReference Include="..\Dify.Core.Infrastructure\Dify.Core.Infrastructure.csproj" />
   </ItemGroup>
 

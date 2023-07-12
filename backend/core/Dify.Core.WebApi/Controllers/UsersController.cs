@@ -1,4 +1,7 @@
-﻿using Dify.Core.Application.Users.Commands.CreateNewUser;
+﻿using Dify.Common;
+using Dify.Common.Dto;
+using Dify.Core.Application.Users.Commands.CreateNewUser;
+using Dify.Core.Application.Users.Queries.GetUserById;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -15,6 +18,13 @@ public class UsersController : ControllerBase
     public UsersController(IMediator mediator)
     {
         _mediator = mediator;
+    }
+    
+    [HttpGet("getById/{id}")]
+    public async Task<ActionResult<QueryResponse<UserDto>>> GetUser(int id)
+    {
+        var user = await _mediator.Send(new GetUserByIdQuery(id));
+        return Ok(user);
     }
     
     [AllowAnonymous]

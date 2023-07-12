@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Dify.Common.Dto;
 using Dify.Core.Application.Users.Commands.CreateNewUser;
 using Dify.Core.Domain.Entities;
 
@@ -11,5 +12,6 @@ public sealed class UsersProfile : Profile
         CreateMap<CreateNewUserCommand, User>()
             .ForMember(dest => dest.Name, opt => 
                 opt.MapFrom(src => $"{src.FirstName} {src.LastName}"));
+        CreateMap<User, UserDto>();
     }
 }
