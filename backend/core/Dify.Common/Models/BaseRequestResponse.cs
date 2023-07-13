@@ -1,6 +1,6 @@
 ﻿namespace Dify.Common.Models;
 
-public abstract class BaseQueryResponse
+public abstract class BaseRequestResponse
 {
     public bool Success { get; set; }
     public string Error { get; set; }

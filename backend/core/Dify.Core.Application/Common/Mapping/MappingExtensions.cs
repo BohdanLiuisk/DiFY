@@ -1,8 +1,4 @@
-﻿using AutoMapper;
-using AutoMapper.QueryableExtensions;
-using Microsoft.EntityFrameworkCore;
-
-namespace Dify.Core.Application.Common.Mapping;
+﻿namespace Dify.Core.Application.Common.Mapping;
 
 public static class MappingExtensions
 {

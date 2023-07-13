@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-
-namespace Dify.Core.Application.Common;
+﻿namespace Dify.Core.Application.Common;
 
 public class PaginatedList<T>
 {

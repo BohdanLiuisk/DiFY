@@ -1,4 +1,6 @@
 using System.Reflection;
+using Dify.Core.Application;
+using Dify.Core.Infrastructure;
 using Serilog;
 using Dify.Core.WebApi.Extensions;
 
@@ -12,10 +14,10 @@ builder.Configuration
     .AddUserSecrets(Assembly.GetExecutingAssembly(),true)
     .Build();
 
-builder.Services.AddInfrastructureServices(builder.Configuration);
 builder.Services.AddApplicationServices();
-builder.Services.AddIdentityServerAuthentication();
+builder.Services.AddInfrastructureServices(builder.Configuration);
 builder.Services.AddWebApiServices();
+builder.Services.AddIdentityServerAuthentication();
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()

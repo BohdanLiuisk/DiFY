@@ -2,9 +2,9 @@
 using Dify.Core.WebApi.Services;
 using Microsoft.OpenApi.Models;
 
-namespace Microsoft.Extensions.DependencyInjection;
+namespace Dify.Core.WebApi.Extensions;
 
-public static class ServicesExtensions
+public static class ServicesExtenыsions
 {
     public static IServiceCollection AddWebApiServices(this IServiceCollection services)
     {

@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Dify.Common.Dto;
+﻿using Dify.Common.Dto;
 using Dify.Core.Application.Users.Commands;
 using Dify.Core.Domain.Entities;
 

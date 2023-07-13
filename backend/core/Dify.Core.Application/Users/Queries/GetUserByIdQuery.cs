@@ -1,10 +1,7 @@
-﻿using AutoMapper;
-using Dify.Common.Dto;
+﻿using Dify.Common.Dto;
 using Dify.Common.Models;
 using Dify.Core.Application.Common;
 using Dify.Core.Application.Common.Exceptions;
-using MediatR;
-using Microsoft.EntityFrameworkCore;
 
 namespace Dify.Core.Application.Users.Queries;
 
@@ -29,8 +26,6 @@ public class GetUserByIdQueryHandler : IRequestHandler<GetUserByIdQuery, QueryRe
         {
             throw new NotFoundException($"User with id {query.Id} was not found.");
         }
-        var response = new QueryResponse<UserDto>();
-        response.SetBody(_mapper.Map<UserDto>(user));
-        return response;
+        return new QueryResponse<UserDto>(_mapper.Map<UserDto>(user));
     }
 }

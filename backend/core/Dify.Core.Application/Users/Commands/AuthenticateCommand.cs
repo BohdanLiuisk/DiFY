@@ -3,8 +3,6 @@ using Dify.Common.Dto;
 using Dify.Common.Models;
 using Dify.Core.Application.Common;
 using Dify.Core.Application.IdentityServer;
-using MediatR;
-using Microsoft.EntityFrameworkCore;
 
 namespace Dify.Core.Application.Users.Commands;
 

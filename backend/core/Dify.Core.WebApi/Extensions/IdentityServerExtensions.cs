@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 
-namespace Microsoft.Extensions.DependencyInjection;
+namespace Dify.Core.WebApi.Extensions;
 
 public static class IdentityServerExtensions
 {

@@ -1,12 +1,13 @@
 ﻿using Dify.Core.Application.Common;
-using Dify.Core.Infrastructure.Context;
-using Microsoft.Extensions.Configuration;
-using Microsoft.EntityFrameworkCore;
 using Dify.Core.Application.IdentityServer;
 using Dify.Core.Infrastructure.Auth;
+using Dify.Core.Infrastructure.Context;
 using IdentityServer4.Validation;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace Microsoft.Extensions.DependencyInjection;
+namespace Dify.Core.Infrastructure;
 
 public static class ConfigureServices
 {

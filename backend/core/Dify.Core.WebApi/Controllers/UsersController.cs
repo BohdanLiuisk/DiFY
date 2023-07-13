@@ -23,13 +23,13 @@ public class UsersController : ControllerBase
     
     [AllowAnonymous]
     [HttpPost("createNew")]
-    public async Task<ActionResult<int>> CreateUser(CreateNewUserCommand newUser)
+    public async Task<ActionResult<CommandResponse<NewUserResponse>>> CreateUser(CreateNewUserCommand newUser)
     {
         var userId = await _mediator.Send(newUser);
         return Ok(userId);
     }
     
-    [HttpGet("getById/{id}")]
+    [HttpGet("getById/{id:int}")]
     public async Task<ActionResult<QueryResponse<UserDto>>> GetUser(int id)
     {
         var user = await _mediator.Send(new GetUserByIdQuery(id));

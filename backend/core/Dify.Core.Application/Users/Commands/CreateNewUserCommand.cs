@@ -1,8 +1,7 @@
-﻿using AutoMapper;
+﻿using Dify.Common.Models;
 using Dify.Core.Application.Common;
 using Dify.Core.Application.IdentityServer;
 using Dify.Core.Domain.Entities;
-using MediatR;
 
 namespace Dify.Core.Application.Users.Commands;
 
@@ -12,9 +11,11 @@ public record CreateNewUserCommand(
     string Login, 
     string Password, 
     string Email
-) : IRequest<int>;
+) : IRequest<CommandResponse<NewUserResponse>>;
 
-public class CreateNewUserCommandHandler : IRequestHandler<CreateNewUserCommand, int> 
+public record NewUserResponse(int UserId);
+
+public class CreateNewUserCommandHandler : IRequestHandler<CreateNewUserCommand, CommandResponse<NewUserResponse>> 
 {
     private readonly IDifyContext _difyContext;
     
@@ -26,14 +27,19 @@ public class CreateNewUserCommandHandler : IRequestHandler<CreateNewUserCommand,
         _mapper = mapper;
     }
 
-    public async Task<int> Handle(CreateNewUserCommand command, CancellationToken cancellationToken)
+    public async Task<CommandResponse<NewUserResponse>> Handle(CreateNewUserCommand command, 
+        CancellationToken cancellationToken)
     {
+        if (await _difyContext.Users.AnyAsync(u => u.Login == command.Login, cancellationToken))
+        {
+            throw new ArgumentException($"User with login {command.Login} already exists");
+        }
         var user = _mapper.Map<User>(command);
         user.CreatedOn = DateTime.UtcNow;
         var password = PasswordHashManager.HashPassword(command.Password);
         user.Password = password;
         await _difyContext.Users.AddAsync(user, cancellationToken);
         await _difyContext.SaveChangesAsync(cancellationToken);
-        return user.Id;
+        return new CommandResponse<NewUserResponse>(new NewUserResponse(user.Id));
     }
 }

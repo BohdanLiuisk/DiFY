@@ -1,13 +1,12 @@
 ﻿namespace Dify.Common.Models;
 
-public class QueryResponse<T> : BaseRequestResponse
+public class CommandResponse<T>: BaseRequestResponse
 {
     public T Body { get; set; }
     
-    public QueryResponse() { }
+    public CommandResponse() { }
     
-    public QueryResponse(T body)
-    {
+    public CommandResponse(T body) {
         Body = body;
         Success = true;
     }
