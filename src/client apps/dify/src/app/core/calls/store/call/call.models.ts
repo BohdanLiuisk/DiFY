@@ -4,7 +4,7 @@ export interface CallState {
   call: Call | null,
   participants: Participant[],
   participantCards: CallParticipantCard[],
-  currentParticipantId: GUID,
+  currentParticipantId: number,
   hubConnected: boolean,
   loading: boolean,
   loaded: boolean
@@ -25,7 +25,7 @@ export interface Call {
 }
 
 export interface Participant {
-  id: GUID,
+  id: number,
   name: string,
   active: false,
   streamId: string,
@@ -34,7 +34,7 @@ export interface Participant {
 }
 
 export interface CallParticipantCard {
-  participantId: GUID,
+  participantId: number,
   stream: MediaStream,
   videoEnabled: boolean,
   audioEnabled: boolean,

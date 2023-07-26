@@ -11,11 +11,13 @@ import { HttpHeaders } from '@angular/common/http';
 import { JwtStorageService } from '@core/auth/jwt-storage.service';
 import { GUID } from '@shared/custom-types';
 import { JwtHelperService } from '@auth0/angular-jwt';
+import { QueryResponse } from '@core/models/query-response';
+import { User } from '@core/models/user';
 
 @Injectable()
 export class AuthService {
   private readonly accessTokenPath: string = '/connect/token';
-  private readonly userAccessPath: string = '/api/userAccess';
+  private readonly usersApi: string = '/api/users';
   private readonly signUpPath: string = '/userAccess/userRegistrations';
   private readonly clientId: string;
   private readonly clientSecret: string;
@@ -47,9 +49,10 @@ export class AuthService {
     body.set('grant_type', grandTypes.password);
     body.set('username', credentials.username);
     body.set('password', credentials.password);
-    return this.httpService.postRequest<JwtToken>(this.accessTokenPath, body.toString() as unknown as object,
-      new HttpHeaders().set("Content-Type", "application/x-www-form-urlencoded;")
-    );
+    return this.httpService.postRequest<JwtToken>(this.accessTokenPath, body.toString() as unknown as object,{ 
+      headers: new HttpHeaders().set("Content-Type", "application/x-www-form-urlencoded;"), 
+      isQueryResponse: false 
+    });
   }
 
   public signUp(newUser: NewUser): Observable<{ newUserId: GUID }> {
@@ -87,13 +90,14 @@ export class AuthService {
     body.set('grant_type', grandTypes.refreshToken);
     const refreshToken: string = this.jwtStorage.getToken('refresh_token') || dify.emptyString;
     body.set('refresh_token', refreshToken);
-    return this.httpService.postRequest<JwtToken>(this.accessTokenPath, body.toString() as unknown as object,
-      new HttpHeaders().set("Content-Type", "application/x-www-form-urlencoded;")
-    );
+    return this.httpService.postRequest<JwtToken>(this.accessTokenPath, body.toString() as unknown as object, {
+      headers: new HttpHeaders().set("Content-Type", "application/x-www-form-urlencoded;"),
+      isQueryResponse: false
+    });
   }
 
-  public getAuthUser(): Observable<AuthUser> {
-    return this.httpService.getRequest(`${this.userAccessPath}/authUser`);
+  public getAuthUser(): Observable<User> {
+    return this.httpService.getRequest<User>(`${this.usersApi}/getCurrentUser`);
   }
 
   private getUrlEncodedBody(): URLSearchParams {

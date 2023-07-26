@@ -12,20 +12,27 @@ public class GetUserByIdQueryHandler : IRequestHandler<GetUserByIdQuery, QueryRe
     private readonly IDifyContext _difyContext;
     
     private readonly IMapper _mapper;
+    
+    private readonly ICurrentUser _currentUser;
 
-    public GetUserByIdQueryHandler(IDifyContext difyContext, IMapper mapper)
+    public GetUserByIdQueryHandler(IDifyContext difyContext, IMapper mapper, ICurrentUser currentUser)
     {
         _difyContext = difyContext;
         _mapper = mapper;
+        _currentUser = currentUser;
     }
     
     public async Task<QueryResponse<UserDto>> Handle(GetUserByIdQuery query, CancellationToken cancellationToken)
     {
-        var user = await _difyContext.Users.FirstOrDefaultAsync(u => u.Id == query.Id, cancellationToken);
+        var user = await _difyContext.Users
+            .ProjectTo<UserDto>(_mapper.ConfigurationProvider)
+            .FirstOrDefaultAsync(u => u.Id == query.Id, cancellationToken);
         if (user == null)
         {
             throw new NotFoundException($"User with id {query.Id} was not found.");
         }
-        return new QueryResponse<UserDto>(_mapper.Map<UserDto>(user));
+        var mappedUser = _mapper.Map<UserDto>(user);
+        mappedUser.IsCurrentUser = user.Id == _currentUser.UserId;
+        return new QueryResponse<UserDto>(mappedUser);
     }
 }

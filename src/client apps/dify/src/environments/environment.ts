@@ -1,6 +1,6 @@
 export const environment = {
   production: false,
-  coreUrl: 'http://localhost:5050',
+  coreUrl: 'http://localhost:5065',
   authConfig: {
     client_id: 'ro.client',
     client_secret: 'secret'
@@ -22,11 +22,11 @@ export const environment = {
   hubs: {
     callHub: {
       hubName: "call",
-      hubUrl: "http://localhost:5050/hubs/call"
+      hubUrl: "http://localhost:5065/hubs/call"
     },
     difyHub: {
       hubName: "dify",
-      hubUrl: "http://localhost:5050/hubs/dify"
+      hubUrl: "http://localhost:5065/hubs/dify"
     }
   }
 };

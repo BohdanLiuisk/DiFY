@@ -27,6 +27,9 @@ public class UserEntityTypeConfiguration : IEntityTypeConfiguration<User>
             .IsRequired();
         builder.Property(u => u.Email)
             .IsRequired();
+        builder.Property(u => u.AvatarUrl)
+            .HasMaxLength(500)
+            .IsRequired(false);
         builder.HasOne(u => u.CreatedBy)
             .WithMany()
             .HasForeignKey(u => u.CreatedById)

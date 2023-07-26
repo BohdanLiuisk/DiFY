@@ -35,7 +35,6 @@ public class CreateNewUserCommandHandler : IRequestHandler<CreateNewUserCommand,
             throw new ArgumentException($"User with login {command.Login} already exists");
         }
         var user = _mapper.Map<User>(command);
-        user.CreatedOn = DateTime.UtcNow;
         var password = PasswordHashManager.HashPassword(command.Password);
         user.Password = password;
         await _difyContext.Users.AddAsync(user, cancellationToken);

@@ -1,3 +1,4 @@
+import { User } from '@core/models/user';
 import { GUID } from '@shared/custom-types';
 
 export enum TokenStatus {
@@ -9,7 +10,7 @@ export enum TokenStatus {
 
 export interface AuthState {
   isLoggedIn: boolean;
-  user?: AuthUser;
+  user?: User;
   accessTokenStatus: TokenStatus;
   refreshTokenStatus: TokenStatus;
   isLoadingLogin: boolean;

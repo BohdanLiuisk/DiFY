@@ -1,3 +1,9 @@
+<ng-container *ngIf="loadingError$ | async as error">
+  <p>{{ error }}</p>
+</ng-container>
+<ng-container *ngIf="isLoading$ | async">
+  <p>Loading...</p>
+</ng-container>
 <ng-container *ngIf="user$ | async as user">
   <div class="m-3">
     <div class="flex flex-row h-max border border-solid border-gray-300 rounded-lg">
@@ -8,7 +14,7 @@
           </div>
         </div>
         <button
-          *ngIf="!user.currentUser"
+          *ngIf="!user.isCurrentUser"
           tuiButton
           type="button"
           appearance="primary"
@@ -17,7 +23,7 @@
           Message
         </button>
         <button
-          *ngIf="user.currentUser"
+          *ngIf="user.isCurrentUser"
           tuiButton
           type="button"
           appearance="secondary"
@@ -29,7 +35,7 @@
       <div class="basis-4/5 p-4">
         <div>
           Description
-          <p>{{user.firstName}}</p>
+          <p>{{user.name}}</p>
         </div>
       </div>
     </div>

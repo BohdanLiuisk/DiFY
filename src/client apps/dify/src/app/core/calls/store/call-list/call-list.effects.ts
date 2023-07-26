@@ -37,7 +37,7 @@ export class CallListEffects {
 
   public readonly setListPage = createEffect(() =>
     this.actions$.pipe(
-      ofType(callListActions.setListPage, callListActions.setPerPage, callListActions.addSortOption),
+      ofType(callListActions.setListPage, callListActions.setPerPage),
       map(() => callListActions.loadCalls()),
     )
   );
@@ -47,9 +47,9 @@ export class CallListEffects {
       ofType(callListActions.loadCalls),
       concatLatestFrom(() => this.facade.listConfig$),
       concatMap(([_, config]) =>
-        this.callService.getAll(config.page, config.perPage, config.sortOptions).pipe(
-          map(({calls, totalCount}) =>
-            callListActions.loadCallsSuccess({ calls, totalCount })
+        this.callService.getAll(config.page, config.perPage).pipe(
+          map(({items, totalCount}) =>
+            callListActions.loadCallsSuccess({ calls: items, totalCount })
           ),
           catchError((error) => of(callListActions.loadCallsFailure({ error }))),
         )

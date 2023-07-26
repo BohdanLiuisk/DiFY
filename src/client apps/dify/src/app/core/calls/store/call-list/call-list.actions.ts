@@ -1,6 +1,6 @@
 import { createActionGroup, emptyProps, props } from '@ngrx/store';
 import { GUID } from '@shared/custom-types';
-import { Call, SortOption } from './call-list.reducer';
+import { Call } from './call-list.reducer';
 
 export const callListActions = createActionGroup({
   source: 'Call List',
@@ -9,7 +9,6 @@ export const callListActions = createActionGroup({
     'Join Call': props<{ callId: GUID }>(),
     'Set List Page': props<{ page: number }>(),
     'Set Per Page': props<({ perPage: number })>(),
-    'Add Sort Option': props<({ sortOption: SortOption })>(),
     'Load Calls': emptyProps(),
     'Load Calls Failure': props<{ error: Error }>(),
     'Load Calls Success': props<{ calls: Call[]; totalCount: number }>(),

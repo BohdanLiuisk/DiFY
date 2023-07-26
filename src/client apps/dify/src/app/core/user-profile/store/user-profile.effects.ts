@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { catchError, exhaustMap, map, of } from 'rxjs';
+import { catchError, delay, exhaustMap, map, of, switchMap, takeUntil } from 'rxjs';
 import { UserProfileService } from '../user-profile.service';
 import { userProfileActions } from './user-profile.actions';
 
@@ -14,11 +14,14 @@ export class UserProfileEffects {
   public readonly loadUserProfile = createEffect(() => {
     return this.actions$.pipe(
       ofType(userProfileActions.loadProfile),
-      exhaustMap(({ id }) => this.userProfileService.getUserProfile(id).pipe(
+      switchMap(({ id }) => this.userProfileService.getUserProfile(id).pipe(
         map((user) => {
           return userProfileActions.loadProfileSuccess({ user });
         }),
-        catchError((error) => of(userProfileActions.loadProfileFailed({ error })))
+        catchError((error) => {
+          return of(userProfileActions.loadProfileFailed({ error }));
+        }),
+        takeUntil(this.actions$.pipe(ofType(userProfileActions.clearState)))
       ))
     )
   });

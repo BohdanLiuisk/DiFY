@@ -1,6 +1,7 @@
 import { createAction, props } from '@ngrx/store';
 import { AuthUser, LoginCredentials, NewUser, NewUserRegistered } from '@core/auth/store/auth.models';
 import { HttpErrorResponse } from '@angular/common/http';
+import { User } from '@core/models/user';
 
 export const loginRequest = createAction(
   '[Auth] Login Request',
@@ -31,7 +32,7 @@ export const logout = createAction('[Auth] Logout');
 export const getAuthUserRequest = createAction('[Auth] Auth User Request');
 export const getAuthUserSuccess = createAction(
   '[Auth] Auth User Success',
-  props<{ user: AuthUser }>()
+  props<{ user: User }>()
 );
 export const getAuthUserFailure = createAction('[Auth] Auth User Failure');
 export const refreshTokenRequest = createAction('[Auth] Refresh Token Request');

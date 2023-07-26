@@ -4,14 +4,19 @@ using Microsoft.OpenApi.Models;
 
 namespace Dify.Core.WebApi.Extensions;
 
-public static class ServicesExtenыsions
+public static class ServicesExtensions
 {
-    public static IServiceCollection AddWebApiServices(this IServiceCollection services)
+    public static IServiceCollection AddWebApiServices(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddSwagger();
         services.AddHttpContextAccessor();
         services.AddScoped<ICurrentUser, CurrentUser>();
         services.AddControllers();
+        services.AddCors(o => o.AddPolicy("CorsPolicy", b =>
+        {
+            b.AllowAnyMethod().AllowAnyHeader().AllowCredentials().WithOrigins(configuration["ClientAppOrigin"]);
+        }));
+        services.AddSignalR();
         return services;
     }
     

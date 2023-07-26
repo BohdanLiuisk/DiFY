@@ -11,19 +11,6 @@ export enum CallColumns {
   totalParticipants = 'TotalParticipants'
 };
 
-export enum SortDirection {
-  asc = 'ASC',
-  desc = 'DESC'
-};
-
-export interface SortOption {
-  column: string,
-  direction: SortDirection,
-  seqNumber: number
-};
-
-export type SortOptions = SortOption[];
-
 export interface CallList {
   listConfig: CallListConfig,
   calls: Calls
@@ -32,7 +19,6 @@ export interface CallList {
 export interface CallListConfig {
   page: number;
   perPage: number;
-  sortOptions: SortOptions;
 };
 
 export interface Calls {
@@ -46,17 +32,23 @@ export interface Call {
   id: GUID;
   name: string;
   active: boolean;
+  initiatorId: number;
   startDate: Date;
   endDate: Date;
+  duration: number;
   activeParticipants: number;
   totalParticipants: number;
 };
 
+export interface CallsResponse {
+  items: Call[];
+  totalCount: number;
+}
+
 export const callsListInitialState: CallList = {
   listConfig: {
     page: 1,
-    perPage: 10,
-    sortOptions: []
+    perPage: 10
   },
   calls: {
     entities: [],
@@ -76,12 +68,6 @@ export const callListFeature = createFeature({
     }),
     on(callListActions.setPerPage, (state, { perPage }) => {
       const listConfig: CallListConfig = { ...state.listConfig, perPage };
-      return { ...state, listConfig };
-    }),
-    on(callListActions.addSortOption, (state, { sortOption }) => {
-      const listConfig: CallListConfig = {...state.listConfig, sortOptions: [
-        ...state.listConfig.sortOptions.filter(so => so.column !== sortOption.column), sortOption
-      ]};
       return { ...state, listConfig };
     }),
     on(callListActions.loadCalls, (state) => {

@@ -3,4 +3,6 @@
 public interface ICurrentUser
 {
     int UserId { get; }
+    
+    bool IsAvailable { get; }
 }

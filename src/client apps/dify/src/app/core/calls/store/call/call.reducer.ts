@@ -7,7 +7,7 @@ import { guid } from "@shared/custom-types";
 export const callInitialState: CallState = {
   call: null,
   participants: [],
-  currentParticipantId: guid(dify.emptyString),
+  currentParticipantId: 0,
   participantCards: [],
   loaded: false,
   loading: false,

@@ -1,5 +1,4 @@
 <div class="calls-list">
-
   <div class="flex flex-row">
     <div class="basis-4/5">
       <header class="flex justify-between items-center border-solid border border-gray-300 rounded-lg p-3 mb-3">
@@ -30,16 +29,8 @@
           <div class="calls-list-column">
             <label>Name</label>
           </div>
-          <div class="calls-list-column calls-list-column-sorting">
+          <div class="calls-list-column">
             <label>Status</label>
-            <button
-              tuiIconButton
-              type="button"
-              appearance="icon"
-              size="s"
-              [icon]="(getSortIconByColumn(callColumns.active) | async) || 'tuiIconChevronDown'"
-              (click)="columnSorting.next(callColumns.active)">
-            </button>
           </div>
           <div class="calls-list-column">
             <label>Action</label>
@@ -47,27 +38,11 @@
           <div class="calls-list-column">
             <label>Active participants</label>
           </div>
-          <div class="calls-list-column calls-list-column-sorting">
+          <div class="calls-list-column">
             <label>Total participants</label>
-            <button
-              tuiIconButton
-              type="button"
-              appearance="icon"
-              size="s"
-              [icon]="(getSortIconByColumn(callColumns.totalParticipants) | async) || 'tuiIconChevronDown'"
-              (click)="columnSorting.next(callColumns.totalParticipants)">
-            </button>
           </div>
-          <div class="calls-list-column calls-list-column-sorting">
+          <div class="calls-list-column">
             <label>Start date</label>
-            <button
-              tuiIconButton
-              type="button"
-              appearance="icon"
-              size="s"
-              [icon]="(getSortIconByColumn(callColumns.startDate) | async) || 'tuiIconChevronDown'"
-              (click)="columnSorting.next(callColumns.startDate)">
-            </button>
           </div>
           <div class="calls-list-column">
             <label>End date</label>

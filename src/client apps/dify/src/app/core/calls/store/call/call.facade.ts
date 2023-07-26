@@ -43,7 +43,7 @@ export class CallFacade {
     return this.store.select(selectParticipantByStreamId(streamId)).pipe(filterEmpty());
   }
 
-  public selectParticipantById(id: GUID): Observable<Participant> {
+  public selectParticipantById(id: number): Observable<Participant> {
     return this.store.select(selectParticipantById(id)).pipe(filterEmpty());
   }
 
@@ -51,7 +51,7 @@ export class CallFacade {
     this.store.dispatch(callActions.setCallId({ callId }));
   }
 
-  public setCurrentParticipantId(id: GUID) {
+  public setCurrentParticipantId(id: number) {
     this.store.dispatch(callActions.setCurrentParticipantId({ id }));
   }
 

@@ -2,7 +2,7 @@
 
 namespace Dify.Core.Domain.Common;
 
-public abstract class BaseAuditableEntity<T> : BaseEntity<T> where T: struct
+public abstract class BaseAuditableEntity<T> : BaseEntity<T>, IBaseAuditableEntity where T: struct
 {
     public DateTime CreatedOn { get; set; }
 

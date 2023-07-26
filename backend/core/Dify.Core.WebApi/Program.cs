@@ -3,6 +3,7 @@ using Dify.Core.Application;
 using Dify.Core.Infrastructure;
 using Serilog;
 using Dify.Core.WebApi.Extensions;
+using Dify.Core.WebApi.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,7 +17,7 @@ builder.Configuration
 
 builder.Services.AddApplicationServices();
 builder.Services.AddInfrastructureServices(builder.Configuration);
-builder.Services.AddWebApiServices();
+builder.Services.AddWebApiServices(builder.Configuration);
 builder.Services.AddIdentityServerAuthentication();
 
 Log.Logger = new LoggerConfiguration()
@@ -33,6 +34,8 @@ app.UseDifyCoreContext();
 app.UseSwagger();
 app.UseSwaggerUI();
 
+app.UseCors("CorsPolicy");
+
 app.UseIdentityServer();
 
 app.UseHttpsRedirection();
@@ -41,4 +44,5 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapHub<DifyHub>("/hubs/dify");
 app.Run();

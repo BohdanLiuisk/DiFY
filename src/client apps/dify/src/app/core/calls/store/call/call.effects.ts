@@ -153,7 +153,7 @@ export class CallEffects {
             map((participant) => callActions.addParticipant(participant))
           );
         const participantLeftCall$ = hub
-          .on<{ participantId: GUID }>("OnParticipantLeft")
+          .on<{ participantId: number }>("OnParticipantLeft")
           .pipe(
             tap(({ participantId }) => this.signarEvents.participantLeft.next({ participantId })),
             map(({ participantId }) => callActions.removeParticipant({ participantId }))

@@ -112,12 +112,11 @@ export class AuthEffects {
       )
     );
   });
-
+  
   connectDifyHub = createEffect(() => {
     return this.actions$.pipe(
       ofType(AuthActions.getAuthUserSuccess),
       switchMap(() => {
-
         const hub = findHub(difyHub);
         if(hub) {
           return hub.status$;

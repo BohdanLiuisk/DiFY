@@ -24,4 +24,14 @@ public class CurrentUser : ICurrentUser
             throw new UnauthorizedAccessException("User context is not available.");
         }
     }
+
+    public bool IsAvailable
+    {
+        get
+        {
+            var subClaim = _httpContextAccessor.HttpContext?.User?.Claims?
+                .SingleOrDefault(x => x.Type == "userId")?.Value;
+            return subClaim != null && int.TryParse(subClaim, out _);
+        }
+    }
 }

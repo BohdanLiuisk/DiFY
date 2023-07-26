@@ -1,9 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { BaseComponent } from '@core/components/base.component';
-import { UserInfo } from '@core/user-profile/store/user-profile.models';
+import { User } from '@core/models/user';
 import { UserProfileFacade } from '@core/user-profile/user-profile.facade';
-import { GUID } from '@shared/custom-types';
 import { Observable } from 'rxjs';
 
 @Component({
@@ -12,7 +11,12 @@ import { Observable } from 'rxjs';
   styleUrls: ['./user-profile.component.scss']
 })
 export class UserProfileComponent extends BaseComponent implements OnInit, OnDestroy {
-  public readonly user$: Observable<UserInfo> = this.userProfileFacade.user$;
+  public readonly user$: Observable<User> = this.userProfileFacade.user$
+    .pipe(this.untilThis);;
+  public readonly isLoading$: Observable<boolean> = this.userProfileFacade.loading$ 
+    .pipe(this.untilThis);;
+  public readonly loadingError$: Observable<string> = this.userProfileFacade.error$
+    .pipe(this.untilThis);
 
   constructor(
     public userProfileFacade: UserProfileFacade,
@@ -22,7 +26,7 @@ export class UserProfileComponent extends BaseComponent implements OnInit, OnDes
 
   public ngOnInit(): void {
     this.route.params.pipe(this.untilThis).subscribe(params => {
-      const userId: GUID = params['id'];
+      const userId: number = params['id'];
       this.userProfileFacade.loadUserProfile(userId);
     });
   }

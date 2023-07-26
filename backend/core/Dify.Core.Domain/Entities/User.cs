@@ -15,4 +15,8 @@ public class User : BaseAuditableEntity<int>
     public string Password { get; set; }
 
     public string Email { get; set; }
+    
+    public string AvatarUrl { get; set; }
+    
+    public bool Online { get; set; }
 }

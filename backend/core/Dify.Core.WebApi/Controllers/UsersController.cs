@@ -43,4 +43,12 @@ public class UsersController : ControllerBase
             new GetPaginatedUsersQuery(pageNumber, pageSize));
         return Ok(users);
     }
+    
+    [HttpGet("getCurrentUser")]
+    public async Task<ActionResult<QueryResponse<UserDto>>> GetCurrentUser()
+    {
+        var currentUser = await _mediator.Send(
+            new GetCurrentUserQuery());
+        return Ok(currentUser);
+    }
 }
