@@ -82,7 +82,7 @@ export const callFeature = createFeature({
       return { ...state, participants: [ ...state.participants, participant ] };
     }),
     on(callActions.removeParticipant, (state, { participantId }) => {
-      return { ...state, participants: [ ...state.participants.filter(p => p.id !== participantId) ],
+      return { ...state, participants: [ ...state.participants.filter(p => p.participantId !== participantId) ],
         participantCards: [ ...state.participantCards
           .filter(s => s.participantId !== participantId)
           .map((participantCard): CallParticipantCard => ({
@@ -95,10 +95,10 @@ export const callFeature = createFeature({
     on(callActions.addParticipantCard, (state, { stream }) => {
       if(!state.participantCards.some(p => p.stream.id === stream.id)) {
         const participant = state.participants.find(p => p.streamId === stream.id);
-        const currentUser = state.currentParticipantId === participant.id;
+        const currentUser = state.currentParticipantId === participant.participantId;
         return { ...state, participantCards: [ ...state.participantCards, {
           stream,
-          participantId: participant.id,
+          participantId: participant.participantId,
           videoEnabled: true,
           audioEnabled: true,
           currentUser,

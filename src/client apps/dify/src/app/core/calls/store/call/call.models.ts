@@ -25,12 +25,12 @@ export interface Call {
 }
 
 export interface Participant {
-  id: number,
+  participantId: number,
   name: string,
   active: false,
   streamId: string,
   peerId: string,
-  joinOn: Date
+  joinedAt: Date
 }
 
 export interface CallParticipantCard {

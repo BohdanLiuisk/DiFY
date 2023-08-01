@@ -16,7 +16,7 @@ export class CallListService {
   }
 
   public createNew(name: string): Observable<{ callId: GUID }> {
-    return this.httpService.postRequest<{ callId: GUID }>(`${this.callsPath}/createCall`, { name });
+    return this.httpService.postRequest<{ callId: GUID }>(`${this.callsPath}/createNew`, { name });
   }
 
   public joinCall(callId: GUID): Observable<void> {
