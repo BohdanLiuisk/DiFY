@@ -29,7 +29,7 @@ public static class IdentityServerExtensions
     {
         var path = context.HttpContext.Request.Path;
         var accessToken = context.Request.Query["access_token"];
-        var isHub = path.StartsWithSegments("/hubs/dify");
+        var isHub = path.StartsWithSegments("/hubs/dify") || path.StartsWithSegments("/hubs/call");
         if (!string.IsNullOrEmpty(accessToken) && isHub)
         {
             context.Token = accessToken;

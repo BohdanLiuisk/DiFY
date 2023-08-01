@@ -45,4 +45,5 @@ app.UseAuthorization();
 
 app.MapControllers();
 app.MapHub<DifyHub>("/hubs/dify");
+app.MapHub<CallHub>("/hubs/call");
 app.Run();

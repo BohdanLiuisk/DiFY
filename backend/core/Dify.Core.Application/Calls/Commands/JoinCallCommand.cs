@@ -5,12 +5,13 @@ using Dify.Core.Domain.Entities;
 
 namespace Dify.Core.Application.Calls.Commands;
 
-public record JoinCallCommand(
-    Guid CallId,
-    string StreamId,
-    string PeerId,
-    string ConnectionId
-): IRequest<CommandResponse<bool>>;
+public record JoinCallCommand : IRequest<CommandResponse<bool>>
+{
+    public Guid CallId { get; set; }
+    public string StreamId { get; set; }
+    public string PeerId { get; set; }
+    public string ConnectionId { get; set; }
+}
 
 public class JoinCallCommandHandler : IRequestHandler<JoinCallCommand, CommandResponse<bool>>
 {
@@ -49,6 +50,9 @@ public class JoinCallCommandHandler : IRequestHandler<JoinCallCommand, CommandRe
                 throw new AggregateException("You are already in a call.");
             }
             participant.Active = true;
+            participant.StreamId = command.StreamId;
+            participant.PeerId = command.PeerId;
+            participant.ConnectionId = command.ConnectionId;
         }
         else
         {
