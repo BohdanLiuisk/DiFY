@@ -1,13 +1,13 @@
 import { createFeature, createReducer, on } from "@ngrx/store";
 import { callActions } from '@core/calls/store/call/call.actions';
 import { CallParticipantCard, CallState } from "@core/calls/store/call/call.models";
-import { dify } from "@shared/constans/app-settings";
-import { guid } from "@shared/custom-types";
 
 export const callInitialState: CallState = {
   call: null,
   participants: [],
   currentParticipantId: 0,
+  currentStream: null,
+  currentPeerId: '',
   participantCards: [],
   loaded: false,
   loading: false,
@@ -20,6 +20,9 @@ export const callFeature = createFeature({
     callInitialState,
     on(callActions.setCallId, (state, { callId }) => {
       return { ...state, call: { ...state.call, id: callId } };
+    }),
+    on(callActions.setPeerId, (state, { peerId }) => {
+      return { ...state, currentPeerId: peerId };
     }),
     on(callActions.setCurrentParticipantId, (state, { id }) => {
       return { ...state, currentParticipantId: id };
@@ -49,6 +52,9 @@ export const callFeature = createFeature({
           return participantCard;
         })]
       };
+    }),
+    on(callActions.currentStreamConnected, (state, { stream }) => {
+      return { ...state, currentStream: stream };
     }),
     on(callActions.setNewVideoStream, (state, { videoTrack }) => {
       const currentStream = state.participantCards.find(

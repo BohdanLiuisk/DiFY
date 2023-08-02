@@ -1,3 +1,4 @@
+<dify-loader [loading]="loading$ | async"></dify-loader>
 <div #participants class="participants">
   <app-call-participant
     *ngFor="let participantCard of participantCards$ | async"

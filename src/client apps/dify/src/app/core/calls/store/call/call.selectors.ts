@@ -10,7 +10,9 @@ export const {
   selectLoading,
   selectHubConnected,
   selectParticipantCards,
-  selectCurrentParticipantId
+  selectCurrentParticipantId,
+  selectCurrentStream,
+  selectCurrentPeerId
 } = callFeature;
 export const selectCallId = createSelector(selectCall, (call) => call?.id);
 export const selectParticipantByStreamId = (streamId: string) =>  createSelector(selectParticipants,

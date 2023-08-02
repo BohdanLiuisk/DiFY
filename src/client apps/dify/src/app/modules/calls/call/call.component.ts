@@ -22,6 +22,8 @@ export class CallComponent extends BaseComponent implements OnInit, AfterViewIni
     .pipe(this.untilThis);
   public readonly currentCard$: Observable<CallParticipantCard> = this.callFacade.currentCard$
     .pipe(this.untilThis);
+  public readonly loading$: Observable<boolean> = this.callFacade.loading$
+    .pipe(this.untilThis);
   public readonly participantsCount$: Observable<number> = this.callFacade.participantCardsCount$
     .pipe(this.untilThis, filterEmpty());
   @ViewChild('participants') private _paricipantsDiv: ElementRef;
@@ -117,7 +119,8 @@ export class CallComponent extends BaseComponent implements OnInit, AfterViewIni
   }
 
   private _peerOpened(peerId: string): void {
-    this.callFacade.joinCall(peerId);
+    this.callFacade.setPeerId(peerId);
+    this.callFacade.joinCall();
   }
 
   private _callParticipant(peerId: string): void {

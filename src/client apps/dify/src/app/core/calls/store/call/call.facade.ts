@@ -15,7 +15,9 @@ import {
   selectParticipants,
   selectCurrentMediaStream,
   selectParticipantsCount,
-  selectCurrentParticipantCard
+  selectCurrentParticipantCard,
+  selectCurrentStream,
+  selectCurrentPeerId
 } from "@core/calls/store/call/call.selectors";
 import { Call, CallParticipantCard, CallState, Participant } from "@core/calls/store/call/call.models";
 import { filterEmpty } from "@core/utils/pipe.operators";
@@ -31,6 +33,8 @@ export class CallFacade {
   public readonly participantCards$: Observable<CallParticipantCard[]> = this.store.select(selectParticipantCards).pipe(filterEmpty());
   public readonly participantCardsCount$: Observable<number> = this.store.select(selectParticipantsCount);
   public readonly currentMediaStream$: Observable<MediaStream> = this.store.select(selectCurrentMediaStream).pipe(filterEmpty());
+  public readonly currentStream$: Observable<MediaStream> = this.store.select(selectCurrentStream).pipe(filterEmpty());
+  public readonly currentPeerId$: Observable<string> = this.store.select(selectCurrentPeerId).pipe(filterEmpty());
   public readonly currentCard$: Observable<CallParticipantCard> = this.store.select(selectCurrentParticipantCard).pipe(filterEmpty());
 
   constructor(private store: Store<CallState>) { }
@@ -71,8 +75,12 @@ export class CallFacade {
     this.store.dispatch(callActions.startCallHub());
   }
 
-  public joinCall(peerId: string): void {
-    this.store.dispatch(callActions.joinCall({ peerId }));
+  public setPeerId(peerId: string): void {
+    this.store.dispatch(callActions.setPeerId({ peerId }));
+  }
+
+  public joinCall(): void {
+    this.store.dispatch(callActions.joinCall());
   }
 
   public addParticipantCard(stream: MediaStream): void {

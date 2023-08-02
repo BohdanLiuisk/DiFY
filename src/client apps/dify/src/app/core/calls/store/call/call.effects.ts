@@ -2,7 +2,7 @@ import { Inject, Injectable } from "@angular/core";
 import { Actions, concatLatestFrom, createEffect, ofType } from "@ngrx/effects";
 import { CallFacade } from "@core/calls/store/call/call.facade";
 import { callActions } from '@core/calls/store/call/call.actions';
-import { catchError, map, of, switchMap, tap, merge, filter, from, exhaustMap, takeUntil } from "rxjs";
+import { catchError, map, of, switchMap, tap, merge, filter, from, exhaustMap, takeUntil, withLatestFrom } from "rxjs";
 import { IHttpConnectionOptions } from "@microsoft/signalr";
 import { AuthService } from "@core/auth/auth.service";
 import { CallSignalrEvents } from "@core/calls/store/call-signalr.events";
@@ -59,27 +59,31 @@ export class CallEffects {
   public readonly joinCall$ = createEffect(() =>
     this.actions$.pipe(
       ofType(callActions.joinCall),
-      concatLatestFrom(() => this.facade.callId$),
-      switchMap(([ { peerId }, callId ]) => this.getUserMediaStream(peerId, callId))
-    )
+      switchMap(() => {
+          return from(navigator.mediaDevices.getUserMedia({ video: true, audio: false })).pipe(
+            takeUntil(this.actions$.pipe(ofType(callActions.clearState))),
+            switchMap(stream => {
+              return of(callActions.currentStreamConnected({ stream }));
+            })
+          );
+        })
+      )
   );
 
-  private getUserMediaStream(peerId: string, callId: GUID) {
-    return from(navigator.mediaDevices.getUserMedia({ video: true, audio: false })).pipe(
-      switchMap(stream => this.joinCallWhenConnected(peerId, stream, callId)),
-      catchError(error => of(callActions.joinCallFailure({ error }))),
-      takeUntil(this.actions$.pipe(ofType(callActions.clearState)))
-    );
-  }
-
-  private joinCallWhenConnected(peerId: string, stream: MediaStream, callId: GUID) {
-    const hub = findHub(callHub);
-    return hub.status$.pipe(
-      filter(status => status === 'connected'),
-      switchMap(() => this.sendJoinData(hub, peerId, stream, callId)),
-      takeUntil(this.actions$.pipe(ofType(callActions.clearState)))
-    );
-  }
+  public readonly currentStreamConnected$ = createEffect(() => 
+    this.actions$.pipe(
+      ofType(callActions.currentStreamConnected),
+      withLatestFrom(this.facade.callId$, this.facade.currentStream$, this.facade.currentPeerId$),
+      switchMap(([_, callId, stream, peerId]) => {
+        const hub = findHub(callHub);
+        return hub.status$.pipe(
+          filter(status => status === 'connected'),
+          switchMap(() => this.sendJoinData(hub, peerId, stream, callId)),
+          takeUntil(this.actions$.pipe(ofType(callActions.clearState)))
+        );
+      })
+    )
+  );
 
   private sendJoinData(hub: SignalrHub, peerId: string, stream: MediaStream, callId: GUID) {
     const joinData: JoinData = { peerId, streamId: stream.id, callId };

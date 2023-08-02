@@ -1,5 +1,4 @@
 import { Injectable } from "@angular/core";
-import { GUID } from "@shared/custom-types";
 import { Subject } from "rxjs";
 import { Participant } from "./call/call.models";
 

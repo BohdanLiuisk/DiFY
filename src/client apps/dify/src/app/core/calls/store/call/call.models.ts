@@ -4,7 +4,9 @@ export interface CallState {
   call: Call | null,
   participants: Participant[],
   participantCards: CallParticipantCard[],
+  currentStream: MediaStream | null,
   currentParticipantId: number,
+  currentPeerId: string,
   hubConnected: boolean,
   loading: boolean,
   loaded: boolean
