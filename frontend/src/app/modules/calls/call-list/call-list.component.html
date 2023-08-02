@@ -1,0 +1,152 @@
+<div class="calls-list">
+  <div class="flex flex-row">
+    <div class="basis-4/5">
+      <header class="flex justify-between items-center border-solid border border-gray-300 rounded-lg p-3 mb-3">
+        <h2 class="calls-list-header-h2 tui-text_body-l-2">New call</h2>
+        <div>
+          <button
+            class="mr-4"
+            tuiButton
+            type="button"
+            appearance="primary"
+            size="m"
+            icon="tuiIconPhone"
+            (click)="createNew()">
+            Create
+          </button>
+          <button
+            tuiButton
+            type="button"
+            appearance="secondary"
+            size="m"
+            icon="tuiIconCalendar">
+            Scedule
+          </button>
+        </div>
+      </header>
+      <div class="calls-list-content">
+        <div class="calls-list-row calls-list-row-header">
+          <div class="calls-list-column">
+            <label>Name</label>
+          </div>
+          <div class="calls-list-column">
+            <label>Status</label>
+          </div>
+          <div class="calls-list-column">
+            <label>Action</label>
+          </div>
+          <div class="calls-list-column">
+            <label>Active participants</label>
+          </div>
+          <div class="calls-list-column">
+            <label>Total participants</label>
+          </div>
+          <div class="calls-list-column">
+            <label>Start date</label>
+          </div>
+          <div class="calls-list-column">
+            <label>End date</label>
+          </div>
+        </div>
+        <ng-container *ngFor="let call of callListFacade.callsList$ | async">
+          <div class="calls-list-row calls-list-row-call">
+            <div class="calls-list-column">
+              <label>{{ call.name }}</label>
+            </div>
+            <div class="calls-list-column">
+              <tui-tag
+                size="l"
+                [value]="getCallStatusTag(call)"
+                status="custom"
+                [ngClass]="call.active ? 'call-active-tag' : 'call-ended-tag'">
+              </tui-tag>
+            </div>
+            <div class="calls-list-column">
+              <button
+                tuiButton
+                type="button"
+                appearance="flat"
+                size="m"
+                icon="tuiIconPhone"
+                [disabled]="!call.active"
+                (click)="joinCall(call.id)">
+                Join
+              </button>
+            </div>
+            <div class="calls-list-column">
+              <label>
+                {{ call.activeParticipants }}
+              </label>
+            </div>
+            <div class="calls-list-column">
+              <label>
+                {{ call.totalParticipants }}
+              </label>
+            </div>
+            <div class="calls-list-column">
+              <label>
+                {{ call.startDate | callDate: 'medium' }}
+              </label>
+            </div>
+            <div class="calls-list-column">
+              <label>
+                {{ call.endDate | callDate: 'medium': 'Not ended' }}
+              </label>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+      <tui-table-pagination
+        [total]="callListFacade.totalCount$ | async"
+        [size]="(callListFacade.listConfig$ | async).perPage"
+        [items]="pageSizeOptions"
+        (sizeChange)="callListFacade.setPerPage($event)"
+        (pageChange)="callListFacade.setPage($event + 1)"
+        class="tui-space_top-2">
+      </tui-table-pagination>
+    </div>
+    <div class="basis-1/5 flex flex-col border border-solid border-gray-300 rounded-lg mx-2 p-3 h-56">
+      <button
+        tuiButton
+        type="button"
+        appearance="primary"
+        size="s"
+        class="rounded-md">
+        Call friends
+      </button>
+      <button
+        tuiButton
+        type="button"
+        appearance="green-button"
+        size="s"
+        class="mt-2 rounded-md">
+        Active
+      </button>
+      <button
+        tuiButton
+        type="button"
+        appearance="secondary"
+        size="s"
+        class="mt-2 rounded-md">
+        Scheduled
+      </button>
+      <button
+        tuiButton
+        type="button"
+        appearance="secondary-destructive"
+        size="s"
+        class="mt-2 rounded-md">
+        Missed
+      </button>
+      <button
+        tuiButton
+        type="button"
+        appearance="secondary"
+        size="s"
+        class="mt-2 rounded-md"
+        (click)="addQueryFiltrationParam('history')">
+        History
+      </button>
+    </div>
+  </div>
+</div>
