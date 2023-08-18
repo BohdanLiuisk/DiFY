@@ -56,4 +56,11 @@ public class CallsController : ControllerBase
         var response = await _mediator.Send(leftCallCommand);
         return Ok(response);
     }
+    
+    [HttpGet("searchParticipants")]
+    public async Task<ActionResult<QueryResponse<ICollection<ParticipantForCallDto>>>> SearchParticipants(string searchValue)
+    {
+        var response = await _mediator.Send(new SearchParticipantsForCallQuery(searchValue));
+        return Ok(response);
+    }
 }

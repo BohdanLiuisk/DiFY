@@ -1,8 +1,9 @@
 import { Injectable } from "@angular/core";
 import { CoreHttpService } from '@core/services/core-http.service';
 import { Observable } from 'rxjs';
-import { CallsResponse } from '@core/calls/store/call-list/call-list.reducer';
+import { CallsResponse, ParticipantForCall } from '@core/calls/store/call-list/call-list.reducer';
 import { GUID } from "@shared/custom-types";
+import { CreateNewCallConfig } from "./call-list.models";
 
 @Injectable({ providedIn: 'root' })
 export class CallListService {
@@ -15,11 +16,16 @@ export class CallListService {
       `${this.callsPath}/getCalls?pageNumber=${page}&pageSize=${perPage}`);
   }
 
-  public createNew(name: string): Observable<{ callId: GUID }> {
-    return this.httpService.postRequest<{ callId: GUID }>(`${this.callsPath}/createNew`, { name });
+  public createNew(newCallConfig: CreateNewCallConfig): Observable<{ callId: GUID }> {
+    return this.httpService.postRequest<{ callId: GUID }>(`${this.callsPath}/createNew`, newCallConfig);
   }
 
   public joinCall(callId: GUID): Observable<void> {
     return this.httpService.putRequest<void>(`${this.callsPath}/joinCall/${callId}`);
+  }
+
+  public searchParticipants(search: string | undefined): Observable<ParticipantForCall[]> {
+    return this.httpService.getRequest<ParticipantForCall[]>(
+      `${this.callsPath}/searchParticipants?searchValue=${search}`);
   }
 }

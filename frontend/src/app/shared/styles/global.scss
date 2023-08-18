@@ -2,6 +2,12 @@
 
 * {
   box-sizing: border-box;
+  font-family: 'Manrope', sans-serif;
+  font-weight: 500;
+}
+
+[tuiWrapper][data-appearance='textfield']._invalid._invalid {
+  --tui-focus: rgb(251 113 133);
 }
 
 .chevron {
@@ -17,4 +23,17 @@
   top: auto;
   bottom: 6%;
   right: 13%;
+}
+
+.df-online::before {
+  content: "";
+  position: absolute;
+  display: block;
+  border-radius: 50%;
+  background-color: rgb(74 222 128);
+  width: 30%;
+  height: 30%;
+  top: auto;
+  bottom: 0%;
+  right: 0%;
 }

@@ -4,6 +4,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { StickyHeaderComponent } from './components/sticky-header/sticky-header.component';
 import { RouterModule } from '@angular/router';
 import { DifyLoaderComponent } from './components/dify-loader/dify-loader.component';
+import { FormControlValidationComponent } from './components/form-control-validation/form-control-validation.component';
 @NgModule({
   imports: [
     CommonModule,
@@ -13,7 +14,8 @@ import { DifyLoaderComponent } from './components/dify-loader/dify-loader.compon
   ],
   declarations: [
     StickyHeaderComponent,
-    DifyLoaderComponent
+    DifyLoaderComponent,
+    FormControlValidationComponent
   ],
   exports: [
     CommonModule,
@@ -21,6 +23,7 @@ import { DifyLoaderComponent } from './components/dify-loader/dify-loader.compon
     ReactiveFormsModule,
     StickyHeaderComponent,
     DifyLoaderComponent,
+    FormControlValidationComponent,
     RouterModule
   ]
 })

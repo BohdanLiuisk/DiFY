@@ -18,7 +18,7 @@ export class CallListEffects {
   public readonly createNewCall = createEffect(() => {
     return this.actions$.pipe(
       ofType(callListActions.createNewCall),
-      concatMap(({ name }) => this.callService.createNew(name).pipe(
+      concatMap(({ name, participantIds }) => this.callService.createNew({ name, participantIds }).pipe(
         map(({ callId }) =>
           callListActions.joinCall({ callId })
         )

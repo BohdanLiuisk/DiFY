@@ -2,6 +2,7 @@ import { createAction, props } from '@ngrx/store';
 import { AuthUser, LoginCredentials, NewUser, NewUserRegistered } from '@core/auth/store/auth.models';
 import { HttpErrorResponse } from '@angular/common/http';
 import { User } from '@core/models/user';
+import { IncomingCallNotification } from '../dify-app.models';
 
 export const loginRequest = createAction(
   '[Auth] Login Request',
@@ -42,4 +43,8 @@ export const difyHubStarted = createAction('[Auth] Dify Hub Started');
 export const difyHubStatus = createAction(
   '[Auth] Dify Hub Status',
   props<{ status: string }>()
+);
+export const incomingCallNotification = createAction(
+  '[Auth] Incoming Call Notification',
+  props<IncomingCallNotification>()
 );

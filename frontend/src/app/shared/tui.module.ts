@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import {
+  TuiAlertModule,
   TuiButtonModule,
   TuiDataListModule,
   TuiDialogModule, TuiDropdownModule,
@@ -12,13 +13,17 @@ import {
   TuiTextfieldControllerModule
 } from '@taiga-ui/core';
 import {
+  TuiAvatarModule,
+  TuiDataListWrapperModule,
   TuiFieldErrorPipeModule,
   TuiInputModule,
   TuiInputPasswordModule,
+  TuiMultiSelectModule,
+  TuiSelectModule,
   TuiTagModule
 } from '@taiga-ui/kit';
 import { TuiTablePaginationModule } from '@taiga-ui/addon-table';
-import { TuiActiveZoneModule } from '@taiga-ui/cdk';
+import { TuiActiveZoneModule, TuiLetModule } from '@taiga-ui/cdk';
 
 @NgModule({
   imports: [
@@ -35,9 +40,15 @@ import { TuiActiveZoneModule } from '@taiga-ui/cdk';
     TuiInputPasswordModule,
     TuiGroupModule,
     TuiHostedDropdownModule,
+    TuiDataListWrapperModule,
     TuiActiveZoneModule,
     TuiDataListModule,
-    TuiDropdownModule
+    TuiDropdownModule,
+    TuiMultiSelectModule,
+    TuiLetModule,
+    TuiAvatarModule,
+    TuiAlertModule,
+    TuiSelectModule
   ],
   exports: [
     TuiButtonModule,
@@ -54,9 +65,15 @@ import { TuiActiveZoneModule } from '@taiga-ui/cdk';
     TuiInputPasswordModule,
     TuiGroupModule,
     TuiHostedDropdownModule,
+    TuiDataListWrapperModule,
     TuiActiveZoneModule,
     TuiDataListModule,
-    TuiDropdownModule
+    TuiDropdownModule,
+    TuiMultiSelectModule,
+    TuiLetModule,
+    TuiAvatarModule,
+    TuiSelectModule,
+    TuiAlertModule
   ]
 })
 export class TuiModule { }

@@ -12,5 +12,8 @@ public sealed class UsersProfile : Profile
             .ForMember(dest => dest.Name, opt => 
                 opt.MapFrom(src => $"{src.FirstName} {src.LastName}"));
         CreateMap<User, UserDto>();
+        CreateMap<User, ParticipantForCallDto>()
+            .ForMember(dest => dest.Username, opt => opt.MapFrom(src => src.Login))
+            .ForMember(dest => dest.IsOnline, opt => opt.MapFrom(src => src.Online));
     }
 }

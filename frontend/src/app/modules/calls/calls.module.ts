@@ -9,20 +9,20 @@ import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { CallStatusPipe } from './pipes/call-status.pipe';
 import { CallDatePipe } from './pipes/call-date.pipe';
-import { CreateNewCallComponent } from './create-new-call/create-new-call.component';
 import { callFeature } from '@core/calls/store/call/call.reducer';
 import { CallEffects } from '@core/calls/store/call/call.effects';
 import { CallParticipantComponent } from './call-participant/call-participant.component';
 import { TuiModule } from '@shared/tui.module';
+import { CreateNewCallComponent } from './create-new-call/create-new-call.component';
 
 @NgModule({
   declarations: [
     CallComponent,
     CallListComponent,
-    CreateNewCallComponent,
     CallStatusPipe,
     CallDatePipe,
-    CallParticipantComponent
+    CallParticipantComponent,
+    CreateNewCallComponent
   ],
   imports: [
     SharedModule,

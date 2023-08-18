@@ -19,4 +19,6 @@ public class User : BaseAuditableEntity<int>
     public string AvatarUrl { get; set; }
     
     public bool Online { get; set; }
+    
+    public string ConnectionId { get; set; }
 }

@@ -2,6 +2,14 @@ import { GUID } from '@shared/custom-types';
 import { createFeature, createReducer, on } from '@ngrx/store';
 import { callListActions } from './call-list.actions';
 
+export interface ParticipantForCall {
+  id: number;
+  name: string;
+  userName: string;
+  avatarUrl: string;
+  isOnline: boolean;
+}
+
 export enum CallColumns {
   name = 'Name',
   startDate = 'StartDate',
@@ -13,7 +21,8 @@ export enum CallColumns {
 
 export interface CallList {
   listConfig: CallListConfig,
-  calls: Calls
+  calls: Calls,
+  newCallCreating: boolean
 };
 
 export interface CallListConfig {
@@ -55,7 +64,8 @@ export const callsListInitialState: CallList = {
     loaded: false,
     loading: false,
     totalCount: 0
-  }
+  },
+  newCallCreating: false
 };
 
 export const callListFeature = createFeature({
@@ -93,6 +103,12 @@ export const callListFeature = createFeature({
         loaded: true,
       };
       return { ...state, calls };
+    }),
+    on(callListActions.createNewCall, (state, _) => {
+      return { ...state, newCallCreating: true };
+    }),
+    on(callListActions.joinCall, (state, _) => {
+      return { ...state, newCallCreating: false };
     })
   )
 });

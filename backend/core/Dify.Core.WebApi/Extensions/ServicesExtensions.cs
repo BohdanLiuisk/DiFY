@@ -1,4 +1,5 @@
 ﻿using Dify.Core.Application.Common;
+using Dify.Core.Application.Services;
 using Dify.Core.WebApi.Services;
 using Microsoft.OpenApi.Models;
 
@@ -17,6 +18,7 @@ public static class ServicesExtensions
             b.AllowAnyMethod().AllowAnyHeader().AllowCredentials().WithOrigins(configuration["ClientAppOrigin"]);
         }));
         services.AddSignalR();
+        services.AddTransient<IDifyNotificationService, DifyNotificationService>();
         return services;
     }
     
