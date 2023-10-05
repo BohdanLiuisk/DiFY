@@ -111,6 +111,8 @@ export class HomeComponent extends BaseComponent implements OnInit {
       next: (join) => {
         if (join) {
           this.callListFacade.joinCall(incomingCall.callId);
+        } else {
+          this.callListFacade.declineIncomingCall(incomingCall.callId);
         }
       }
     });

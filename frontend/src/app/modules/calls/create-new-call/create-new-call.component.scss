@@ -1,3 +1,16 @@
 :host { 
     display: block;
 }
+
+.participant-avatar::before {
+    content: "";
+    position: absolute;
+    display: block;
+    border-radius: 50%;
+    background-color: rgb(74 222 128);
+    width: 30%;
+    height: 30%;
+    top: auto;
+    bottom: 2%;
+    right: 2%;
+}

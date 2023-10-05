@@ -1,4 +1,4 @@
-﻿using Dify.Common.Dto.Call;
+﻿using Dify.Core.Application.Calls.Commands;
 using Dify.Core.Application.Common;
 using Dify.Core.Application.Users.Commands;
 using MediatR;
@@ -28,5 +28,11 @@ public class DifyHub : Hub
     {
         await base.OnDisconnectedAsync(exception);
         await _mediator.Send(new UserDisconnectedCommand(Context.ConnectionId));
+    }
+    
+    [HubMethodName("OnDeclineIncomingCall")]
+    public async Task DeclineIncomingCall(DeclineIncomingCallCommand command)
+    {
+        await _mediator.Send(command);
     }
 }

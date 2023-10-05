@@ -50,6 +50,7 @@
   <div class="flex items-center">
     <tui-avatar
       size="m"
+      [ngClass]="{'participant-avatar': data.isOnline}"
       class="mr-2"
       [avatarUrl]="data.avatarUrl">
     </tui-avatar>

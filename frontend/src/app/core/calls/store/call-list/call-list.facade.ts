@@ -32,4 +32,8 @@ export class CallListFacade {
   public joinCall(callId: GUID) {
     this.store.dispatch(callListActions.joinCall({ callId }));
   }
+
+  public declineIncomingCall(callId: GUID) {
+    this.store.dispatch(callListActions.declineIncomingCall({ callId }));
+  }
 }
