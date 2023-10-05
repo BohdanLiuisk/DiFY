@@ -1,0 +1,11 @@
+<div class="text-rose-600 text-sm mt-1" *ngIf="control.errors && control.touched">
+	<div *ngIf="control.errors['required']">
+		<p>{{caption}} is required</p>
+	</div>
+	<div *ngIf="control.errors['minlength']">
+		<p>Min {{caption.toLocaleLowerCase()}} length is {{ control.errors['minlength'].requiredLength }}</p>
+	</div>
+	<div *ngIf="control.errors['maxlength']">
+		<p>Max {{caption.toLocaleLowerCase()}} length is {{ control.errors['maxlength'].requiredLength }}</p>
+	</div>
+</div>

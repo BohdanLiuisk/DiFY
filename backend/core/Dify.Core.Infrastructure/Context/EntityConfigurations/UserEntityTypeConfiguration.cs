@@ -30,6 +30,8 @@ public class UserEntityTypeConfiguration : IEntityTypeConfiguration<User>
         builder.Property(u => u.AvatarUrl)
             .HasMaxLength(500)
             .IsRequired(false);
+        builder.Property(u => u.ConnectionId)
+            .HasMaxLength(250);
         builder.HasOne(u => u.CreatedBy)
             .WithMany()
             .HasForeignKey(u => u.CreatedById)

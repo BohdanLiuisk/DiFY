@@ -1,11 +1,17 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, Injector, OnInit } from '@angular/core';
 import { AuthUser } from '@core/auth/store/auth.models';
 import { AuthFacade } from '@core/auth/store/auth.facade';
-import { Observable } from 'rxjs';
+import { Observable, takeUntil } from 'rxjs';
 import { Roles } from '@core/auth/roles';
 import { Menu, MenuModes } from '@shared/modules/sidebar-menu/sidebar-menu.types';
 import { BaseComponent } from '@core/components/base.component';
 import { filterEmpty } from '@core/utils/pipe.operators';
+import { DifySignalrEvents } from '@core/auth/services/dify-signalr.events';import { Router } from '@angular/router';
+import { TuiAlertService, TuiNotification } from '@taiga-ui/core';
+import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
+import { IncomingCallNotificationComponent } from '@core/components/incoming-call-notification/incoming-call-notification.component';
+import { IncomingCallNotification } from '@core/auth/dify-app.models';
+import { CallListFacade } from '@core/calls/store/call-list/call-list.facade';
 
 @Component({
   selector: 'app-home',
@@ -20,17 +26,27 @@ export class HomeComponent extends BaseComponent implements OnInit {
   public currentSearch?: string;
   public inputSearchFocus: boolean = false;
   public mainNavigationOpened: boolean = true;
+  public newCallNotification: Observable<boolean>;
 
   public sidebarModes = MenuModes;
   public roles = Roles;
 
-  constructor(private authFacade: AuthFacade) {
+  constructor(
+    private authFacade: AuthFacade, 
+    private callListFacade: CallListFacade,
+    private difySignalrEvents: DifySignalrEvents,
+    @Inject(Router) router: Router,
+    @Inject(Injector) private readonly injector: Injector,
+    @Inject(TuiAlertService) private alertsService: TuiAlertService) {
     super()
   }
 
   public ngOnInit(): void {
     this.authFacade.user$.pipe(this.untilThis, filterEmpty()).subscribe(user => {
       this.setMenu(user.id);
+    });
+    this.difySignalrEvents.incomingCallNotification$.pipe(this.untilThis).subscribe((incomingCall) => {
+      this.showNewCallNotification(incomingCall);
     });
   }
 
@@ -80,5 +96,25 @@ export class HomeComponent extends BaseComponent implements OnInit {
         linkActiveExact: false,
       }
     ];
+  }
+
+  private showNewCallNotification(incomingCall: IncomingCallNotification): void {
+    this.alertsService.open<boolean>( new PolymorpheusComponent(IncomingCallNotificationComponent, this.injector), {
+      label: `Incoming call from ${incomingCall.callerName}`,
+      data: incomingCall,
+      status: TuiNotification.Info,
+      autoClose: false,
+      hasIcon: false
+    })
+    .pipe(takeUntil(this.difySignalrEvents.incomingCallNotification$))
+    .subscribe({
+      next: (join) => {
+        if (join) {
+          this.callListFacade.joinCall(incomingCall.callId);
+        } else {
+          this.callListFacade.declineIncomingCall(incomingCall.callId);
+        }
+      }
+    });
   }
 }
