@@ -2,16 +2,15 @@ import { APP_INITIALIZER, Injectable, Provider } from '@angular/core';
 import { CoreHttpService } from '@core/services/core-http.service';
 import { environment } from '@env/environment';
 import { Store } from '@ngrx/store';
-import { AuthState, AuthUser, JwtToken, LoginCredentials, NewUser, TokenStatus } from './store/auth.models';
-import * as AuthActions from './store/auth.actions';
-import * as AuthSelectors from './store/auth.selectors';
+import { AuthState, JwtToken, LoginCredentials, NewUser, TokenStatus } from '../store/auth.models';
+import * as AuthActions from '../store/auth.actions';
+import * as AuthSelectors from '../store/auth.selectors';
 import { EMPTY, filter, lastValueFrom, map, Observable, of, take } from 'rxjs';
 import { dify, grandTypes } from '@shared/constans/app-settings';
 import { HttpHeaders } from '@angular/common/http';
-import { JwtStorageService } from '@core/auth/jwt-storage.service';
+import { JwtStorageService } from '@core/auth/services/jwt-storage.service';
 import { GUID } from '@shared/custom-types';
 import { JwtHelperService } from '@auth0/angular-jwt';
-import { QueryResponse } from '@core/models/query-response';
 import { User } from '@core/models/user';
 
 @Injectable()

@@ -4,7 +4,7 @@ import { CallFacade } from "@core/calls/store/call/call.facade";
 import { callActions } from '@core/calls/store/call/call.actions';
 import { catchError, map, of, switchMap, tap, merge, filter, from, exhaustMap, takeUntil, withLatestFrom } from "rxjs";
 import { IHttpConnectionOptions } from "@microsoft/signalr";
-import { AuthService } from "@core/auth/auth.service";
+import { AuthService } from "@core/auth/services/auth.service";
 import { CallSignalrEvents } from "@core/calls/store/call-signalr.events";
 import { Call, JoinData, Participant } from "@core/calls/store/call/call.models";
 import { GUID } from "@shared/custom-types";

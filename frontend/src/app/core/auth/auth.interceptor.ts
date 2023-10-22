@@ -2,7 +2,7 @@ import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/c
 import { Injectable } from '@angular/core';
 import { Observable, switchMap } from 'rxjs';
 import { setBearerToHeader } from '@core/utils/http.utils';
-import { AuthService } from '@core/auth/auth.service';
+import { AuthService } from '@core/auth/services/auth.service';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {

@@ -1,6 +1,5 @@
-import { callFeature } from "@core/calls/store/call/call.reducer";
-import { createSelector } from "@ngrx/store";
-import { GUID } from "@shared/custom-types";
+import { callFeature } from '@core/calls/store/call/call.reducer';
+import { createSelector } from '@ngrx/store';
 
 export const {
   selectCallState,

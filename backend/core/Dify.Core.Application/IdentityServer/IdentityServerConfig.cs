@@ -47,7 +47,8 @@ public static class IdentityServerConfig
                     IdentityServerConstants.StandardScopes.OpenId,
                     IdentityServerConstants.StandardScopes.Profile
                 },
-                AllowOfflineAccess = true
+                AllowOfflineAccess = true,
+                AccessTokenLifetime = 30 * 60
             }
         };
     }
