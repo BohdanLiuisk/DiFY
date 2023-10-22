@@ -1,17 +1,15 @@
 import { Inject, Injectable } from '@angular/core';
 import * as AuthActions from './auth.actions';
-import { AuthService } from '../auth.service';
-import { JwtStorageService } from '@core/auth/jwt-storage.service';
+import { AuthService } from '../services/auth.service';
+import { JwtStorageService } from '@core/auth/services/jwt-storage.service';
 import { Router } from '@angular/router';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { catchError, exhaustMap, filter, from, map, merge, of, switchMap, tap } from 'rxjs';
+import { catchError, exhaustMap, map, of, switchMap, tap } from 'rxjs';
 import { JwtToken } from '@core/auth/store/auth.models';
 import { TuiAlertService, TuiNotification } from '@taiga-ui/core';
-import { createHub, findHub } from '@core/signalr/signalr';
-import { IHttpConnectionOptions } from '@microsoft/signalr';
+import { findHub } from '@core/signalr/signalr';
 import { environment } from '@env/environment';
-import { IncomingCallNotification } from '../dify-app.models';
-import { DifySignalrEvents } from '../services/dify-signalr.events';
+import { AuthEventsService } from '../services/auth-events.service';
 
 const difyHub = environment.hubs.difyHub;
 
@@ -22,7 +20,7 @@ export class AuthEffects {
     private actions$: Actions,
     private authService: AuthService,
     private jwtStorage: JwtStorageService,
-    private difySignalrEvents: DifySignalrEvents,
+    private authEventsService: AuthEventsService,
     @Inject(TuiAlertService)
     private readonly alertService: TuiAlertService
   ) { }
@@ -109,39 +107,14 @@ export class AuthEffects {
       ofType(AuthActions.refreshTokenSuccess, AuthActions.getAuthUserRequest),
       exhaustMap(() =>
         this.authService.getAuthUser().pipe(
-          map(user => AuthActions.getAuthUserSuccess({ user })),
+          switchMap(user => {
+            this.authEventsService.succesfullyAuthenticated.next(user);
+            return of(AuthActions.getAuthUserSuccess({ user }));
+          }),
           catchError(() => of(AuthActions.getAuthUserFailure()))
         )
       )
     );
-  });
-  
-  connectDifyHub = createEffect(() => {
-    return this.actions$.pipe(
-      ofType(AuthActions.getAuthUserSuccess),
-      switchMap(() => {
-        const hub = findHub(difyHub);
-        if(hub) {
-          return hub.status$;
-        } else {
-          return of('unstarted');
-        }
-      }),
-      filter(status => status === 'unstarted' || status === 'disconnected'),
-      switchMap(() => this.authService.getJwtToken()),
-      filter(({ access_token }) => Boolean(access_token)),
-      switchMap(({ access_token }) => {
-        const options: IHttpConnectionOptions = {
-          accessTokenFactory: () => access_token
-        };
-        const hub = createHub(difyHub.hubName, difyHub.hubUrl, options, true);
-        return hub.start();
-      }),
-      switchMap(() => {
-        return of(AuthActions.difyHubStarted());
-      }),
-      catchError((error) => of(AuthActions.difyHubStatus({ status: error })))
-    )
   });
 
   loginTokenFailure$ = createEffect(() => {
@@ -181,26 +154,6 @@ export class AuthEffects {
     },
     { dispatch: false }
   );
-
-  public readonly difyHubStarted$ = createEffect(() => {
-    return this.actions$.pipe(
-      ofType(AuthActions.difyHubStarted),
-      switchMap(() => {
-        const hub = findHub(difyHub);
-        const incomingCall$ = hub
-          .on<IncomingCallNotification>("OnIncomingCall")
-          .pipe(
-            tap((incomingCall) => this.difySignalrEvents.incomingCallNotification.next(incomingCall)),
-            map((incomingCall) => {
-              return AuthActions.incomingCallNotification(incomingCall);
-            })
-          );
-        return merge(
-          incomingCall$
-        );
-      })
-    )
-  });
 
   private setToken(token: JwtToken): void {
     this.jwtStorage.setToken({

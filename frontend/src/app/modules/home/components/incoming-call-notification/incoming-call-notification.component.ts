@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
-import { IncomingCallNotification } from '@core/auth/dify-app.models';
+import { IncomingCallNotification } from '@modules/home/store/dify.models';
 import { TuiDialog } from '@taiga-ui/cdk';
 import { TuiAlertOptions } from '@taiga-ui/core';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';

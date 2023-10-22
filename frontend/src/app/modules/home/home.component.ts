@@ -2,16 +2,16 @@ import { Component, Inject, Injector, OnInit } from '@angular/core';
 import { AuthUser } from '@core/auth/store/auth.models';
 import { AuthFacade } from '@core/auth/store/auth.facade';
 import { Observable, takeUntil } from 'rxjs';
-import { Roles } from '@core/auth/roles';
 import { Menu, MenuModes } from '@shared/modules/sidebar-menu/sidebar-menu.types';
 import { BaseComponent } from '@core/components/base.component';
 import { filterEmpty } from '@core/utils/pipe.operators';
-import { DifySignalrEvents } from '@core/auth/services/dify-signalr.events';import { Router } from '@angular/router';
 import { TuiAlertService, TuiNotification } from '@taiga-ui/core';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
-import { IncomingCallNotificationComponent } from '@core/components/incoming-call-notification/incoming-call-notification.component';
-import { IncomingCallNotification } from '@core/auth/dify-app.models';
-import { CallListFacade } from '@core/calls/store/call-list/call-list.facade';
+import { IncomingCallNotificationComponent } from '@modules/home/components/incoming-call-notification/incoming-call-notification.component';
+import { IncomingCallNotification } from '@modules/home/store/dify.models';
+import { DifyFacade } from '@modules/home/store/dify.facade';
+import { AuthEventsService } from '@core/auth/services/auth-events.service';
+import { DifySignalrEventsService } from './services/dify-signalr.events';
 
 @Component({
   selector: 'app-home',
@@ -21,7 +21,6 @@ import { CallListFacade } from '@core/calls/store/call-list/call-list.facade';
 export class HomeComponent extends BaseComponent implements OnInit {
   public currentUser$: Observable<AuthUser | undefined>;
   public menu: Menu;
-  public currentRole = Roles.ADMIN;
   public sidebarCollapsed: boolean = false;
   public currentSearch?: string;
   public inputSearchFocus: boolean = false;
@@ -29,19 +28,21 @@ export class HomeComponent extends BaseComponent implements OnInit {
   public newCallNotification: Observable<boolean>;
 
   public sidebarModes = MenuModes;
-  public roles = Roles;
 
   constructor(
     private authFacade: AuthFacade, 
-    private callListFacade: CallListFacade,
-    private difySignalrEvents: DifySignalrEvents,
-    @Inject(Router) router: Router,
+    private difyFacade: DifyFacade,
+    private difySignalrEvents: DifySignalrEventsService,
+    private authEventsService: AuthEventsService,
     @Inject(Injector) private readonly injector: Injector,
     @Inject(TuiAlertService) private alertsService: TuiAlertService) {
     super()
   }
 
   public ngOnInit(): void {
+    this.authEventsService.succesfullyAuthenticated$.pipe().subscribe(() => {
+      this.difyFacade.onSuccessfullyAuthenticated();
+    });
     this.authFacade.user$.pipe(this.untilThis, filterEmpty()).subscribe(user => {
       this.setMenu(user.id);
     });
@@ -110,9 +111,9 @@ export class HomeComponent extends BaseComponent implements OnInit {
     .subscribe({
       next: (join) => {
         if (join) {
-          this.callListFacade.joinCall(incomingCall.callId);
+          this.difyFacade.joinIncomingCall(incomingCall.callId);
         } else {
-          this.callListFacade.declineIncomingCall(incomingCall.callId);
+          this.difyFacade.declineIncomingCall(incomingCall.callId);
         }
       }
     });

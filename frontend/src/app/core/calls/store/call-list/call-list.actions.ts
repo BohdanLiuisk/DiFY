@@ -8,7 +8,6 @@ export const callListActions = createActionGroup({
   events: {
     'Create New Call': props<CreateNewCallConfig>(),
     'Join Call': props<{ callId: GUID }>(),
-    'Decline Incoming Call': props<{ callId: GUID }>(),
     'Set List Page': props<{ page: number }>(),
     'Set Per Page': props<({ perPage: number })>(),
     'Load Calls': emptyProps(),
