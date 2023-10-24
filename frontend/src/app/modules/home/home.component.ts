@@ -65,34 +65,30 @@ export class HomeComponent extends BaseComponent implements OnInit {
         linkActiveExact: true
       },
       {
-        id: 'SOCIAL',
-        header: 'Social',
-      },
-      {
         id: 'my_profile',
         label: 'My profile',
-        route: `social/profile/${userId}`,
+        route: `profile/${userId}`,
         iconClass: 'tuiIconUser',
         linkActiveExact: false
       },
       {
         id: 'Feed',
         label: 'Feed',
-        route: 'social',
+        route: 'feed',
         iconClass: 'tuiIconFileText',
         linkActiveExact: true
       },
       {
         id: 'friends',
         label: 'Friends',
-        route: 'social/friends',
+        route: 'friends',
         iconClass: 'tuiIconUsers',
         linkActiveExact: true
       },
       {
         id: 'CALL_HISTORY',
         label: 'Call history',
-        route: 'social/call-history',
+        route: 'call-history',
         iconClass: 'tuiIconPhone',
         linkActiveExact: false,
       }

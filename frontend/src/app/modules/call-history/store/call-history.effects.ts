@@ -30,7 +30,7 @@ export class CallHistoryEffects {
     return this.actions$.pipe(
       ofType(callHistoryActions.joinCall),
       tap(({ callId }) => {
-        this.router.navigate([`home/social/call/${callId}`]);
+        this.router.navigate([`home/call/${callId}`]);
       })
     )
   }, { dispatch: false });

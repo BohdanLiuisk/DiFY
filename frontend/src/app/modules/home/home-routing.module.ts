@@ -7,8 +7,24 @@ const routes: Routes =  [
     component: HomeComponent,
     children: [
       {
-        path: 'social',
-        loadChildren: async () => (await import('../social/social.module')).SocialModule
+        path: 'feed',
+        loadChildren: async () => (await import('../feed/feed.module')).FeedModule
+      },
+      {
+        path: 'call-history',
+        loadChildren: async () => (await import('../call-history/call-history.module')).CallHistoryModule
+      },
+      {
+        path: 'call',
+        loadChildren: async () => (await import('../call/call.module')).CallModule
+      },
+      {
+        path: 'profile',
+        loadChildren: async () => (await import('../user-profile/user-profile.module')).UserProfileModule
+      },
+      {
+        path: 'friends',
+        loadChildren: async () => (await import('../friends/friends.module')).FriendsModule
       }
     ]
   }
