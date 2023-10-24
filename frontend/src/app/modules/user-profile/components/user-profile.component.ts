@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { BaseComponent } from '@core/components/base.component';
 import { User } from '@core/models/user';
-import { UserProfileFacade } from '@core/user-profile/user-profile.facade';
+import { UserProfileFacade } from '@modules/user-profile/store/user-profile.facade';
 import { Observable } from 'rxjs';
 
 @Component({

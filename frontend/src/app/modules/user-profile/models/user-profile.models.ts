@@ -1,4 +1,5 @@
-import { User } from "@core/models/user";
+import { User } from '@core/models/user';
+
 export interface UserProfileState {
   user: User;
   loading: boolean;

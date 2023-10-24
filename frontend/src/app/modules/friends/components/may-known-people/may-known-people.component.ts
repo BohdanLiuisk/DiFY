@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { MayKnownMan } from '@core/friends/friends.models';
+import { MayKnownMan } from '@modules/friends/store/friends.models';
 
 @Component({
   selector: 'app-may-known-people',

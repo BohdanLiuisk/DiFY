@@ -3,7 +3,7 @@ import { CoreHttpService } from '@core/services/core-http.service';
 import { Observable } from 'rxjs';
 import { User } from '@core/models/user';
 
-@Injectable({ providedIn: 'root' })
+@Injectable()
 export class UserProfileService {
   private readonly profilePath: string = '/api/users/getById';
 

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core'
 import { Location } from '@angular/common'
 import { Router, NavigationEnd } from '@angular/router'
 
-@Injectable({ providedIn: 'root' })
+@Injectable()
 export class NavigationService {
   private history: string[] = [];
 

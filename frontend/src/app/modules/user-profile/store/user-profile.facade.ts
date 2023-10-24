@@ -2,12 +2,12 @@ import { Injectable } from '@angular/core';
 import { filterEmpty } from '@core/utils/pipe.operators';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { userProfileActions } from './store/user-profile.actions';
-import { UserProfileState } from './store/user-profile.models';
-import { selectError, selectLoading, selectUserProfile } from './store/user-profile.selectors';
 import { User } from '@core/models/user';
+import { selectError, selectLoading, selectUserProfile } from './user-profile.selectors';
+import { userProfileActions } from './user-profile.actions';
+import { UserProfileState } from '../models/user-profile.models';
 
-@Injectable({ providedIn: 'root' })
+@Injectable()
 export class UserProfileFacade {
   public readonly loading$: Observable<boolean> = this.store.select(selectLoading);
   public readonly user$: Observable<User> = this.store.select(selectUserProfile).pipe(filterEmpty());

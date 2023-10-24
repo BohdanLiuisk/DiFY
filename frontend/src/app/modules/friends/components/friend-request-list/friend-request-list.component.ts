@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { FriendRequestType } from '@core/friends/friends.setting';
-import { FriendRequestTile } from '@core/friends/friends.models';
+import { FriendRequestType } from '@modules/friends/store/friends.setting';
+import { FriendRequestTile } from '@modules/friends/store/friends.models';
 import { guid } from '@shared/custom-types';
 
 @Component({

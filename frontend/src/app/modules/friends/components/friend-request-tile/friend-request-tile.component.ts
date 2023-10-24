@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { FriendRequestTile } from '@core/friends/friends.models';
+import { FriendRequestTile } from '@modules/friends/store/friends.models';
 
 @Component({
   selector: 'app-friend-request-tile',
