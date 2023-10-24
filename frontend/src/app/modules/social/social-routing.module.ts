@@ -7,8 +7,12 @@ const routes: Routes = [
     loadChildren: async () => (await import('../feed/feed.module')).FeedModule
   },
   {
-    path: 'calls',
-    loadChildren: async () => (await import('../calls/calls.module')).CallsModule
+    path: 'call-history',
+    loadChildren: async () => (await import('../call-history/call-history.module')).CallHistoryModule
+  },
+  {
+    path: 'call',
+    loadChildren: async () => (await import('../call/call.module')).CallModule
   },
   {
     path: 'profile',
