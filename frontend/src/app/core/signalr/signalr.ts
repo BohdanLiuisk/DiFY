@@ -1,5 +1,5 @@
-import { HubConnectionBuilder, IHttpConnectionOptions, IHubProtocol, IRetryPolicy } from "@microsoft/signalr";
-import { SignalrHub } from "./signalr.hub";
+import { HubConnectionBuilder, IHttpConnectionOptions, IHubProtocol, IRetryPolicy } from '@microsoft/signalr';
+import { SignalrHub } from './signalr.hub';
 
 const hubs: SignalrHub[] = [];
 

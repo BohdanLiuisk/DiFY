@@ -11,7 +11,7 @@ import { IncomingCallNotificationComponent } from '@modules/home/components/inco
 import { IncomingCallNotification } from '@modules/home/store/dify.models';
 import { DifyFacade } from '@modules/home/store/dify.facade';
 import { AuthEventsService } from '@core/auth/services/auth-events.service';
-import { DifySignalrEventsService } from './services/dify-signalr.events';
+import { DifySignalrEventsService } from '../../services/dify-signalr.events';
 
 @Component({
   selector: 'app-home',

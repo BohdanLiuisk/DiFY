@@ -1,7 +1,7 @@
-import { HubConnection, IHttpConnectionOptions, IHubProtocol, IRetryPolicy } from "@microsoft/signalr";
-import { BehaviorSubject, from, Observable, share, Subject, throwError } from "rxjs";
-import { HubStatus } from "./hub.status";
-import { createHubConnection } from "./signalr";
+import { HubConnection, IHttpConnectionOptions, IHubProtocol, IRetryPolicy } from '@microsoft/signalr';
+import { BehaviorSubject, from, Observable, share, Subject, throwError } from 'rxjs';
+import { HubStatus } from './hub.status';
+import { createHubConnection } from './signalr';
 
 export class SignalrHub {
   private _hubConnection: HubConnection | undefined;

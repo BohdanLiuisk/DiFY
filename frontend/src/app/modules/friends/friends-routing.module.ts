@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { FriendsComponent } from './friends.component';
+import { FriendsComponent } from './components/friends/friends.component';
 
 const routes: Routes = [
   {

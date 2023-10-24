@@ -1,6 +1,6 @@
 import { createFeature, createReducer, on } from '@ngrx/store';
 import { userProfileActions } from './user-profile.actions';
-import { UserProfileState } from './user-profile.models';
+import { UserProfileState } from '../models/user-profile.models';
 
 const initialState: UserProfileState = {
   user: null,

@@ -1,4 +1,4 @@
-import { Observable } from "rxjs";
+import { Observable } from 'rxjs';
 
 export const filterEmpty = () => {
   return function<T>(source: Observable<T>): Observable<T> {
