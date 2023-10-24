@@ -72,7 +72,7 @@ export class DifyEffects {
     return this.actions$.pipe(
       ofType(difyActions.joinIncomingCall),
       tap(({ callId }) => {
-        this.router.navigate([`home/social/call/${ callId }`]);
+        this.router.navigate([`home/call/${ callId }`]);
       })
     )
   }, { dispatch: false });
