@@ -90,9 +90,9 @@ export class HomeComponent extends BaseComponent implements OnInit {
         linkActiveExact: true
       },
       {
-        id: 'CALLS',
-        label: 'Calls',
-        route: 'social/calls',
+        id: 'CALL_HISTORY',
+        label: 'Call history',
+        route: 'social/call-history',
         iconClass: 'tuiIconPhone',
         linkActiveExact: false,
       }
