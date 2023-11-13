@@ -1,1 +1,21 @@
 <h1>News feed</h1>
+<div class="dropdown-box p-5">
+  <form [formGroup]="newCallForm">
+    <df-multiselect-dropdown
+      [itemTemplate]="dropdownItemTemplate" 
+      [dropdownItems]="participantsList$" 
+      formControlName="participants"
+      (searchChanged)="searchParticipants($event)">
+      <ng-template #dropdownItemTemplate let-item>
+        <img *ngIf="item.avatarUrl" class="rounded-full w-9" [src]="item.avatarUrl">
+        <span class="ml-1.5">{{ item.name }}</span>
+      </ng-template>
+  </df-multiselect-dropdown>
+  </form>
+</div>
+<div class="h-20 w-20 border border-solid border-blue-500">
+  test content
+  <button (click)="showParticipants()">show participants</button>
+  <button (click)="enableDisable()">enable/disable</button>
+</div>
+
