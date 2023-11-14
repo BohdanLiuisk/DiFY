@@ -5,22 +5,18 @@ import { StickyHeaderComponent } from './components/sticky-header/sticky-header.
 import { RouterModule } from '@angular/router';
 import { DifyLoaderComponent } from './components/dify-loader/dify-loader.component';
 import { FormControlValidationComponent } from './components/form-control-validation/form-control-validation.component';
-import { DfMultiSelectComponent } from './components/df-multiselect-dropdown/df-multiselect-dropdown.component';
-import { MatIconModule } from '@angular/material/icon';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    RouterModule,
-    MatIconModule
+    RouterModule
   ],
   declarations: [
     StickyHeaderComponent,
     DifyLoaderComponent,
-    FormControlValidationComponent,
-    DfMultiSelectComponent
+    FormControlValidationComponent
   ],
   exports: [
     CommonModule,
@@ -28,7 +24,6 @@ import { MatIconModule } from '@angular/material/icon';
     ReactiveFormsModule,
     StickyHeaderComponent,
     DifyLoaderComponent,
-    DfMultiSelectComponent,
     FormControlValidationComponent,
     RouterModule
   ]

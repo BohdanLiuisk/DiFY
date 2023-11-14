@@ -12,13 +12,17 @@ import {
   TemplateRef, 
   ViewChild
 } from '@angular/core';
-import { ControlValueAccessor, FormControl, NgControl } from '@angular/forms';
+import { ControlValueAccessor, FormControl, NgControl, ReactiveFormsModule } from '@angular/forms';
 import { DropdownItem } from './store/dropdown-store.models';
 import { MultiselectDropdownStore } from './store/dropdown.store';
 import { Observable, debounceTime, distinctUntilChanged, filter, skip, take } from 'rxjs';
 import { BaseComponent } from '@core/components/base.component';
+import { MatIconModule } from '@angular/material/icon';
+import { CommonModule } from '@angular/common';
 
 @Component({
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule, MatIconModule],
   selector: "df-multiselect-dropdown",
   templateUrl: "./df-multiselect-dropdown.component.html",
   styleUrls: ["./df-multiselect-dropdown.component.scss"],
