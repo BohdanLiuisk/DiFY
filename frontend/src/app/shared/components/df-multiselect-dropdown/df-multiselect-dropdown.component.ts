@@ -15,7 +15,7 @@ import {
 import { ControlValueAccessor, FormControl, NgControl } from '@angular/forms';
 import { DropdownItem } from './store/dropdown-store.models';
 import { MultiselectDropdownStore } from './store/dropdown.store';
-import { Observable, debounceTime, distinctUntilChanged, skip } from 'rxjs';
+import { Observable, debounceTime, distinctUntilChanged, filter, skip, take } from 'rxjs';
 import { BaseComponent } from '@core/components/base.component';
 
 @Component({
@@ -36,6 +36,9 @@ export class DfMultiSelectComponent<T extends DropdownItem>
 
   @Input('dropdownItems')
   public dropdownItems: Observable<T[]>;
+
+  @Input('placeholder') 
+  public placeholder: string = '';
 
   @Output('searchChanged')
   public searchChanged: EventEmitter<string> = new EventEmitter<string>();
@@ -74,7 +77,10 @@ export class DfMultiSelectComponent<T extends DropdownItem>
     this.dropdownItems.pipe(this.untilThis).subscribe((items) =>{
       this.store.updateItems(items);
     });
-    this.searchControl.valueChanges.pipe(debounceTime(500), distinctUntilChanged(), this.untilThis)
+    this.searchControl.valueChanges.pipe(
+      debounceTime(500), 
+      distinctUntilChanged(), 
+      this.untilThis)
       .subscribe((value) => {
         this.searchChanged.emit(value);
       });
@@ -83,6 +89,9 @@ export class DfMultiSelectComponent<T extends DropdownItem>
     });
     this.store.selectionOpened$.pipe(this.untilThis).subscribe(opened => {
       this.selectionOpened.emit(opened);
+    });
+    this.store.selectionOpened$.pipe(filter(value => value), take(1), this.untilThis).subscribe(() => {
+      this.searchChanged.emit('');
     });
   }
 

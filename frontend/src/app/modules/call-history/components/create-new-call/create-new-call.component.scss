@@ -2,15 +2,13 @@
   display: block;
 }
 
-.participant-avatar::before {
-  content: "";
-  position: absolute;
-  display: block;
-  border-radius: 50%;
-  background-color: rgb(74 222 128);
-  width: 30%;
-  height: 30%;
-  top: auto;
-  bottom: 2%;
-  right: 2%;
+.participant-avatar::after {
+	content: '';
+	position: absolute;
+	bottom: 0;
+	right: 0;
+	width: 11px;
+	height: 11px;
+	background-color: #00d900;
+	border-radius: 50%;
 }

@@ -9,11 +9,13 @@
       'focus-within:border-indigo-400': touched && !hasError
     }"
     class="
+      relative
       flex
       border-2
       border-solid
       rounded-lg
       p-2">
+    <span class="absolute top-[-0.95rem] left-2 bg-white px-1">{{ placeholder }}</span>
     <div
       class="
         flex
@@ -21,6 +23,7 @@
         grow
         gap-2.5
         cursor-text
+        z-10
         selected-items">
       <div 
         *ngFor="let item of store.selectedItems$| async" 
@@ -38,12 +41,14 @@
           *ngIf="!isDisabled"
           (click)="removeSelected(item)"
           mat-icon-button 
-          class="action-btn flex items-center ml-1" 
+          class="flex items-center ml-1" 
           [disabled]="isDisabled">
           <mat-icon class="close-icon">close</mat-icon>
         </button>
       </div>
-      <div class="search-item p-2 h-14">
+      <div
+        *ngIf="!isDisabled" 
+        class="search-item p-2 h-14">
         <input
           #searchInput
           type="text"
@@ -59,7 +64,7 @@
         mat-icon-button
         mat-large-icon-button
         [disabled]="isDisabled"
-        class="action-btn flex items-start"
+        class="flex items-start h-6"
         (click)="store.clearSelected()">
         <mat-icon class="close-icon">close</mat-icon>
       </button>
@@ -68,7 +73,7 @@
         (click)="toggleSelection()"
         mat-icon-button
         [disabled]="isDisabled"
-        class="action-btn flex items-start">
+        class="flex items-start h-6">
         <mat-icon 
           [ngClass]="(store.selectionOpened$ | async) ? 'rotate-selection-180' : 'rotate-selection-0'">
           expand_more
@@ -106,7 +111,7 @@
         </li>
       </ul>
     </div>
-    <div *ngIf="(store.selectionItemsCount$ | async) === 0" class="h-14 p-2">
+    <div *ngIf="(store.selectionItemsCount$ | async) === 0" class="h-14 p-2 flex items-center justify-center">
       No data
     </div>
   </div>
