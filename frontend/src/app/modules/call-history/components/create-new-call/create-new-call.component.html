@@ -5,26 +5,30 @@
     Name
   </tui-input>
   <app-form-control-validation [control]="nameField" caption="Name"></app-form-control-validation>
-  <tui-multi-select
-    class="mt-5"
-    *tuiLet="participantsList$ | async as participants"
-    formControlName="participants"
-    [tuiTextfieldLabelOutside]="true"
-    [stringify]="stringifyParticipants"
-    [identityMatcher]="participantsMatcher"
-    [tuiTextfieldCleaner]="true"
-    [tuiDropdownDirection]="'bottom'"
-    (searchChange)="searchParticipants($event)">
-    Select participants
-    <tui-data-list-wrapper
-      *tuiDataList
-      [items]="participants | tuiHideSelected"
-      [itemContent]="participantsSelect">
-    </tui-data-list-wrapper>
-  </tui-multi-select>
+  <div class="mt-4">
+    <df-multiselect-dropdown
+      [itemTemplate]="dropdownItemTemplate" 
+      [dropdownItems]="participantsList$" 
+      formControlName="participants"
+      (searchChanged)="searchParticipants($event)"
+      placeholder="Call participants">
+      <ng-template #dropdownItemTemplate let-item>
+        <div 
+          class="relative inline-block w-9"
+          [ngClass]="{'participant-avatar': item.isOnline}">
+          <img 
+            *ngIf="item.avatarUrl"
+            [src]="item.avatarUrl"
+            class="rounded-full">
+        </div>
+        <span class="ml-1.5">{{ item.name }}</span>
+      </ng-template>
+    </df-multiselect-dropdown>
+  </div>
   <div 
     class="text-rose-600 text-sm mt-1" 
-    *ngIf="participantsField.errors && participantsField.touched && participantsField.errors['required']">
+    *ngIf="participantsField.errors && participantsField.touched
+      && participantsField.dirty && participantsField.errors['required']">
     <p>Select at leat 1 participant for call</p>
   </div>
   <button

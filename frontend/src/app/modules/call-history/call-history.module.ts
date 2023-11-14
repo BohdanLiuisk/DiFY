@@ -12,6 +12,7 @@ import { EffectsModule } from '@ngrx/effects';
 import { CallHistoryService } from './services/call-history.service';
 import { CallHistoryFacade } from './store/call-history.facade';
 import { CallHistoryRoutingModule } from './call-history-routing.module';
+import { DfMultiSelectComponent } from '@shared/components/df-multiselect-dropdown/df-multiselect-dropdown.component';
 
 @NgModule({
   declarations: [
@@ -24,6 +25,7 @@ import { CallHistoryRoutingModule } from './call-history-routing.module';
     TuiModule,
     SharedModule,
     CallHistoryRoutingModule,
+    DfMultiSelectComponent,
     StoreModule.forFeature(callHistoryFeature),
     EffectsModule.forFeature([CallHistoryEffects])
   ],
