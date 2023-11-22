@@ -2,13 +2,12 @@ import { Component, Inject, Injector, OnInit } from '@angular/core';
 import { AuthUser } from '@core/auth/store/auth.models';
 import { AuthFacade } from '@core/auth/store/auth.facade';
 import { Observable, takeUntil } from 'rxjs';
-import { Menu, MenuModes } from '@shared/modules/sidebar-menu/sidebar-menu.types';
 import { BaseComponent } from '@core/components/base.component';
 import { filterEmpty } from '@core/utils/pipe.operators';
 import { TuiAlertService, TuiNotification } from '@taiga-ui/core';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
-import { IncomingCallNotificationComponent } from '@modules/home/components/incoming-call-notification/incoming-call-notification.component';
-import { IncomingCallNotification } from '@modules/home/store/dify.models';
+import { IncomingCallNotificationComponent } from '../incoming-call-notification/incoming-call-notification.component';
+import { IncomingCallNotification, MenuItem } from '@modules/home/models/dify.models';
 import { DifyFacade } from '@modules/home/store/dify.facade';
 import { AuthEventsService } from '@core/auth/services/auth-events.service';
 import { DifySignalrEventsService } from '../../services/dify-signalr.events';
@@ -20,14 +19,9 @@ import { DifySignalrEventsService } from '../../services/dify-signalr.events';
 })
 export class HomeComponent extends BaseComponent implements OnInit {
   public currentUser$: Observable<AuthUser | undefined>;
-  public menu: Menu;
-  public sidebarCollapsed: boolean = false;
-  public currentSearch?: string;
-  public inputSearchFocus: boolean = false;
-  public mainNavigationOpened: boolean = true;
+  public sidebarOpened: boolean = false;
   public newCallNotification: Observable<boolean>;
-
-  public sidebarModes = MenuModes;
+  public menuItems: MenuItem[] = [];
 
   constructor(
     private authFacade: AuthFacade, 
@@ -55,42 +49,40 @@ export class HomeComponent extends BaseComponent implements OnInit {
     this.authFacade.logout();
   }
 
+  public toogleMenu(): void {
+    this.sidebarOpened = !this.sidebarOpened;
+    let sidebar = document.querySelector(".sidebar");
+    sidebar.classList.toggle("open");
+    let mainNavigation = document.querySelector(".main-navigation");
+    mainNavigation.classList.toggle("navigation-opened");
+  }
+
   private setMenu(userId): void {
-    this.menu = [
+    this.menuItems = [
       {
-        id: 'HOME',
-        label: 'Home',
         route: '/home',
-        iconClass: 'tuiIconHome',
-        linkActiveExact: true
+        caption: 'Home',
+        icon: 'home'
       },
       {
-        id: 'my_profile',
-        label: 'My profile',
-        route: `profile/${userId}`,
-        iconClass: 'tuiIconUser',
-        linkActiveExact: false
+        route: `/home/profile/${userId}`,
+        caption: 'My profile',
+        icon: 'user'
       },
       {
-        id: 'Feed',
-        label: 'Feed',
-        route: 'feed',
-        iconClass: 'tuiIconFileText',
-        linkActiveExact: true
+        route: '/home/feed',
+        caption: 'Feed',
+        icon: 'news'
       },
       {
-        id: 'friends',
-        label: 'Friends',
-        route: 'friends',
-        iconClass: 'tuiIconUsers',
-        linkActiveExact: true
+        route: '/home/friends',
+        caption: 'Friends',
+        icon: 'smile'
       },
       {
-        id: 'CALL_HISTORY',
-        label: 'Call history',
-        route: 'call-history',
-        iconClass: 'tuiIconPhone',
-        linkActiveExact: false,
+        route: '/home/call-history',
+        caption: 'Call history',
+        icon: 'phone-call'
       }
     ];
   }

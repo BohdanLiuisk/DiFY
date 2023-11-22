@@ -6,7 +6,7 @@ import { createHub, findHub } from '@core/signalr/signalr';
 import { AuthService } from '@core/auth/services/auth.service';
 import { IHttpConnectionOptions } from '@microsoft/signalr';
 import { difyActions } from './dify.actions';
-import { IncomingCallNotification } from './dify.models';
+import { IncomingCallNotification } from '../models/dify.models';
 import { DifySignalrEventsService } from '../services/dify-signalr.events';
 import { Router } from '@angular/router';
 
