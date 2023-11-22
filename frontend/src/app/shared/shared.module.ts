@@ -5,13 +5,17 @@ import { StickyHeaderComponent } from './components/sticky-header/sticky-header.
 import { RouterModule } from '@angular/router';
 import { DifyLoaderComponent } from './components/dify-loader/dify-loader.component';
 import { FormControlValidationComponent } from './components/form-control-validation/form-control-validation.component';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    RouterModule
+    RouterModule,
+    MatIconModule,
+    MatButtonModule
   ],
   declarations: [
     StickyHeaderComponent,
@@ -25,7 +29,9 @@ import { FormControlValidationComponent } from './components/form-control-valida
     StickyHeaderComponent,
     DifyLoaderComponent,
     FormControlValidationComponent,
-    RouterModule
+    RouterModule,
+    MatIconModule,
+    MatButtonModule
   ]
 })
 export class SharedModule { }

@@ -1,8 +1,7 @@
 import { createAction, props } from '@ngrx/store';
-import { AuthUser, LoginCredentials, NewUser, NewUserRegistered } from '@core/auth/store/auth.models';
+import { LoginCredentials, NewUser, NewUserRegistered } from '@core/auth/store/auth.models';
 import { HttpErrorResponse } from '@angular/common/http';
 import { User } from '@core/models/user';
-import { IncomingCallNotification } from '../../../modules/home/store/dify.models';
 
 export const loginRequest = createAction(
   '[Auth] Login Request',

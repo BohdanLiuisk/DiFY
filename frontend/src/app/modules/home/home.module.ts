@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { HomeComponent } from './components/home/home.component';
 import { HomeRoutingModule } from './home-routing.module';
 import { SharedModule } from '@shared/shared.module';
-import { SidebarMenuModule } from '@shared/modules/sidebar-menu/sidebar-menu.module';
 import { TuiModule } from '@shared/tui.module';
 import { IncomingCallNotificationComponent } from './components/incoming-call-notification/incoming-call-notification.component';
 import { StoreModule } from '@ngrx/store';
@@ -20,7 +19,6 @@ import { DifySignalrEventsService } from './services/dify-signalr.events';
   imports: [
     HomeRoutingModule,
     SharedModule,
-    SidebarMenuModule,
     TuiModule,
     StoreModule.forFeature(difyFeature),
     EffectsModule.forFeature([DifyEffects])

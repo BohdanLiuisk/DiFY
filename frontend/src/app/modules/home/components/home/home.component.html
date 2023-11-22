@@ -1,34 +1,43 @@
-<div class="main-wrapper" [ngClass]="{ 'main-wrapper--navigation-open': mainNavigationOpened }">
-  <nav class="main-navigation">
-    <df-sidebar-menu
-      *ngIf="menu"
-      [menu]="menu"
-      [mode]="sidebarCollapsed ? sidebarModes.COLLAPSED : sidebarModes.EXPANDED"
-      [search]="currentSearch"
-      toggleIconClasses="tuiIconChevronLeft"
-      iconClasses="tuiIconCircle">
-      <div class="input-search">
-        <tui-input
-          tuiTextfieldSize="s"
-          tuiTextfieldIcon="tuiIconSearch"
-          [tuiTextfieldCleaner]="true"
-          [(ngModel)]="currentSearch">
-          Search...
-          <input type="text" tuiTextfield/>
-        </tui-input>
+<div class="main-wrapper">
+  <nav class="main-navigation border-x border-solid border-gray-300 bg-slate-100">
+    <div class="sidebar">
+      <ul class="nav-list">
+        <li *ngFor="let item of menuItems">
+          <a 
+            [routerLink]="item.route" 
+            [routerLinkActiveOptions]="{ exact: true }" 
+            routerLinkActive="bg-green-100">
+            <i class='bx' [ngClass]="'bx-' + item.icon"></i>
+            <span class="links_name">{{ item.caption }}</span>
+          </a>
+          <span class="tooltip">{{ item.caption }}</span>
+        </li>
+      </ul>
+      <div class="
+        toggle-menu-button 
+        absolute
+        top-2/4 
+        right-0 
+        z-10
+        bg-slate-300
+        flex
+        justify-center
+        items-center
+        rounded-full
+        overflow-hidden
+        w-7
+        h-7"
+        [class.toggle-menu-button-rotate]="sidebarOpened">
+        <button 
+          mat-icon-button 
+          color="primary" 
+          (click)="toogleMenu()">
+          <mat-icon>chevron_left</mat-icon>
+        </button>
       </div>
-    </df-sidebar-menu>
+    </div>
   </nav>
-  <header class="main-header">
-    <button
-      tuiIconButton
-      type="button"
-      appearance="icon"
-      [icon]="sidebarCollapsed ? 'tuiIconChevronRight' : 'tuiIconChevronLeft'"
-      (click)="sidebarCollapsed = !sidebarCollapsed"
-      class="sidebar-toggle"
-      size="s">
-    </button>
+  <header class="main-header border-b border-solid border-gray-300">
   </header>
   <main class="main-content">
     <router-outlet></router-outlet>

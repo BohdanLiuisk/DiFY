@@ -1,5 +1,5 @@
 import { createFeature, createReducer, on } from '@ngrx/store';
-import { DifyState } from './dify.models';
+import { DifyState } from '../models/dify.models';
 import { difyActions } from './dify.actions';
 
 const difyInitialState: DifyState =  {

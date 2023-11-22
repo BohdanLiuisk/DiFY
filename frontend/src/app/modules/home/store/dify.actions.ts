@@ -1,4 +1,4 @@
-import { IncomingCallNotification } from './dify.models';
+import { IncomingCallNotification } from '../models/dify.models';
 import { createActionGroup, emptyProps, props } from '@ngrx/store';
 import { GUID } from '@shared/custom-types';
 

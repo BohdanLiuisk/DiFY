@@ -10,3 +10,9 @@ export interface IncomingCallNotification {
 	callerId: GUID;
 	callerName: string;
 }
+
+export interface MenuItem {
+	route: string;
+	caption: string;
+	icon: string;
+}

@@ -1,5 +1,5 @@
 import { Store } from '@ngrx/store';
-import { DifyState } from './dify.models';
+import { DifyState } from '../models/dify.models';
 import { Injectable } from '@angular/core';
 import { difyActions } from './dify.actions';
 import { GUID } from '@shared/custom-types';

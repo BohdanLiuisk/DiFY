@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
-import { IncomingCallNotification } from '../store/dify.models';
+import { IncomingCallNotification } from '../models/dify.models';
 
 @Injectable()
 export class DifySignalrEventsService {
