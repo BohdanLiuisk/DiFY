@@ -3,20 +3,28 @@ import { DifyState } from '../models/dify.models';
 import { Injectable } from '@angular/core';
 import { difyActions } from './dify.actions';
 import { GUID } from '@shared/custom-types';
+import { Observable } from 'rxjs';
+import { selectSidebarOpened } from './dify.selectors';
 
 @Injectable()
 export class DifyFacade {
+  public sidebarOpened$: Observable<boolean> = this.store.select(selectSidebarOpened);
+
   constructor(private store: Store<DifyState>) { }
 
   public onSuccessfullyAuthenticated(): void {
     this.store.dispatch(difyActions.successfullyAuthenticated());
   }
 
-  public joinIncomingCall(callId: GUID) {
+  public joinIncomingCall(callId: GUID): void {
     this.store.dispatch(difyActions.joinIncomingCall({ callId }));
   }
 
-  public declineIncomingCall(callId: GUID) {
+  public declineIncomingCall(callId: GUID): void {
     this.store.dispatch(difyActions.declineIncomingCall({ callId }));
+  }
+
+  public toggleSidebar(): void {
+    this.store.dispatch(difyActions.toggleSidebar());
   }
 }

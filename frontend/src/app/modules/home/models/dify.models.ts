@@ -2,6 +2,7 @@ import { GUID } from '@shared/custom-types';
 
 export interface DifyState {
 	hubStatus: string;
+	sidebarOpened: boolean;
 }
 
 export interface IncomingCallNotification {

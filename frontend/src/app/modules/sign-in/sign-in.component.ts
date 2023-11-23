@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { dify } from '@shared/constans/app-settings';
+import { dify } from '@shared/constans/constants';
 import { AuthFacade } from '@core/auth/store/auth.facade';
 import { TUI_VALIDATION_ERRORS } from '@taiga-ui/kit';
 import { maxLengthValidator, minLengthValidator } from '@core/utils/validators';
