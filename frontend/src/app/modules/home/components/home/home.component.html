@@ -1,6 +1,13 @@
 <div class="main-wrapper">
-  <nav class="main-navigation border-x border-solid border-gray-300 bg-slate-100">
-    <div class="sidebar">
+  <aside 
+    class="
+      main-navigation 
+      border-x 
+      border-solid 
+      border-gray-300 
+      bg-slate-100"
+      [class.navigation-opened]="difyFacade.sidebarOpened$ | async">
+    <div class="sidebar" [class.open]="difyFacade.sidebarOpened$ | async">
       <ul class="nav-list">
         <li *ngFor="let item of menuItems">
           <a 
@@ -8,7 +15,7 @@
             [routerLinkActiveOptions]="{ exact: true }" 
             routerLinkActive="bg-green-100">
             <i class='bx' [ngClass]="'bx-' + item.icon"></i>
-            <span class="links_name">{{ item.caption }}</span>
+            <span class="links-name">{{ item.caption }}</span>
           </a>
           <span class="tooltip">{{ item.caption }}</span>
         </li>
@@ -27,16 +34,16 @@
         overflow-hidden
         w-7
         h-7"
-        [class.toggle-menu-button-rotate]="sidebarOpened">
+        [class.toggle-menu-button-rotate]="difyFacade.sidebarOpened$ | async">
         <button 
           mat-icon-button 
           color="primary" 
-          (click)="toogleMenu()">
-          <mat-icon>chevron_left</mat-icon>
+          (click)="difyFacade.toggleSidebar()">
+          <mat-icon>chevron_right</mat-icon>
         </button>
       </div>
     </div>
-  </nav>
+  </aside>
   <header class="main-header border-b border-solid border-gray-300">
   </header>
   <main class="main-content">

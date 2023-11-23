@@ -47,41 +47,26 @@
   width: 78px;
   padding: 6px 14px;
   transition: all 0.2s ease;
-}
-
-.sidebar.open {
-  width: 250px;
-}
-
-.sidebar .logo-details {
-  height: 60px;
-  display: flex;
-  align-items: center;
-  position: relative;
-}
-
-.sidebar .logo-details .icon {
-  opacity: 0;
-}
-
-.sidebar i {
-  color: black;
-  height: 60px;
-  min-width: 50px;
-  font-size: 28px;
-  text-align: center;
-  line-height: 60px;
-}
-
-.sidebar .nav-list {
-  margin-top: 20px;
-  height: 100%;
-}
-
-.sidebar li {
-  position: relative;
-  margin: 8px 0;
-  list-style: none;
+  &.open {
+    width: 250px;
+  }
+  i {
+    color: black;
+    height: 60px;
+    min-width: 50px;
+    font-size: 28px;
+    text-align: center;
+    line-height: 60px;
+  }
+  .nav-list {
+    margin-top: 20px;
+    height: 100%;
+  }
+  li {
+    position: relative;
+    margin: 8px 0;
+    list-style: none;
+  }
 }
 
 .sidebar li .tooltip {
@@ -125,7 +110,7 @@
   transition: all 0.2s ease;
 }
 
-.sidebar li a .links_name {
+.sidebar li a .links-name {
   color: black;
   font-size: 15px;
   font-weight: 400;
@@ -135,7 +120,7 @@
   transition: all 0.2s ease;
 }
 
-.sidebar.open li a .links_name {
+.sidebar.open li a .links-name {
   opacity: 1;
   pointer-events: auto;
 }

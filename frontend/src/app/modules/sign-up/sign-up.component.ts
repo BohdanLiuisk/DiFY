@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthFacade } from '@core/auth/store/auth.facade';
 import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
-import { dify } from '@shared/constans/app-settings';
+import { dify } from '@shared/constans/constants';
 
 @Component({
   selector: 'app-sign-up',

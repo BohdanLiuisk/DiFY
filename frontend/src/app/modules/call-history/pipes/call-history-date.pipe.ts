@@ -1,6 +1,6 @@
 import { DATE_PIPE_DEFAULT_TIMEZONE, formatDate } from '@angular/common';
 import { Inject, LOCALE_ID, Optional, Pipe, PipeTransform } from '@angular/core';
-import { dify } from '@shared/constans/app-settings';
+import { dify } from '@shared/constans/constants';
 
 @Pipe({ name: 'callHistoryDate' })
 export class CallHistoryDatePipe implements PipeTransform {

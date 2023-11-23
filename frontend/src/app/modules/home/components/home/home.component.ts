@@ -19,13 +19,13 @@ import { DifySignalrEventsService } from '../../services/dify-signalr.events';
 })
 export class HomeComponent extends BaseComponent implements OnInit {
   public currentUser$: Observable<AuthUser | undefined>;
-  public sidebarOpened: boolean = false;
+  public sidebarOpened: boolean = true;
   public newCallNotification: Observable<boolean>;
   public menuItems: MenuItem[] = [];
 
   constructor(
+    public difyFacade: DifyFacade,
     private authFacade: AuthFacade, 
-    private difyFacade: DifyFacade,
     private difySignalrEvents: DifySignalrEventsService,
     private authEventsService: AuthEventsService,
     @Inject(Injector) private readonly injector: Injector,
@@ -49,15 +49,7 @@ export class HomeComponent extends BaseComponent implements OnInit {
     this.authFacade.logout();
   }
 
-  public toogleMenu(): void {
-    this.sidebarOpened = !this.sidebarOpened;
-    let sidebar = document.querySelector(".sidebar");
-    sidebar.classList.toggle("open");
-    let mainNavigation = document.querySelector(".main-navigation");
-    mainNavigation.classList.toggle("navigation-opened");
-  }
-
-  private setMenu(userId): void {
+  private setMenu(userId: number): void {
     this.menuItems = [
       {
         route: '/home',

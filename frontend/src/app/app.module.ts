@@ -1,5 +1,4 @@
 import { TuiAlertModule, TuiDialogModule, TuiRootModule } from "@taiga-ui/core";
-import { SharedModule } from '@shared/shared.module';
 import { NgModule } from '@angular/core';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
@@ -16,7 +15,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
   imports: [
     AppRoutingModule,
     CoreModule,
-    SharedModule,
     StoreModule.forRoot({}),
     EffectsModule.forRoot([]),
     BrowserModule,

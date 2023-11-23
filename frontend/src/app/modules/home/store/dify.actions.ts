@@ -10,6 +10,7 @@ export const difyActions = createActionGroup({
     'Dify Hub Status Changed': props<{ status: string }>(),
     'Incoming Call Notification': props<IncomingCallNotification>(),
     'Join Incoming Call': props<{ callId: GUID }>(),
-    'Decline Incoming Call': props<{ callId: GUID }>()
+    'Decline Incoming Call': props<{ callId: GUID }>(),
+    'Toggle Sidebar': emptyProps()
   }
 });
