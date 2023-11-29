@@ -7,10 +7,11 @@ import { filterEmpty } from '@core/utils/pipe.operators';
 import { TuiAlertService, TuiNotification } from '@taiga-ui/core';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { IncomingCallNotificationComponent } from '../incoming-call-notification/incoming-call-notification.component';
-import { IncomingCallNotification, MenuItem } from '@modules/home/models/dify.models';
-import { DifyFacade } from '@modules/home/store/dify.facade';
+import { IncomingCallNotification, MenuItem } from '../../models/dify.models';
+import { DifyFacade } from '../../store/dify.facade';
 import { AuthEventsService } from '@core/auth/services/auth-events.service';
 import { DifySignalrEventsService } from '../../services/dify-signalr.events';
+import { ThemeService } from '../../services/theme.service';
 
 @Component({
   selector: 'app-home',
@@ -29,7 +30,8 @@ export class HomeComponent extends BaseComponent implements OnInit {
     private difySignalrEvents: DifySignalrEventsService,
     private authEventsService: AuthEventsService,
     @Inject(Injector) private readonly injector: Injector,
-    @Inject(TuiAlertService) private alertsService: TuiAlertService) {
+    @Inject(TuiAlertService) private alertsService: TuiAlertService,
+    private themeService: ThemeService) {
     super()
   }
 
@@ -42,6 +44,9 @@ export class HomeComponent extends BaseComponent implements OnInit {
     });
     this.difySignalrEvents.incomingCallNotification$.pipe(this.untilThis).subscribe((incomingCall) => {
       this.showNewCallNotification(incomingCall);
+    });
+    this.difyFacade.theme$.pipe(this.untilThis).subscribe(theme => {
+      this.themeService.switchTheme(theme);
     });
   }
 
@@ -64,17 +69,17 @@ export class HomeComponent extends BaseComponent implements OnInit {
       {
         route: '/home/feed',
         caption: 'Feed',
-        icon: 'news'
+        icon: 'th-large'
       },
       {
         route: '/home/friends',
         caption: 'Friends',
-        icon: 'smile'
+        icon: 'users'
       },
       {
         route: '/home/call-history',
         caption: 'Call history',
-        icon: 'phone-call'
+        icon: 'phone'
       }
     ];
   }

@@ -32,12 +32,21 @@
               }
             ],
             "styles": [
-              "@angular/material/prebuilt-themes/indigo-pink.css",
-              "node_modules/@taiga-ui/core/styles/taiga-ui-theme.less",
-              "node_modules/@taiga-ui/core/styles/taiga-ui-fonts.less",
-              "node_modules/@taiga-ui/styles/taiga-ui-global.less",
               "src/reset.css",
-              "src/styles.scss"
+              "src/styles.scss",
+              "node_modules/primeng/resources/primeng.min.css",
+              "node_modules/primeflex/primeflex.css",
+              "node_modules/primeicons/primeicons.css",
+              {
+                "input": "src/app/core/themes/lara-dark-indigo.scss",
+                "bundleName": "lara-dark-indigo",
+                "inject": false
+              },
+              {
+                "input": "src/app/core/themes/lara-light-indigo.scss",
+                "bundleName": "lara-light-indigo",
+                "inject": false
+              }
             ],
             "scripts": []
           },
@@ -104,7 +113,6 @@
               "src/assets"
             ],
             "styles": [
-              "@angular/material/prebuilt-themes/indigo-pink.css",
               "src/reset.css",
               "src/styles.scss"
             ],

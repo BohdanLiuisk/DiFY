@@ -3,6 +3,7 @@ import { SharedModule } from '@shared/shared.module';
 import { TuiModule } from '@shared/tui.module';
 import { FeedRoutingModule } from './feed-routing.module';
 import { FeedComponent } from './components/feed/feed.component';
+import { ButtonModule } from 'primeng/button';
 
 @NgModule({
   declarations: [
@@ -11,7 +12,8 @@ import { FeedComponent } from './components/feed/feed.component';
   imports: [
     FeedRoutingModule,
     SharedModule,
-    TuiModule
+    TuiModule,
+    ButtonModule
   ]
 })
 export class FeedModule { }

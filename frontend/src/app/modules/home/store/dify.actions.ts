@@ -11,6 +11,7 @@ export const difyActions = createActionGroup({
     'Incoming Call Notification': props<IncomingCallNotification>(),
     'Join Incoming Call': props<{ callId: GUID }>(),
     'Decline Incoming Call': props<{ callId: GUID }>(),
-    'Toggle Sidebar': emptyProps()
+    'Toggle Sidebar': emptyProps(),
+    'Switch Theme': emptyProps()
   }
 });

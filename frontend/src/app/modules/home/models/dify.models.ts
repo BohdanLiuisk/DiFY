@@ -1,8 +1,9 @@
-import { GUID } from '@shared/custom-types';
+import { GUID, Theme } from '@shared/custom-types';
 
 export interface DifyState {
 	hubStatus: string;
 	sidebarOpened: boolean;
+	theme: Theme;
 }
 
 export interface IncomingCallNotification {

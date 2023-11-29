@@ -2,13 +2,14 @@ import { Store } from '@ngrx/store';
 import { DifyState } from '../models/dify.models';
 import { Injectable } from '@angular/core';
 import { difyActions } from './dify.actions';
-import { GUID } from '@shared/custom-types';
+import { GUID, Theme } from '@shared/custom-types';
 import { Observable } from 'rxjs';
-import { selectSidebarOpened } from './dify.selectors';
+import { selectSidebarOpened, selectTheme } from './dify.selectors';
 
 @Injectable()
 export class DifyFacade {
   public sidebarOpened$: Observable<boolean> = this.store.select(selectSidebarOpened);
+  public theme$: Observable<Theme> = this.store.select(selectTheme);
 
   constructor(private store: Store<DifyState>) { }
 
@@ -26,5 +27,9 @@ export class DifyFacade {
 
   public toggleSidebar(): void {
     this.store.dispatch(difyActions.toggleSidebar());
+  }
+
+  public switchTheme(): void {
+    this.store.dispatch(difyActions.switchTheme());
   }
 }
