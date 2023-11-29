@@ -1,16 +1,17 @@
 import { Component, Inject, Injector, OnInit } from '@angular/core';
 import { AuthUser } from '@core/auth/store/auth.models';
 import { AuthFacade } from '@core/auth/store/auth.facade';
-import { Observable, takeUntil } from 'rxjs';
+import { Observable, map, takeUntil } from 'rxjs';
 import { BaseComponent } from '@core/components/base.component';
 import { filterEmpty } from '@core/utils/pipe.operators';
 import { TuiAlertService, TuiNotification } from '@taiga-ui/core';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { IncomingCallNotificationComponent } from '../incoming-call-notification/incoming-call-notification.component';
-import { IncomingCallNotification, MenuItem } from '@modules/home/models/dify.models';
-import { DifyFacade } from '@modules/home/store/dify.facade';
+import { IncomingCallNotification, MenuItem } from '../../models/dify.models';
+import { DifyFacade } from '../../store/dify.facade';
 import { AuthEventsService } from '@core/auth/services/auth-events.service';
 import { DifySignalrEventsService } from '../../services/dify-signalr.events';
+import { ThemeService } from '../../services/theme.service';
 
 @Component({
   selector: 'app-home',
@@ -19,8 +20,6 @@ import { DifySignalrEventsService } from '../../services/dify-signalr.events';
 })
 export class HomeComponent extends BaseComponent implements OnInit {
   public currentUser$: Observable<AuthUser | undefined>;
-  public sidebarOpened: boolean = true;
-  public newCallNotification: Observable<boolean>;
   public menuItems: MenuItem[] = [];
 
   constructor(
@@ -29,8 +28,35 @@ export class HomeComponent extends BaseComponent implements OnInit {
     private difySignalrEvents: DifySignalrEventsService,
     private authEventsService: AuthEventsService,
     @Inject(Injector) private readonly injector: Injector,
-    @Inject(TuiAlertService) private alertsService: TuiAlertService) {
-    super()
+    @Inject(TuiAlertService) private alertsService: TuiAlertService,
+    private themeService: ThemeService) {
+    super();
+  }
+
+  public get wrapperThemeClasses(): Observable<any> {
+    return this.difyFacade.layoutConfig$.pipe(map((config) => {
+      return {
+        'layout-dark': config.theme === 'dark',
+        'layout-light': config.theme === 'light',
+        'p-ripple-disabled': !config.ripple,
+        'p-input-filled': config.inputFilled
+      };
+    }));
+  }
+
+  public get themeIcon(): Observable<string> {
+    return this.difyFacade.theme$.pipe(map((theme) => {
+      return theme === 'light' ? 'pi pi-moon': 'pi pi-sun';
+    }));
+  }
+
+  public get themeIconClasses(): Observable<any> {
+    return this.difyFacade.theme$.pipe(map((theme) => {
+      return {
+        'text-yellow-600': theme === 'dark',
+        'text-blue-400': theme === 'light'
+      };
+    }));
   }
 
   public ngOnInit(): void {
@@ -42,6 +68,9 @@ export class HomeComponent extends BaseComponent implements OnInit {
     });
     this.difySignalrEvents.incomingCallNotification$.pipe(this.untilThis).subscribe((incomingCall) => {
       this.showNewCallNotification(incomingCall);
+    });
+    this.difyFacade.theme$.pipe(this.untilThis).subscribe(theme => {
+      this.themeService.switchTheme(theme);
     });
   }
 
@@ -64,17 +93,17 @@ export class HomeComponent extends BaseComponent implements OnInit {
       {
         route: '/home/feed',
         caption: 'Feed',
-        icon: 'news'
+        icon: 'th-large'
       },
       {
         route: '/home/friends',
         caption: 'Friends',
-        icon: 'smile'
+        icon: 'users'
       },
       {
         route: '/home/call-history',
         caption: 'Call history',
-        icon: 'phone-call'
+        icon: 'phone'
       }
     ];
   }

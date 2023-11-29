@@ -5,19 +5,26 @@
   grid-template-areas:
     'nav header'
     'nav content';
-  grid-template-columns: 0 auto;
-  grid-template-rows: 50px auto;
-  height: 100vh;
+  grid-template-rows: 65px auto;
   grid-template-columns: auto 1fr;
+  height: 100vh;
   overflow: hidden;
 }
 
 .main-header {
   grid-area: header;
+  background-color: var(--surface-overlay);
+  border-bottom: var(--df-border);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0.5rem;
+  .theme-button {
+    background-color: var(--surface-200);
+  }
 }
 
 .main-content {
-  font: var(--tui-font-text-m);
   grid-area: content;
   overflow: auto;
   &::-webkit-scrollbar-thumb {
@@ -33,9 +40,11 @@
 }
 
 .main-navigation {
-  transition: all 0.2s ease;
+  transition: var(--df-transition);
   grid-area: nav;
   width: 78px;
+  background: var(--surface-overlay);
+  border-right: var(--df-border);
   &.navigation-opened {
     width: 250px;
   }
@@ -46,17 +55,20 @@
   height: 100%;
   width: 78px;
   padding: 6px 14px;
-  transition: all 0.2s ease;
+  transition: var(--df-transition);
   &.open {
     width: 250px;
-  }
-  i {
-    color: black;
-    height: 60px;
-    min-width: 50px;
-    font-size: 28px;
-    text-align: center;
-    line-height: 60px;
+    li {
+      .tooltip {
+        display: none;
+      }
+      a {
+        .links-name {
+          opacity: 1;
+          pointer-events: auto;
+        }
+      }
+    }
   }
   .nav-list {
     margin-top: 20px;
@@ -66,79 +78,73 @@
     position: relative;
     margin: 8px 0;
     list-style: none;
-  }
-}
-
-.sidebar li .tooltip {
-  position: absolute;
-  top: -20px;
-  left: calc(100% + 15px);
-  z-index: 3;
-  background: #fff;
-  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
-  padding: 6px 12px;
-  border-radius: 4px;
-  font-size: 15px;
-  font-weight: 400;
-  opacity: 0;
-  white-space: nowrap;
-  pointer-events: none;
-}
-
-.sidebar li:hover .tooltip {
-  opacity: 1;
-  pointer-events: auto;
-  top: 50%;
-  transform: translateY(-50%);
-}
-
-.sidebar.open li .tooltip {
-  display: none;
-}
-
-.sidebar li a {
-  display: flex;
-  height: 100%;
-  width: 100%;
-  border-radius: 12px;
-  align-items: center;
-  text-decoration: none;
-}
-
-.sidebar li a:hover {
-  background-color: rgb(226 232 240);
-  transition: all 0.2s ease;
-}
-
-.sidebar li a .links-name {
-  color: black;
-  font-size: 15px;
-  font-weight: 400;
-  white-space: nowrap;
-  opacity: 0;
-  pointer-events: none;
-  transition: all 0.2s ease;
-}
-
-.sidebar.open li a .links-name {
-  opacity: 1;
-  pointer-events: auto;
-}
-
-.sidebar li i {
-  height: 50px;
-  line-height: 50px;
-  font-size: 18px;
-  border-radius: 12px;
-}
-
-@media (max-width: 420px) {
-  .sidebar li .tooltip{
-    display: none;
+    .tooltip {
+      position: absolute;
+      top: -20px;
+      left: calc(100% + 15px);
+      z-index: 3;
+      background: var(--primary-50);
+      color: var(--gray-900);
+      box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+      padding: 6px 12px;
+      border-radius: 4px;
+      font-size: 15px;
+      font-weight: 400;
+      opacity: 0;
+      white-space: nowrap;
+      pointer-events: none;
+      @media (max-width: 420px) {
+        display: none;
+      }
+    }
+    &:hover .tooltip {
+      opacity: 1;
+      pointer-events: auto;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+    a {
+      display: flex;
+      height: 100%;
+      width: 100%;
+      border-radius: 12px;
+      align-items: center;
+      text-decoration: none;
+      color: var(--text-color);
+      transition: var(--df-transition);
+      &.active-item {
+        background-color: var(--primary-color);
+        i, .links-name {
+          color: var(--primary-color-text);
+        }
+      }
+      &:not(.active-item):hover {
+        background-color: var(--highlight-bg);
+        i, .links-name {
+          color: var(--highlight-text-color);
+        }
+      }
+      .links-name {
+        font-size: 15px;
+        font-weight: 400;
+        white-space: nowrap;
+        opacity: 0;
+        pointer-events: none;
+      }
+      i {
+        text-align: center;
+        min-width: 50px;
+        height: 50px;
+        line-height: 50px;
+        font-size: 17px;
+        border-radius: 12px;
+      }
+    }
   }
 }
 
 .toggle-menu-button {
+  background-color: var(--surface-200);
   transform: translateX(50%) translateY(-50%);
   &-rotate {
     transform: translateX(50%) translateY(-50%) rotate(180deg);

@@ -11,8 +11,9 @@ import { EffectsModule } from '@ngrx/effects';
 import { DifyEffects } from '@modules/home/store/dify.effects';
 import { DifyFacade } from '@modules/home/store/dify.facade';
 import { DifySignalrEventsService } from './services/dify-signalr.events';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
+import { ButtonModule } from 'primeng/button';
+import { ToggleButtonModule } from 'primeng/togglebutton';
+import { ThemeService } from './services/theme.service';
 
 @NgModule({
   declarations: [
@@ -24,12 +25,13 @@ import { MatButtonModule } from '@angular/material/button';
     SharedModule,
     StoreModule.forFeature(difyFeature),
     EffectsModule.forFeature([DifyEffects]),
-    MatIconModule,
-    MatButtonModule
+    ButtonModule,
+    ToggleButtonModule
   ],
   providers: [
     DifyFacade,
-    DifySignalrEventsService
+    DifySignalrEventsService,
+    ThemeService
   ]
 })
 export class HomeModule { }

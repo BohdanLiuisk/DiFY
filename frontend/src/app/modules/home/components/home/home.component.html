@@ -1,50 +1,52 @@
-<div class="main-wrapper">
-  <aside 
-    class="
-      main-navigation 
-      border-x 
-      border-solid 
-      border-gray-300 
-      bg-slate-100"
-      [class.navigation-opened]="difyFacade.sidebarOpened$ | async">
+<div class="main-wrapper" [ngClass]="wrapperThemeClasses | async">
+  <aside class="main-navigation" [class.navigation-opened]="difyFacade.sidebarOpened$ | async">
     <div class="sidebar" [class.open]="difyFacade.sidebarOpened$ | async">
       <ul class="nav-list">
         <li *ngFor="let item of menuItems">
           <a 
             [routerLink]="item.route" 
             [routerLinkActiveOptions]="{ exact: true }" 
-            routerLinkActive="bg-green-100">
-            <i class='bx' [ngClass]="'bx-' + item.icon"></i>
+            routerLinkActive="active-item">
+            <i class='pi' [ngClass]="'pi-' + item.icon"></i>
             <span class="links-name">{{ item.caption }}</span>
           </a>
           <span class="tooltip">{{ item.caption }}</span>
         </li>
       </ul>
-      <div class="
-        toggle-menu-button 
-        absolute
-        top-2/4 
-        right-0 
-        z-10
-        bg-slate-300
-        flex
-        justify-center
-        items-center
-        rounded-full
-        overflow-hidden
-        w-7
-        h-7"
-        [class.toggle-menu-button-rotate]="difyFacade.sidebarOpened$ | async">
-        <button 
-          mat-icon-button 
-          color="primary" 
-          (click)="difyFacade.toggleSidebar()">
-          <mat-icon>chevron_right</mat-icon>
-        </button>
-      </div>
+      <button 
+        pButton 
+        type="button" 
+        icon="pi pi-angle-right" 
+        class="
+          p-button-text
+          p-button-secondary
+          p-button-rounded
+          toggle-menu-button 
+          absolute
+          top-50 
+          right-0
+          h-2rem
+          w-2rem"
+        [class.toggle-menu-button-rotate]="difyFacade.sidebarOpened$ | async"
+        (click)="difyFacade.toggleSidebar()">
+      </button>
     </div>
   </aside>
-  <header class="main-header border-b border-solid border-gray-300">
+  <header class="main-header">
+    <button 
+      pButton 
+      type="button" 
+      [icon]="(themeIcon | async)"
+      class="
+        p-button-text
+        p-button-secondary
+        p-button-rounded
+        h-2rem 
+        w-2rem
+        theme-button"
+      [ngClass]="themeIconClasses | async"
+      (click)="difyFacade.switchTheme()">
+    </button>
   </header>
   <main class="main-content">
     <router-outlet></router-outlet>

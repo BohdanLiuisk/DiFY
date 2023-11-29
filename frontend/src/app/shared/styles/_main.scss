@@ -1,0 +1,16 @@
+:root {
+  --font-family: 'Manrope', sans-serif;
+  --df-border: 1px solid var(--surface-border);
+  --df-transition: all 0.2s ease;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--surface-ground);
+  color: var(--text-color);
+  font-family: var(--font-family);
+  font-weight: 400;
+}
