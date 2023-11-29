@@ -2,8 +2,7 @@ import { GUID, Theme } from '@shared/custom-types';
 
 export interface DifyState {
 	hubStatus: string;
-	sidebarOpened: boolean;
-	theme: Theme;
+	layoutConfig: LayoutConfig;
 }
 
 export interface IncomingCallNotification {
@@ -17,4 +16,11 @@ export interface MenuItem {
 	route: string;
 	caption: string;
 	icon: string;
+}
+
+export interface LayoutConfig {
+	theme: Theme;
+	ripple: boolean;
+	inputFilled: boolean;
+	sidebarOpened: boolean;
 }

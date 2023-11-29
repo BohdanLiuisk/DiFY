@@ -1,4 +1,4 @@
-<div class="main-wrapper">
+<div class="main-wrapper" [ngClass]="wrapperThemeClasses | async">
   <aside class="main-navigation" [class.navigation-opened]="difyFacade.sidebarOpened$ | async">
     <div class="sidebar" [class.open]="difyFacade.sidebarOpened$ | async">
       <ul class="nav-list">
@@ -33,7 +33,20 @@
     </div>
   </aside>
   <header class="main-header">
-    <button (click)="difyFacade.switchTheme()">Switch theme</button>
+    <button 
+      pButton 
+      type="button" 
+      [icon]="(themeIcon | async)"
+      class="
+        p-button-text
+        p-button-secondary
+        p-button-rounded
+        h-2rem 
+        w-2rem
+        theme-button"
+      [ngClass]="themeIconClasses | async"
+      (click)="difyFacade.switchTheme()">
+    </button>
   </header>
   <main class="main-content">
     <router-outlet></router-outlet>

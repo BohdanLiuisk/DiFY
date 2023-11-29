@@ -13,6 +13,7 @@ import { DifyFacade } from '@modules/home/store/dify.facade';
 import { DifySignalrEventsService } from './services/dify-signalr.events';
 import { ButtonModule } from 'primeng/button';
 import { ToggleButtonModule } from 'primeng/togglebutton';
+import { ThemeService } from './services/theme.service';
 
 @NgModule({
   declarations: [
@@ -29,7 +30,8 @@ import { ToggleButtonModule } from 'primeng/togglebutton';
   ],
   providers: [
     DifyFacade,
-    DifySignalrEventsService
+    DifySignalrEventsService,
+    ThemeService
   ]
 })
 export class HomeModule { }

@@ -5,7 +5,7 @@
   grid-template-areas:
     'nav header'
     'nav content';
-  grid-template-rows: 50px auto;
+  grid-template-rows: 65px auto;
   grid-template-columns: auto 1fr;
   height: 100vh;
   overflow: hidden;
@@ -15,6 +15,13 @@
   grid-area: header;
   background-color: var(--surface-overlay);
   border-bottom: var(--df-border);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0.5rem;
+  .theme-button {
+    background-color: var(--surface-200);
+  }
 }
 
 .main-content {
@@ -137,6 +144,7 @@
 }
 
 .toggle-menu-button {
+  background-color: var(--surface-200);
   transform: translateX(50%) translateY(-50%);
   &-rotate {
     transform: translateX(50%) translateY(-50%) rotate(180deg);

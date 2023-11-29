@@ -1,7 +1,7 @@
 import { Component, Inject, Injector, OnInit } from '@angular/core';
 import { AuthUser } from '@core/auth/store/auth.models';
 import { AuthFacade } from '@core/auth/store/auth.facade';
-import { Observable, takeUntil } from 'rxjs';
+import { Observable, map, takeUntil } from 'rxjs';
 import { BaseComponent } from '@core/components/base.component';
 import { filterEmpty } from '@core/utils/pipe.operators';
 import { TuiAlertService, TuiNotification } from '@taiga-ui/core';
@@ -20,8 +20,6 @@ import { ThemeService } from '../../services/theme.service';
 })
 export class HomeComponent extends BaseComponent implements OnInit {
   public currentUser$: Observable<AuthUser | undefined>;
-  public sidebarOpened: boolean = true;
-  public newCallNotification: Observable<boolean>;
   public menuItems: MenuItem[] = [];
 
   constructor(
@@ -32,7 +30,33 @@ export class HomeComponent extends BaseComponent implements OnInit {
     @Inject(Injector) private readonly injector: Injector,
     @Inject(TuiAlertService) private alertsService: TuiAlertService,
     private themeService: ThemeService) {
-    super()
+    super();
+  }
+
+  public get wrapperThemeClasses(): Observable<any> {
+    return this.difyFacade.layoutConfig$.pipe(map((config) => {
+      return {
+        'layout-dark': config.theme === 'dark',
+        'layout-light': config.theme === 'light',
+        'p-ripple-disabled': !config.ripple,
+        'p-input-filled': config.inputFilled
+      };
+    }));
+  }
+
+  public get themeIcon(): Observable<string> {
+    return this.difyFacade.theme$.pipe(map((theme) => {
+      return theme === 'light' ? 'pi pi-moon': 'pi pi-sun';
+    }));
+  }
+
+  public get themeIconClasses(): Observable<any> {
+    return this.difyFacade.theme$.pipe(map((theme) => {
+      return {
+        'text-yellow-600': theme === 'dark',
+        'text-blue-400': theme === 'light'
+      };
+    }));
   }
 
   public ngOnInit(): void {
