@@ -1,8 +1,26 @@
 .card {
   background: var(--surface-card);
-  border: 1px solid var(--surface-border);
-  padding: 2rem;
-  margin-bottom: 2rem;
+  border: var(--df-border);
+  padding: theme('spacing.4');
   box-shadow: var(--card-shadow);
-  border-radius: 12px;
+  border-radius: theme('borderRadius.xl');
+}
+
+.df-input-component {
+  color: var(--text-color);
+  background: var(--surface-section);
+  padding: theme('spacing[2.5]');
+  border: var(--df-border);
+  transition: var(--df-transition);
+  appearance: none;
+  border-radius: var(--border-radius);
+  &[enabled="true"]:hover {
+    border-color: var(--primary-color);
+  }
+  &:focus-within {
+    outline: 0 none;
+    outline-offset: 0;
+    box-shadow: theme('boxShadow.df-input-shadow');
+    border-color: var(--primary-color);
+  }
 }
