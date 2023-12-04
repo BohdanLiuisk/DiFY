@@ -1,11 +1,17 @@
 :root {
   --font-family: 'Manrope', sans-serif;
   --df-border: 1px solid var(--surface-border);
+  --df-input-shadow: 0 0 0 0.2rem rgba(165, 180, 252, 0.5);
   --df-transition: all 0.2s ease;
 }
 
 * {
   box-sizing: border-box;
+}
+
+img, video {
+  max-width: 100%;
+  height: auto;
 }
 
 body {

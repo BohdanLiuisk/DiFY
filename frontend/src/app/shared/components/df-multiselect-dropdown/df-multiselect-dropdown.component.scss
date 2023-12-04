@@ -1,48 +1,22 @@
-.search-item {
-  flex-grow: 1;
-  max-width: 100%;
-  .search-input {
-    outline: none;
-    border: none;
-    width: 25px;
-    max-width: 100%;
-  }
-}
-
-.search-input:disabled {
-  background-color: inherit;
-}
-
-.search-input:disabled:hover {
-  cursor: text;
-}
-
-.close-icon {
-  font-size: 20px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
 .selection-items {
   &::-webkit-scrollbar-thumb {
-    border-radius: 4px;
-    background-color: theme('colors.gray.200');
+    border-radius: theme('borderRadius.md');
+    background-color: var(--surface-border);
   }
   &::-webkit-scrollbar {
-    width: 0;
-  }
-  &::-webkit-scrollbar {
-    width: 4px;
+    width: theme('spacing.1');
   }
 }
 
-.rotate-selection-180 {
-  transform: rotate(180deg);
-  transition: transform 0.3s ease-in-out;
-}
-
-.rotate-selection-0 {
-  transform: rotate(0);
-  transition: transform 0.3s ease-in-out;
+.df-input-component {
+  &[enabled="true"] {
+    &:hover .placeholder-label {
+      transition: var(--df-transition);
+      border-color: var(--primary-color);
+    }
+    &:focus-within .placeholder-label {
+      box-shadow: theme('boxShadow.df-input-shadow');
+      border-color: var(--primary-color);
+    }
+  }
 }

@@ -1,118 +1,109 @@
-<div 
-  tabindex="0"
-  (focus)="onFocus()"
-  class="w-full relative">
-  <div
-    [ngClass]="{
-      'border-indigo-200': !hasError,
-      'border-red-400': hasError,
-      'focus-within:border-indigo-400': touched && !hasError
-    }"
-    class="
-      relative
-      flex
-      border-2
-      border-solid
-      rounded-lg
-      p-2">
-    <span class="absolute top-[-0.95rem] left-2 bg-white px-1">{{ placeholder }}</span>
-    <div
+<div tabindex="0" (focus)="onFocus()" class="relative w-full mt-6">
+  <div 
+    [ngClass]="errorClasses" 
+    class="df-input-component relative flex min-h-[4.85rem]"
+    [attr.enabled]="!isDisabled">
+    <span 
+      [ngClass]="errorClasses" 
       class="
-        flex
-        flex-wrap
-        grow
-        gap-2.5
-        cursor-text
-        z-10
-        selected-items">
+        placeholder-label p-1
+        absolute -top-5 left-2 
+        bg-inherit 
+        df-border rounded-md">
+      {{ placeholder }}
+    </span>
+    <div class="flex flex-wrap items-center grow gap-2.5 cursor-text">
       <div 
         *ngFor="let item of store.selectedItems$| async" 
         class="
-          rounded-lg 
-          bg-slate-200 
-          p-2 
-          h-14 
-          flex 
-          items-center 
-          hover:bg-slate-300 
-          cursor-pointer transition">
-        <ng-container *ngTemplateOutlet="itemTemplate; context: { $implicit: item }"></ng-container>
+          rounded-md 
+          bg-surface-200
+          p-2 h-14
+          flex items-center
+          cursor-pointer
+          hover:bg-surface-100">
+        <ng-container *ngTemplateOutlet="itemTemplate; context: { $implicit: item }">
+        </ng-container>
         <button 
-          *ngIf="!isDisabled"
-          (click)="removeSelected(item)"
-          mat-icon-button 
-          class="flex items-center ml-1" 
-          [disabled]="isDisabled">
-          <mat-icon class="close-icon">close</mat-icon>
+          *ngIf="!isDisabled" 
+          pButton type="button" 
+          icon="pi pi-times" 
+          class="
+            p-button-text p-button-rounded 
+            h-8 w-8 ml-2" 
+          (click)="removeSelected(item)"[disabled]="isDisabled">
         </button>
       </div>
-      <div
-        *ngIf="!isDisabled" 
-        class="search-item p-2 h-14">
-        <input
-          #searchInput
-          type="text"
+      <div *ngIf="!isDisabled" class="grow max-w-full h-14 p-2">
+        <input 
+          #searchInput 
+          type="text" 
           (focus)="onInputFocus()"
           (input)="onSearch($event)"
-          class="search-input h-full"
+          class="
+            search-input 
+            outline-none
+            border-none
+            w-6 max-w-full h-full p-0
+            bg-inherit
+            text-inherit
+            font-inherit" 
           [formControl]="searchControl">
       </div>
     </div>
-    <div class="flex py-4">
-      <button
-        *ngIf="(store.selectedItemsCount$ | async) >= 1 && !isDisabled"
-        mat-icon-button
-        mat-large-icon-button
-        [disabled]="isDisabled"
-        class="flex items-start h-6"
-        (click)="store.clearSelected()">
-        <mat-icon class="close-icon">close</mat-icon>
+    <div class="flex pt-3">
+      <button 
+        *ngIf="(store.selectedItemsCount$ | async) >= 1 && !isDisabled" 
+        pButton type="button" 
+        icon="pi pi-times" 
+        class="p-button-text p-button-rounded h-8 w-8 mr-1" 
+        (click)="removeAll()" [disabled]="isDisabled">
       </button>
-      <button
-        *ngIf="!isDisabled"
-        (click)="toggleSelection()"
-        mat-icon-button
-        [disabled]="isDisabled"
-        class="flex items-start h-6">
-        <mat-icon 
-          [ngClass]="(store.selectionOpened$ | async) ? 'rotate-selection-180' : 'rotate-selection-0'">
-          expand_more
-        </mat-icon>
+      <button 
+        *ngIf="!isDisabled" pButton type="button" 
+        icon="pi pi-chevron-down" 
+        class="
+          p-button-text
+          p-button-rounded
+          h-8 w-8
+          transition duration-300 transform" 
+        (click)="toggleSelection()" [disabled]="isDisabled"
+        [class.rotate-180]="(store.selectionOpened$ | async)">
       </button>
     </div>
   </div>
-  <div 
-    *ngIf="store.selectionOpened$ | async"
-    class="
-      absolute
-      w-full
-      z-10
-      mt-1
-      bg-white
-      border
-      border-solid
-      border-gray-300
-      rounded-lg
-      overflow-hidden">
-    <div class="max-h-64 overflow-y-auto selection-items">
+  <div *ngIf="store.selectionOpened$ | async" class="absolute w-full mt-1">
+    <div 
+      *ngIf="(store.selectionItemsCount$ | async) >= 1; else noData"
+      class="
+        selection-items 
+        overflow-y-auto 
+        bg-surface-card 
+        df-border rounded-md
+        max-h-72">
       <ul>
         <li 
           *ngFor="let item of store.itemsSelection$ | async"
           class="
-            p-2 
-            h-14 
-            flex 
-            items-center 
-            hover:bg-slate-100 
-            cursor-pointer 
-            transition"
+            p-2 h-14
+            flex items-center
+            cursor-pointer
+            hover:bg-surface-hover"
           (click)="selectItem(item)">
-          <ng-container *ngTemplateOutlet="itemTemplate; context: { $implicit: item }"></ng-container>
+          <ng-container *ngTemplateOutlet="itemTemplate; context: { $implicit: item }">
+          </ng-container>
         </li>
       </ul>
     </div>
-    <div *ngIf="(store.selectionItemsCount$ | async) === 0" class="h-14 p-2 flex items-center justify-center">
-      No data
-    </div>
+    <ng-template #noData>
+      <div class="
+        df-border rounded-md border-surface-border 
+        bg-surface-card
+        flex items-center
+        p-2.5 
+        h-14">
+        No data
+      </div>
+    </ng-template>
   </div>
 </div>

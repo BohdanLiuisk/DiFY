@@ -23,10 +23,10 @@
           p-button-rounded
           toggle-menu-button 
           absolute
-          top-50 
+          top-2/4 
           right-0
-          h-2rem
-          w-2rem"
+          h-7
+          w-7"
         [class.toggle-menu-button-rotate]="difyFacade.sidebarOpened$ | async"
         (click)="difyFacade.toggleSidebar()">
       </button>
@@ -41,8 +41,8 @@
         p-button-text
         p-button-secondary
         p-button-rounded
-        h-2rem 
-        w-2rem
+        h-8 
+        w-8
         theme-button"
       [ngClass]="themeIconClasses | async"
       (click)="difyFacade.switchTheme()">

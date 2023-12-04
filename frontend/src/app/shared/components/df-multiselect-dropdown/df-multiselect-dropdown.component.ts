@@ -16,13 +16,13 @@ import { ControlValueAccessor, FormControl, NgControl, ReactiveFormsModule } fro
 import { DropdownItem } from './store/dropdown-store.models';
 import { MultiselectDropdownStore } from './store/dropdown.store';
 import { Observable, debounceTime, distinctUntilChanged, filter, skip, take } from 'rxjs';
-import { BaseComponent } from '@core/components/base.component';
-import { MatIconModule } from '@angular/material/icon';
+import { BaseComponent } from '@core/components/base.component'
 import { CommonModule } from '@angular/common';
+import { ButtonModule } from 'primeng/button';
 
 @Component({
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatIconModule],
+  imports: [CommonModule, ReactiveFormsModule, ButtonModule],
   selector: "df-multiselect-dropdown",
   templateUrl: "./df-multiselect-dropdown.component.html",
   styleUrls: ["./df-multiselect-dropdown.component.scss"],
@@ -75,6 +75,12 @@ export class DfMultiSelectComponent<T extends DropdownItem>
 
   public get touched(): boolean {
     return this.control.touched;
+  }
+
+  public get errorClasses(): any {
+    return { 
+      '!border-red-500': this.hasError 
+    };
   }
   
   public ngOnInit(): void {
@@ -141,6 +147,12 @@ export class DfMultiSelectComponent<T extends DropdownItem>
     }
   }
 
+  public removeAll(): void {
+    this.store.clearSelected();
+    this.searchControl.setValue('');
+    this.onFocus();
+  }
+
   private adjustInputWidth(inputElement: HTMLInputElement) {
     const width = inputElement.value.length;
     const minWidth = '25px';
@@ -168,6 +180,7 @@ export class DfMultiSelectComponent<T extends DropdownItem>
   public setDisabledState(isDisabled: boolean): void {
     this.isDisabled = isDisabled;
     if(isDisabled) {
+      this.searchControl.setValue('');
       this.searchControl.disable();
     } else {
       this.searchControl.enable();
