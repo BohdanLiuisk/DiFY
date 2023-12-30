@@ -16,6 +16,7 @@ export interface MenuItem {
 	route: string;
 	caption: string;
 	icon: string;
+	exact: boolean;
 }
 
 export interface LayoutConfig {

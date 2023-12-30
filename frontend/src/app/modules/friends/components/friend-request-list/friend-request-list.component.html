@@ -1,86 +1,62 @@
-<div class="border border-solid border-gray-300 rounded-lg p-3">
-  <div class="flex flex-row justify-between items-center">
-    <div>
-      <button
-        type="button"
-        tuiButton
-        size="s"
-        (click)="requestType = requestTypes.new"
-        [class.shadow-lg]="requestType === requestTypes.new"
-        appearance="whiteblock">
-        New 1
-      </button>
-      <button
-        type="button"
-        tuiButton
-        size="s"
-        (click)="requestType = requestTypes.pending"
-        appearance="whiteblock"
-        class="ml-2"
-        [class.shadow-lg]="requestType === requestTypes.pending">
-        Pending 5
-      </button>
-      <button
-        type="button"
-        tuiButton
-        size="s"
-        (click)="requestType = requestTypes.outgoing"
-        appearance="whiteblock"
-        class="ml-2"
-        [class.shadow-lg]="requestType === requestTypes.outgoing">
-        Outgoing 3
-      </button>
-    </div>
+<div class="card">
+  <div class="flex flex-row">
+    <button 
+      class="flat-button mr-2 px-2 py-1"
+      (click)="requestType = requestTypes.new"
+      [ngClass]="{'active': requestType === requestTypes.new}">
+      <span>New 1</span>
+    </button>
+    <button 
+      class="flat-button mr-2 px-2 py-1"
+      (click)="requestType = requestTypes.pending"
+      [ngClass]="{'active': requestType === requestTypes.pending}">
+      <span>Pending 5</span>
+    </button>
+    <button 
+      class="flat-button px-2 py-1"
+      (click)="requestType = requestTypes.outgoing"
+      [ngClass]="{'active': requestType === requestTypes.outgoing}">
+      <span>Outgoing 3</span>
+    </button>
   </div>
-  <div class="mt-2">
-    <div
-      *ngFor="let friendRequest of friendRequests; last as isLast"
-      [ngClass]="{ 'border-b border-solid border-gray-300': !isLast }"
-      class="py-3">
-      <app-friend-request-tile [friendRequestTile]="friendRequest">
-        <div actions class="flex flex-row mt-3" [ngSwitch]="requestType">
-          <ng-container *ngSwitchCase="requestTypes.new">
-            <button
-              type="button"
-              tuiButton
-              size="s">
-              Accept
-            </button>
-            <button
-              type="button"
-              tuiButton
-              size="s"
-              appearance="secondary"
-              class="ml-2">
-              Keep as follower
-            </button>
-          </ng-container>
-          <ng-container *ngSwitchCase="requestTypes.pending">
-            <button
-              type="button"
-              tuiButton
-              size="s">
-              Accept
-            </button>
-            <button
-              type="button"
-              tuiButton
-              size="s"
-              appearance="secondary"
-              class="ml-2">
-              Remove follower
-            </button>
-          </ng-container>
-          <ng-container *ngSwitchCase="requestTypes.outgoing">
-            <button
-              type="button"
-              tuiButton
-              size="s">
-              Cancel request
-            </button>
-          </ng-container>
-        </div>
-      </app-friend-request-tile>
-    </div>
+  <div
+    *ngFor="let friendRequest of friendRequests; last as isLast"
+    [ngClass]="{ 'border-b border-solid border-surface-border': !isLast }"
+    class="py-3">
+    <app-friend-request-tile [friendRequestTile]="friendRequest">
+      <div actions class="flex flex-row mt-3" [ngSwitch]="requestType">
+        <ng-container *ngSwitchCase="requestTypes.new">
+          <p-button 
+            label="Accept"
+            size="small"
+            class="mr-2">
+          </p-button>
+          <p-button 
+            label="Keep as follower"
+            [outlined]="true"
+            size="small">
+          </p-button>
+        </ng-container>
+        <ng-container *ngSwitchCase="requestTypes.pending">
+          <p-button 
+            label="Accept"
+            size="small"
+            class="mr-2">
+          </p-button>
+          <p-button 
+            label="Remove follower"
+            [outlined]="true"
+            size="small">
+          </p-button>
+        </ng-container>
+        <ng-container *ngSwitchCase="requestTypes.outgoing">
+          <p-button 
+            label="Cancel request"
+            size="small"
+            severity="danger">
+          </p-button>
+        </ng-container>
+      </div>
+    </app-friend-request-tile>
   </div>
 </div>

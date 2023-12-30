@@ -32,4 +32,9 @@ export class FriendsSectionsFiltrationComponent {
       id: 5, name: 'School friends'
     },
   ];
+
+  public myFriendsClicked(): void {
+    this.categoryDropdownOpened = !this.categoryDropdownOpened;
+    this.sectionFiltration.emit(this.sections.myFriends);
+  }
 }

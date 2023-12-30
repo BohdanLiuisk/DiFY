@@ -2,57 +2,40 @@
   <ng-content select="[leftHeaderContent]"></ng-content>
   <ng-content select="[rightHeaderContent]"></ng-content>
 </div>
-<div class="flex flex-row justify-between mt-3 relative">
-  <div class="flex p-3 w-full border-y border-l border-solid border-gray-300 rounded-l-lg">
-    <input [(ngModel)]="friendsSearch" class="w-full focus:outline-none" type="text" placeholder="Search friends"/>
+<div class="flex flex-row justify-between mt-3">
+  <div class="p-input-icon-right grow">
+    <i 
+      *ngIf="friendsSearch && !searchLoading" 
+      class="pi pi-times hover:cursor-pointer"
+      (click)="clearSearch()">
+    </i>
+    <i *ngIf="searchLoading" class="pi pi-spin pi-spinner"></i>
+    <input 
+      type="text" 
+      pInputText 
+      [(ngModel)]="friendsSearch" 
+      placeholder="Search friends"
+      class="w-full"/>
   </div>
   <div class="flex flex-row">
-    <ng-container *ngIf="!friendsSearch">
-      <span class="flex" (tuiActiveZoneChange)="onSearchParamsActiveZone($event)">
-        <button
-          type="button"
-          class="h-auto rounded-none border-l border-y border-solid border-gray-300"
-          tuiButton
-          appearance="flat"
-          size="s"
-          [tuiDropdown]="searchParams"
-          [tuiDropdownManual]="searchParamsOpened"
-          (click)="searchParamsOpened = !searchParamsOpened">
-          Parameters
-          <tui-svg
-            src="tuiIconChevronDown"
-            class="chevron"
-            [class.chevron-up]="searchParamsOpened">
-          </tui-svg>
-        </button>
-      </span>
-    </ng-container>
-    <ng-container *ngIf="friendsSearch">
-      <button
-        type="button"
-        class="rounded-none border-y border-solid border-gray-300"
-        tuiIconButton
-        appearance="icon"
-        (click)="friendsSearch = ''"
-        icon="tuiIconCloseLarge">
-      </button>
-    </ng-container>
-    <button
-      type="button"
-      tuiIconButton
-      icon="tuiIconSearch"
-      appearance="secondary"
-      class="border border-solid border-gray-300 rounded-r-lg rounded-l-none">
-    </button>
+    <p-button
+      (onClick)="parametersClicked($event)"
+      [outlined]="true"
+      class="ml-2">
+      <div class="flex flex-row items-center">
+        <span>Parameters</span>
+        <i class="pi pi-angle-down ml-1" [class.rotate-180]="searchParamsOpened"></i>
+      </div>
+    </p-button>
   </div>
 </div>
-<div class="mt-2">
-  <div
-    *ngFor="let friendTile of friendTiles; last as isLast"
-    [ngClass]="{ 'border-b border-solid border-gray-300': !isLast }">
-    <app-friend-tile [friendTile]="friendTile"></app-friend-tile>
-  </div>
+<div
+  *ngFor="let friendTile of friendTiles; last as isLast"
+  [ngClass]="{ 'border-b border-solid border-surface-border': !isLast }">
+  <app-friend-tile [friendTile]="friendTile"></app-friend-tile>
 </div>
-<ng-template #searchParams>
-  <div class="dropdown h-96 w-96">But there is nothing to choose...</div>
-</ng-template>
+<p-overlayPanel #searchParams (onHide)="searchParamsOpened = false">
+  <ng-template pTemplate="content">
+    <div class="h-96 w-96">Advanced filters here</div>
+  </ng-template>
+</p-overlayPanel>

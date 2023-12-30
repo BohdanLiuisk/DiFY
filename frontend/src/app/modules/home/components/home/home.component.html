@@ -5,7 +5,7 @@
         <li *ngFor="let item of menuItems">
           <a 
             [routerLink]="item.route" 
-            [routerLinkActiveOptions]="{ exact: true }" 
+            [routerLinkActiveOptions]="{ exact: item.exact }" 
             routerLinkActive="active-item">
             <i class='pi' [ngClass]="'pi-' + item.icon"></i>
             <span class="links-name">{{ item.caption }}</span>
