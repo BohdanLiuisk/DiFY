@@ -1,38 +1,48 @@
-<h1 class="mb-1">People you may know</h1>
+<div class="mb-2">
+  <span>People you may know</span>
+</div>
 <div
   *ngFor="let man of peoples; let lastElement = last"
   [ngClass]="{'mb-1': !lastElement}"
   class="flex justify-between items-center">
   <div class="flex items-center">
-    <div class="flex items-center mr-1">
-      <div class="avatar-online-bottom-left avatar" [class.online]="man.online">
-        <div class="w-14 rounded-full">
-          <img alt="avatar" [src]="man.avatarUrl"/>
-        </div>
-      </div>
-    </div>
+    <div class="relative flex items-center mr-1">
+      <img 
+        [alt]="man.name"
+        class="w-14 h-14 rounded-full" 
+        [src]="man.avatarUrl">
+      <span 
+        *ngIf="man.online" 
+        class="
+          w-3 
+          h-3 
+          rounded-full
+          border
+          border-solid
+          border-surface-border 
+          absolute 
+          bottom-[2px] 
+          right-[4px]
+          bg-green-400">
+      </span>
+    </div>    
     <div class="flex flex-col">
-      <a tuiLink [routerLink]="'/home/profile/' + man.id">
-        {{ man.name }}
-      </a>
-      <p>{{ man.mutualFriends }} mutual friends</p>
+      <p-button 
+        [routerLink]="'/home/profile/' + man.id"
+        [label]="man.name" 
+        [link]="true"
+        styleClass="px-0 py-0 without-shadow">
+      </p-button>
+      <span>{{ man.mutualFriends }} mutual friends</span>
     </div>
   </div>
-  <div>
-    <button
-      type="button"
-      size="xl"
-      tuiIconButton
-      appearance="flat"
-      icon="tuiIconUserPlusLarge">
-    </button>
-  </div>
+  <p-button [outlined]="true" icon="pi pi-user-plus"></p-button>
 </div>
-<button
-  type="button"
-  tuiButton
-  appearance="secondary"
-  size="s"
-  class="w-full	mt-1">
-  Show all
-</button>
+<div class="flex flex-row justify-center mt-2">
+  <p-button 
+    label="Show all"
+    styleClass="px-2 py-1 w-full"
+    severity="secondary"
+    class="w-full">
+  </p-button>
+</div>

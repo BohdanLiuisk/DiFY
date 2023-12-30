@@ -1,1 +1,10 @@
-
+:host ::ng-deep {
+  .new-friends-bagde {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--primary-color);
+    color: var(--primary-color-text);
+    padding: 4px;
+  }
+}

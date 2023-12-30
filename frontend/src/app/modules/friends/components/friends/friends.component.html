@@ -1,98 +1,9 @@
-<div class="flex flex-row relative m-3">
+<div class="flex flex-row m-3">
   <div class="basis-3/4">
-    <ng-container [ngSwitch]="currentSection">
-      <ng-container *ngSwitchCase="friendsSections.myFriends">
-        <ng-container *ngIf="friendRequestPreview">
-          <div class="border border-solid border-gray-300 rounded-lg py-2 px-5 mb-3">
-            <div class="flex flex-row justify-between items-center border-b border-solid border-gray-300 py-3 mb-2">
-              <span>Friendship requests <code>4</code></span>
-              <button
-                (click)="currentSection = sections.friendRequest"
-                type="button"
-                tuiButton
-                iconRight="tuiIconChevronRight"
-                appearance="secondary"
-                size="s">
-                Show all
-              </button>
-            </div>
-            <app-friend-request-tile [friendRequestTile]="friendRequestPreview">
-              <div actions class="flex flex-row mt-3">
-                <button
-                  type="button"
-                  tuiButton
-                  size="m">
-                  Accept
-                </button>
-                <button
-                  type="button"
-                  tuiButton
-                  size="m"
-                  appearance="secondary"
-                  class="ml-2">
-                  Keep as follower
-                </button>
-              </div>
-            </app-friend-request-tile>
-          </div>
-        </ng-container>
-        <div class="border border-solid border-gray-300 rounded-lg p-3">
-          <app-my-friends-list>
-            <div *ngIf="!categoryFilter; else categoryInfo" leftHeaderContent>
-              <button
-                type="button"
-                tuiButton
-                size="s"
-                (click)="myFriendsFilter = 'all'"
-                [class.shadow-lg]="myFriendsFilter == 'all'"
-                appearance="whiteblock">
-                All friends 2
-              </button>
-              <button
-                type="button"
-                tuiButton
-                size="s"
-                (click)="myFriendsFilter = 'online'"
-                appearance="whiteblock"
-                class="ml-2"
-                [class.shadow-lg]="myFriendsFilter == 'online'">
-                Online 1
-              </button>
-            </div>
-            <ng-template #categoryInfo>
-              <p leftHeaderContent>{{ categoryFilter.name }} 1</p>
-            </ng-template>
-            <button
-              *ngIf="!categoryFilter; else editCategory"
-              (click)="currentSection = sections.findFriends"
-              rightHeaderContent
-              type="button"
-              tuiButton
-              size="s">
-              Find friends
-            </button>
-            <ng-template #editCategory>
-              <button
-                rightHeaderContent
-                type="button"
-                tuiButton
-                size="s">
-                Edit
-              </button>
-            </ng-template>
-          </app-my-friends-list>
-        </div>
-      </ng-container>
-      <ng-container *ngSwitchCase="friendsSections.friendRequest">
-        <app-friend-request-list></app-friend-request-list>
-      </ng-container>
-      <ng-container *ngSwitchCase="friendsSections.findFriends">
-        <p>Find requests</p>
-      </ng-container>
-    </ng-container>
+    <router-outlet></router-outlet>
   </div>
   <div class="basis-1/4 ml-3 h-max sticky top-3">
-    <div class="border border-solid border-gray-300 rounded-lg p-3">
+    <div class="card">
       <app-friends-sections-filtration
         (sectionFiltration)="currentSection = $event; categoryFilter = null"
         (categoryFilter)="categoryFilter = $event">
@@ -100,7 +11,7 @@
     </div>
     <div
       *ngIf="currentSection != friendsSections.findFriends"
-      class="border border-solid border-gray-300 rounded-lg p-3 mt-3">
+      class="card mt-3">
       <app-may-known-people></app-may-known-people>
     </div>
   </div>

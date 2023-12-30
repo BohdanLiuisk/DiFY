@@ -83,27 +83,32 @@ export class HomeComponent extends BaseComponent implements OnInit {
       {
         route: '/home',
         caption: 'Home',
-        icon: 'home'
+        icon: 'home',
+        exact: true
       },
       {
         route: `/home/profile/${userId}`,
         caption: 'My profile',
-        icon: 'user'
+        icon: 'user',
+        exact: true
       },
       {
         route: '/home/feed',
         caption: 'Feed',
-        icon: 'th-large'
+        icon: 'th-large',
+        exact: true
       },
       {
         route: '/home/friends',
         caption: 'Friends',
-        icon: 'users'
+        icon: 'users',
+        exact: false
       },
       {
         route: '/home/call-history',
         caption: 'Call history',
-        icon: 'phone'
+        icon: 'phone',
+        exact: true
       }
     ];
   }

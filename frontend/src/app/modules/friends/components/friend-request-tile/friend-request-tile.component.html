@@ -1,15 +1,18 @@
 <div class="flex flex-row items-center">
-  <div class="mr-3 flex items-center">
-    <div class="avatar-online-bottom-left avatar online">
-      <div class="w-32 rounded-full">
-        <img [src]="friendRequestTile.avatarUrl" alt="Avatar"/>
-      </div>
-    </div>
-  </div>
+  <app-friend-tile-avatar 
+    [name]="friendRequestTile.name"
+    [avatarUrl]="friendRequestTile.avatarUrl"
+    [online]="friendRequestTile.online"
+    class="mr-3">
+  </app-friend-tile-avatar>
   <div class="py-3">
-    <a tuiLink [routerLink]="'/home/profile/' + friendRequestTile.id">
-      {{ friendRequestTile.name }}
-    </a>
+    <p-button 
+      [routerLink]="'/home/profile/' + friendRequestTile.id"
+      [label]="friendRequestTile.name" 
+      [link]="true"
+      size="small"
+      styleClass="px-0 py-0 without-shadow">
+    </p-button>
     <ng-content select="[actions]"></ng-content>
   </div>
 </div>

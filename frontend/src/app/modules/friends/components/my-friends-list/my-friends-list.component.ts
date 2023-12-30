@@ -1,6 +1,7 @@
-import { Component, Input } from '@angular/core';
+import { Component, ElementRef, Input, ViewChild } from '@angular/core';
 import { FriendTile } from '@modules/friends/store/friends.models';
 import { guid } from '@shared/custom-types';
+import { OverlayPanel } from 'primeng/overlaypanel';
 
 @Component({
   selector: 'app-my-friends-list',
@@ -10,6 +11,8 @@ import { guid } from '@shared/custom-types';
 export class MyFriendsListComponent {
   public friendsSearch: string = ``;
   public searchParamsOpened: boolean = false;
+  public searchLoading: boolean = false;
+  @ViewChild('searchParams') private searchParams: OverlayPanel;
   @Input('friendTiles') public friendTiles: FriendTile[] = [
     {
       id: guid('9f655687-ed72-46d5-99de-1efcd9ed626d'),
@@ -49,5 +52,14 @@ export class MyFriendsListComponent {
 
   public onSearchParamsActiveZone(active: boolean): void {
     this.searchParamsOpened = active && this.searchParamsOpened;
+  }
+
+  public parametersClicked(event: any): void {
+    this.searchParams.toggle(event);
+    this.searchParamsOpened = !this.searchParamsOpened;
+  }
+
+  public clearSearch(): void {
+    this.friendsSearch = '';
   }
 }

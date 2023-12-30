@@ -1,49 +1,61 @@
-<button
-  (click)="sectionFiltration.emit(sections.myFriends)"
-  type="button"
-  class="flex flex-row justify-between w-full p-2 hover:bg-slate-100 rounded-lg">
-  <div class="flex flex-row">
-    <span>My friends</span>
-    <tui-svg
-      (click)="categoryDropdownOpened = !categoryDropdownOpened"
-      src="tuiIconChevronDown"
-      class="chevron ml-1 opacity-60"
-      [class.chevron-up]="categoryDropdownOpened">
-    </tui-svg>
-  </div>
-  <tui-svg
-    class="opacity-60 hover:opacity-80 tooltip"
-    data-tip="Calendar"
-    src="tuiIconCalendar">
-  </tui-svg>
-</button>
+<div class="flex flex-row w-full">
+  <p-button 
+    size="small"
+    [outlined]="true"
+    class="grow"
+    styleClass="w-full"
+    routerLink="../friends"
+    (click)="myFriendsClicked()">
+    <div class="flex flex-row items-center">
+      <span>My friends</span>
+      <i class="pi pi-angle-down ml-1" [class.rotate-180]="categoryDropdownOpened"></i>
+    </div>
+  </p-button>
+  <p-button size="small" styleClass="ml-1" icon="pi pi-calendar" [outlined]="true"></p-button>
+</div>
 <ng-container *ngIf="categoryDropdownOpened && friendCategories" >
   <ng-container *ngFor="let category of friendCategories">
-    <button
+    <p-button
+      size="small"
+      [outlined]="true"
+      styleClass="w-full mt-0.5 p-1.5"
       (click)="categoryFilter.emit(category)"
-      type="button"
-      class="text-start w-full py-2 pl-5 pr-2 hover:bg-slate-100 rounded-lg">
-      {{ category.name }}
-    </button>
+      severity="secondary">
+      <span class="text-left ml-5">
+        {{ category.name }}
+      </span>
+    </p-button>
   </ng-container>
-  <button type="button" class="flex flex-row w-full py-2 pl-4 pr-2 hover:bg-slate-100 rounded-lg">
-    <tui-svg
-      src="tuiIconPlus"
-      class="mr-1 opacity-60">
-    </tui-svg>
-    <span>Create new category</span>
-  </button>
+  <p-button
+    size="small"
+    [outlined]="true"
+    styleClass="w-full mt-0.5 p-1.5"
+    severity="success">
+    <div class="flex items-center ml-5">
+      <i class="pi pi-plus mr-1"></i>
+      <span>Create new category</span>
+    </div>
+  </p-button>
 </ng-container>
-<button
+<p-button
+  size="small"
+  [outlined]="true"
+  styleClass="w-full mt-1"
+  routerLink="requests"
   (click)="sectionFiltration.emit(sections.friendRequest)"
-  type="button"
-  class="flex flex-row justify-between w-full p-2 hover:bg-slate-100 rounded-lg">
-  <span>Friendship requests</span>
-  <div class="badge badge-info">4</div>
-</button>
-<button
-  (click)="sectionFiltration.emit(sections.findFriends)"
-  type="button"
-  class="text-start w-full p-2 hover:bg-slate-100 rounded-lg">
-  Find friends
-</button>
+  badge="5"
+  badgeClass="new-friends-bagde">
+  <span class="w-full text-left">
+    Friendship requests
+  </span>
+</p-button>
+<p-button
+  size="small"
+  [outlined]="true"
+  styleClass="w-full mt-1"
+  routerLink="find"
+  (click)="sectionFiltration.emit(sections.findFriends)">
+  <span class="text-left">
+    Find friends
+  </span>
+</p-button>

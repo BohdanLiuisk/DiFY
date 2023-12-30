@@ -15,9 +15,10 @@ export interface FriendTile {
 }
 
 export interface FriendRequestTile {
-  id: GUID;
+  id: number;
   name: string;
   avatarUrl: string;
+  online: boolean;
 }
 
 export interface FriendTag {

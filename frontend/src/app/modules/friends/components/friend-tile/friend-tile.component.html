@@ -1,60 +1,56 @@
 <div class="flex flex-row justify-between px-2 py-3">
   <div class="flex flex-row">
-    <div class="mr-2 flex items-center">
-      <div class="avatar-online-bottom-left avatar" [class.online]="friendTile.online">
-        <div class="w-32 rounded-full">
-          <img [src]="friendTile.avatarUrl"/>
-        </div>
-      </div>
-    </div>
+    <app-friend-tile-avatar 
+      [name]="friendTile.name"
+      [avatarUrl]="friendTile.avatarUrl"
+      [online]="friendTile.online"
+      class="mr-3">
+    </app-friend-tile-avatar>
     <div class="flex flex-col justify-between">
       <div class="flex flex-col justify-center">
-        <a tuiLink [routerLink]="'/home/profile/' + friendTile.id">
-          {{ friendTile.name }}
-        </a>
-        <p>{{ friendTile.workplace }}</p>
-        <div class="flex flex-row mt-2">
-          <tui-tag
+        <p-button 
+          [routerLink]="'/home/profile/' + friendTile.id"
+          [label]="friendTile.name" 
+          [link]="true"
+          styleClass="px-0 py-0 without-shadow">
+        </p-button>
+        <span>{{ friendTile.workplace }}</span>
+        <div class="flex flex-row mt-1">
+          <p-tag 
             *ngFor="let tag of friendTile.tags"
             [value]="tag.name"
-            class="mr-2 {{tag.color}}"
-            [hoverable]="true">
-          </tui-tag>
+            [styleClass]="'text-sm p-1 ' + tag.color"
+            class="mr-1">
+          </p-tag>
         </div>
       </div>
       <div class="flex flex-row">
-        <button
-          type="button"
-          tuiButton
-          appearance="secondary"
-          size="s"
+        <p-button 
+          label="Write message"
+          styleClass="px-2 py-1"
           class="mr-2">
-          Write message
-        </button>
-        <button
-          type="button"
-          tuiButton
-          icon="tuiIconPhone"
-          size="s">
-          Call
-        </button>
+        </p-button>
+        <p-button 
+          label="Call"
+          [outlined]="true"
+          iconPos="left"
+          icon="pi pi-phone"
+          styleClass="px-2 py-1">
+        </p-button>
       </div>
     </div>
   </div>
   <div class="flex flex-col">
-    <button
-      type="button"
-      tuiButton
-      size="s"
+    <p-button 
+      label="Unfriend"
+      styleClass="px-2 py-1"
+      severity="secondary"
       class="mb-2">
-      Unfriend
-    </button>
-    <button
-      type="button"
-      tuiButton
-      appearance="secondary"
-      size="s">
-      Edit tags
-    </button>
+    </p-button>
+    <p-button 
+      label="Edit tags"
+      [outlined]="true"
+      styleClass="px-2 py-1">
+    </p-button>
   </div>
 </div>

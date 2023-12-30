@@ -1,0 +1,77 @@
+<ng-container *ngIf="friendRequestPreview">
+  <div class="card mb-3">
+    <div class="
+      flex flex-row justify-between items-center 
+      border-b border-solid border-surface-border 
+      pb-3 mb-2">
+      <div class="flex flex-row items-center">
+        <span>Friendship requests</span>
+        <p-badge
+          value="4"
+          styleClass="inline-flex items-center justify-center"
+          class="ml-1">
+        </p-badge>
+      </div>
+      <p-button 
+        label="Show all" 
+        [text]="true"
+        size="small"
+        iconPos="right"
+        icon="pi pi-angle-right"
+        styleClass="p-1.5">
+      </p-button>
+    </div>
+    <app-friend-request-tile [friendRequestTile]="friendRequestPreview">
+      <div actions class="flex flex-row mt-3">
+        <p-button 
+          label="Accept"
+          size="small"
+          class="mr-2">
+        </p-button>
+        <p-button 
+          label="Keep as follower"
+          [outlined]="true"
+          size="small">
+        </p-button>
+      </div>
+    </app-friend-request-tile>
+  </div>
+</ng-container>
+<div class="card">
+  <app-my-friends-list>
+    <div 
+      *ngIf="!categoryFilter; else categoryInfo" leftHeaderContent
+      class="flex flex-row">
+      <button 
+        class="flat-button mr-2 px-2 py-1"
+        (click)="myFriendsFilter = 'all'"
+        [ngClass]="{'active': myFriendsFilter === 'all'}">
+        <span>All friends 12</span>
+      </button>
+      <button 
+        class="flat-button px-2 py-1"
+        (click)="myFriendsFilter = 'online'"
+        [ngClass]="{'active': myFriendsFilter === 'online'}">
+        <span>Online 3</span>
+      </button>
+    </div>
+    <ng-template #categoryInfo>
+      <p leftHeaderContent>{{ categoryFilter.name }} 1</p>
+    </ng-template>
+    <p-button 
+      *ngIf="!categoryFilter; else editCategory"
+      rightHeaderContent
+      label="Find friends"
+      styleClass="px-2 py-1">
+    </p-button>
+    <ng-template #editCategory>
+      <button
+        rightHeaderContent
+        type="button"
+        tuiButton
+        size="s">
+        Edit
+      </button>
+    </ng-template>
+  </app-my-friends-list>
+</div>

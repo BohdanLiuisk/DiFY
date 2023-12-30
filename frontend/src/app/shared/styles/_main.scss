@@ -1,8 +1,8 @@
 :root {
-  --font-family: 'Manrope', sans-serif;
   --df-border: 1px solid var(--surface-border);
   --df-input-shadow: 0 0 0 0.2rem rgba(165, 180, 252, 0.5);
   --df-transition: all 0.2s ease;
+  font-size: 16px;
 }
 
 * {
@@ -18,5 +18,4 @@ body {
   background-color: var(--surface-ground);
   color: var(--text-color);
   font-family: var(--font-family);
-  font-weight: 400;
 }
