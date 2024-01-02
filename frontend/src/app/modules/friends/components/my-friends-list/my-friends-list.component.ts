@@ -1,5 +1,5 @@
 import { Component, ElementRef, Input, ViewChild } from '@angular/core';
-import { FriendTile } from '@modules/friends/store/friends.models';
+import { FriendTile } from '@modules/friends/models/friends.models';
 import { guid } from '@shared/custom-types';
 import { OverlayPanel } from 'primeng/overlaypanel';
 

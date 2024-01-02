@@ -21,7 +21,7 @@
   </div>
   <div
     *ngFor="let friendRequest of friendRequests; last as isLast"
-    [ngClass]="{ 'border-b border-solid border-surface-border': !isLast }"
+    [ngClass]="{ 'border-0 border-b border-solid border-surface-border': !isLast }"
     class="py-3">
     <app-friend-request-tile [friendRequestTile]="friendRequest">
       <div actions class="flex flex-row mt-3" [ngSwitch]="requestType">

@@ -7,7 +7,7 @@
 <ng-container *ngIf="user$ | async as user">
   <div class="m-3">
     <div class="flex flex-row h-max border border-solid border-gray-300 rounded-lg">
-      <div class="basis-1/5 flex flex-col justify-center items-center border-r border-solid border-gray-300 p-4">
+      <div class="basis-1/5 flex flex-col justify-center items-center border-0 border-r border-solid border-gray-300 p-4">
         <div class="avatar" [ngClass]="user.online ? 'online': 'offline'">
           <div class="w-60 rounded-full">
             <img [src]="user.avatarUrl" alt="profile-avatar"/>
@@ -50,7 +50,7 @@
         <div class="border border-solid border-gray-300 rounded-t-lg p-3 mt-3">
           Posts filtration
         </div>
-        <div class="border-x border-b border-solid border-gray-300 rounded-b-lg p-3">
+        <div class="border-0 border-x border-b border-solid border-gray-300 rounded-b-lg p-3">
           First post
           <p>Lorem ipsum dolor sit amet, consectetur</p>
           <p>adipisicing elit. Facere ipsum inventore </p>

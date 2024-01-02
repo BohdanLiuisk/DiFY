@@ -33,3 +33,15 @@ export interface MayKnownMan {
   online: boolean;
   mutualFriends: number;
 }
+
+export interface FoundFriend {
+  id: number;
+  name: string;
+  avatarUrl: string;
+  mutualFriendsCount: number;
+}
+
+export interface FoundFriendsResponse {
+  items: FoundFriend[];
+  totalCount: number;
+}

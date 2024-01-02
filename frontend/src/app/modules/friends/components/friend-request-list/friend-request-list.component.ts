@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { FriendRequestType } from '@modules/friends/store/friends.setting';
-import { FriendRequestTile } from '@modules/friends/store/friends.models';
+import { FriendRequestType } from '@modules/friends/models/friends.setting';
+import { FriendRequestTile } from '@modules/friends/models/friends.models';
 
 @Component({
   selector: 'app-friend-request-list',

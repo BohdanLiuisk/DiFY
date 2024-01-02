@@ -31,7 +31,7 @@
 </div>
 <div
   *ngFor="let friendTile of friendTiles; last as isLast"
-  [ngClass]="{ 'border-b border-solid border-surface-border': !isLast }">
+  [ngClass]="{ 'border-0 border-b border-solid border-surface-border': !isLast }">
   <app-friend-tile [friendTile]="friendTile"></app-friend-tile>
 </div>
 <p-overlayPanel #searchParams (onHide)="searchParamsOpened = false">
