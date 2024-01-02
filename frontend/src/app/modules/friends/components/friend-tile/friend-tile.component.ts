@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { FriendTile } from '@modules/friends/store/friends.models';
+import { FriendTile } from '@modules/friends/models/friends.models';
 @Component({
   selector: 'app-friend-tile',
   templateUrl: './friend-tile.component.html',

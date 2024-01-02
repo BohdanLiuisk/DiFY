@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Output } from '@angular/core';
-import { FriendCategory } from '@modules/friends/store/friends.models';
-import { FriendshipSections } from '@modules/friends/store/friends.setting';
+import { FriendCategory } from '@modules/friends/models/friends.models';
+import { FriendshipSections } from '@modules/friends/models/friends.setting';
 
 @Component({
   selector: 'app-friends-sections-filtration',

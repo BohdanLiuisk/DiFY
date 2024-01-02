@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { BaseComponent } from '@core/components/base.component';
-import { FriendshipSections, myFriendsFiltration } from '@modules/friends/store/friends.setting';
-import { FriendCategory, FriendRequestTile } from '@modules/friends/store/friends.models';
+import { FriendshipSections, myFriendsFiltration } from '@modules/friends/models/friends.setting';
+import { FriendCategory, FriendRequestTile } from '@modules/friends/models/friends.models';
 import { guid } from '@shared/custom-types';
 
 @Component({

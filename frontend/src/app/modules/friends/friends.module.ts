@@ -20,6 +20,11 @@ import {
   FriendTileAvatarComponent 
 } from './components/friend-tile-avatar/friend-tile-avatar.component';
 import { TagModule } from 'primeng/tag';
+import { FriendsService } from './services/friends.service';
+import { PaginatorModule } from 'primeng/paginator';
+import { InputGroupModule } from 'primeng/inputgroup';
+import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
+import { TooltipModule } from 'primeng/tooltip';
 
 @NgModule({
   declarations: [
@@ -41,7 +46,14 @@ import { TagModule } from 'primeng/tag';
     BadgeModule,
     InputTextModule,
     OverlayPanelModule,
-    TagModule
+    TagModule,
+    PaginatorModule,
+    InputGroupModule,
+    InputGroupAddonModule,
+    TooltipModule
+  ],
+  providers: [
+    FriendsService
   ]
 })
 export class FriendsModule { }
