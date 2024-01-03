@@ -5,7 +5,7 @@ import { callHistoryActions } from './call-history.actions';
 export const callsHistoryInitialState: CallHistory = {
   historyConfig: {
     page: 1,
-    perPage: 10
+    perPage: 20
   },
   calls: {
     entities: [],

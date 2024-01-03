@@ -19,11 +19,9 @@ export interface JoinData {
 }
 
 export interface Call {
-  id: GUID,
-  name: string,
-  startDate: Date,
-  totalParticipants: number,
-  activeParticipants: number
+  id: GUID;
+  name: string;
+  startDate: Date;
 }
 
 export interface Participant {

@@ -9,14 +9,10 @@ public sealed class CallsProfile : Profile
     public CallsProfile()
     {
         CreateMap<Call, CallDto>()
-            .ForMember(dest => dest.StartDate, 
+            .ForMember(dest => dest.StartDate,
                 opt => opt.MapFrom(src => src.CreatedOn))
-            .ForMember(dest => dest.InitiatorId, 
-                opt => opt.MapFrom(src => src.CreatedById))
-            .ForMember(dest => dest.TotalParticipants, 
-                opt => opt.MapFrom(src => src.Participants.Count))
-            .ForMember(dest => dest.ActiveParticipants, 
-                opt => opt.MapFrom(src => src.Participants.Count(p => p.Active)));
+            .ForMember(dest => dest.InitiatorId,
+                opt => opt.MapFrom(src => src.CreatedById));
 
         CreateMap<CallParticipant, CallParticipantDto>()
             .ForMember(dest => dest.Name,

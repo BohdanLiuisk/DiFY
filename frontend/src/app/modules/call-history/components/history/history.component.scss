@@ -1,0 +1,11 @@
+.participant-dropdown {
+  display: flex;
+  align-items: center;
+  padding: theme('spacing.1') theme('spacing.2');
+  border-radius: var(--border-radius);
+  text-decoration: none;
+  color: var(--text-color);
+  &:hover {
+    background-color: var(--surface-hover);
+  }
+}

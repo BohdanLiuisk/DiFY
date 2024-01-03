@@ -1,4 +1,5 @@
 ﻿using Dify.Core.Domain.Common;
+using Dify.Core.Domain.Enums;
 
 namespace Dify.Core.Domain.Entities;
 
@@ -21,4 +22,6 @@ public class CallParticipant : BaseEntity<int>
     public string PeerId { get; set;  }
     
     public string ConnectionId { get; set; }
+    
+    public CallDirection Direction { get; set; }
 }

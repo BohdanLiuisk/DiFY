@@ -13,15 +13,6 @@ export interface ParticipantForCall {
   isOnline: boolean;
 }
 
-export enum CallColumns {
-  name = 'Name',
-  startDate = 'StartDate',
-  active = 'Active',
-  duration = 'Duration',
-  activeParticipants = 'ActiveParticipants',
-  totalParticipants = 'TotalParticipants'
-};
-
 export interface CallHistory {
   historyConfig: CallHistoryConfig,
   calls: Calls,
@@ -40,6 +31,23 @@ export interface Calls {
   loaded: boolean;
 };
 
+export enum CallDirection {
+  Canceled,
+  Missed,
+  Incoming,
+  Outgoing,
+  Declined
+}
+
+export interface CallParticipant {
+  id: number;
+  callParticipantId: number;
+  name: string;
+  avatarUrl: string;
+  isOnline: boolean;
+  direction: CallDirection;
+}
+
 export interface Call {
   id: GUID;
   name: string;
@@ -48,8 +56,8 @@ export interface Call {
   startDate: Date;
   endDate: Date;
   duration: number;
-  activeParticipants: number;
-  totalParticipants: number;
+  direction: CallDirection;
+  participants: CallParticipant[];
 };
 
 export interface CallsResponse {
