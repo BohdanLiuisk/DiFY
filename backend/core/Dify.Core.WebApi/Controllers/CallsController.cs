@@ -1,4 +1,5 @@
 ﻿using Dify.Common.Dto;
+using Dify.Common.Dto.CallHistory;
 using Dify.Common.Models;
 using Dify.Core.Application.Calls.Commands;
 using Dify.Core.Application.Calls.Queries;
@@ -22,7 +23,7 @@ public class CallsController : ControllerBase
     }
     
     [HttpGet("getCalls")]
-    public async Task<ActionResult<QueryResponse<PaginatedList<CallDto>>>> GetCalls(int pageNumber, int pageSize)
+    public async Task<ActionResult<QueryResponse<PaginatedList<CallHistoryDto>>>> GetCalls(int pageNumber, int pageSize)
     {
         var users = await _mediator.Send(
             new GetPaginatedCallsQuery(pageNumber, pageSize));

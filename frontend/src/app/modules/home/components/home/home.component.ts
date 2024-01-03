@@ -108,7 +108,7 @@ export class HomeComponent extends BaseComponent implements OnInit {
         route: '/home/call-history',
         caption: 'Call history',
         icon: 'phone',
-        exact: true
+        exact: false
       }
     ];
   }

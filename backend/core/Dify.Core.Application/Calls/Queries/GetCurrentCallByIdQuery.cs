@@ -11,12 +11,12 @@ public class GetCurrentCallByIdQueryHandler : IRequestHandler<GetCurrentCallById
 {
     private readonly IDifyContext _difyContext;
     
-    private readonly IMapper _mapper;
-
-    public GetCurrentCallByIdQueryHandler(IDifyContext difyContext, IMapper mapper)
+    private readonly ICurrentUser _currentUser;
+    
+    public GetCurrentCallByIdQueryHandler(IDifyContext difyContext,  ICurrentUser currentUser)
     {
         _difyContext = difyContext;
-        _mapper = mapper;
+        _currentUser = currentUser;
     }
 
     public async Task<QueryResponse<CurrentCallDto>> Handle(GetCurrentCallByIdQuery query, 
@@ -36,8 +36,8 @@ public class GetCurrentCallByIdQueryHandler : IRequestHandler<GetCurrentCallById
                     StartDate = c.CreatedOn,
                     EndDate = c.EndDate,
                     Duration = c.Duration,
-                    TotalParticipants = c.Participants.Count,
-                    ActiveParticipants = c.Participants.Count(p => p.Active)
+                    Direction = (int)c.Participants
+                        .FirstOrDefault(p => p.ParticipantId == _currentUser.UserId).Direction,
                 },
                 Participants = c.Participants.Select(p => new CallParticipantDto
                 {

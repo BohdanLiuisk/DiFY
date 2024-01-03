@@ -1,0 +1,90 @@
+<div class="card">
+  <ng-container 
+    *ngFor="let call of callHistoryFacade.callsHistory$ | async; 
+    let i = index; let last = last">
+    <div [ngClass]="{
+        'flex items-center rounded-lg p-3 cursor-pointer hover:bg-surface-hover': true,
+        'mb-1.5': i === 0,
+        'mt-1.5': last,
+        'my-1.5': i !== 0 && !last
+      }">
+      <div class="flex -space-x-4 mr-2">
+        <p-avatarGroup>
+          <p-avatar 
+            [routerLink]="'/home/profile/' + participant.id"
+            [pTooltip]="participant.name"
+            tooltipPosition="top"
+              class="hover:z-10 cursor-pointer"
+              *ngFor="let participant of call.participants | slice:0:maxParticipantsDisplay" 
+              [image]="participant.avatarUrl" 
+              size="xlarge" shape="circle">
+          </p-avatar>
+          <p-avatar 
+            *ngIf="call.participants.length > maxParticipantsDisplay"
+            [label]="'+' + (call.participants.length - maxParticipantsDisplay)" 
+            shape="circle" 
+            size="xlarge" 
+            class="hover:z-10 cursor-pointer"
+            styleClass="bg-blue-200"
+            (click)="dropdownParticipants.toggle($event)">
+          </p-avatar>
+          <p-overlayPanel styleClass="p-1" #dropdownParticipants>
+            <a 
+              *ngFor="let otherParticipant of call.participants | slice:maxParticipantsDisplay" 
+              class="participant-dropdown"
+              [routerLink]="'/home/profile/' + otherParticipant.id">
+              <p-avatar 
+                [image]="otherParticipant.avatarUrl" 
+                styleClass="mr-2" 
+                size="normal" 
+                shape="circle">
+              </p-avatar>
+              <span>{{otherParticipant.name}}</span>
+            </a>
+          </p-overlayPanel>
+        </p-avatarGroup>  
+      </div>
+      <div class="flex flex-col justify-center grow">
+        <span class="py-1">{{call.name}}</span>
+        <span class="py-1 flex items-center">
+          <i [ngClass]="['mr-1', 'pi', getCallDirectionIcon(call), getCallDirectionColor(call)]"></i>
+          <span [ngClass]="getCallDirectionColor(call)">
+            {{ getCallDirection(call) }}
+          </span>
+          <span class="ml-1">· {{call.startDate | date: 'MMMM d \'at\' h:mm a'}}</span>
+        </span>
+      </div>
+      <div class="flex justify-center flex-end">
+        <p-button 
+          icon="pi pi-phone" 
+          size="small" 
+          [rounded]="true" 
+          [text]="true"
+          pTooltip="Join with audio"
+          tooltipPosition="bottom"
+          (onClick)="callHistoryFacade.joinCall(call.id)">
+        </p-button>
+        <p-button 
+          icon="pi pi-video" 
+          size="small" 
+          [rounded]="true" 
+          [text]="true"
+          pTooltip="Join with video"
+          tooltipPosition="bottom">
+        </p-button>
+        <p-button 
+          icon="pi pi-ellipsis-h" 
+          size="small" 
+          [rounded]="true" 
+          [text]="true" 
+          severity="secondary"
+          pTooltip="More"
+          tooltipPosition="bottom">
+        </p-button>
+      </div>   
+    </div>
+    <ng-container *ngIf="!last">
+      <p-divider></p-divider>
+    </ng-container>
+  </ng-container>
+</div>
