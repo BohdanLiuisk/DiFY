@@ -16,7 +16,8 @@ module.exports = {
         'primary-color': 'var(--primary-color)',
         'blue-200': 'var(--blue-200)',
         'red-500': 'var(--red-500)',
-        'green-500': 'var(--green-500)'
+        'green-500': 'var(--green-500)',
+        'green-400': 'var(--green-400)'
       },
       boxShadow: {
         'df-input-shadow': 'var(--df-input-shadow)'

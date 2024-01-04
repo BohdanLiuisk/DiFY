@@ -2,7 +2,9 @@ import { Injectable } from '@angular/core';
 import { CoreHttpService } from '@core/services/core-http.service';
 import { Observable } from 'rxjs';
 import { GUID } from '@shared/custom-types';
-import { CallsResponse, CreateNewCallConfig, ParticipantForCall } from '../models/call-history.models';
+import { 
+  CallsResponse, CreateNewCallConfig, ParticipantForCall 
+} from '../models/call-history.models';
 
 @Injectable()
 export class CallHistoryService {

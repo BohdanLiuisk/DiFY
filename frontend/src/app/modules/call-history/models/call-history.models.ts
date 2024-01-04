@@ -14,12 +14,12 @@ export interface ParticipantForCall {
 }
 
 export interface CallHistory {
-  historyConfig: CallHistoryConfig,
+  historyConfig: CallHistoryPaginationConfig,
   calls: Calls,
   newCallCreating: boolean
 };
 
-export interface CallHistoryConfig {
+export interface CallHistoryPaginationConfig {
   page: number;
   perPage: number;
 };
@@ -64,3 +64,22 @@ export interface CallsResponse {
   items: Call[];
   totalCount: number;
 }
+
+export interface CallHistorySection {
+  code: string;
+  caption: string;
+  route: string;
+  routeExact: boolean;
+  icon: string;
+  loading: boolean;
+  enabled: boolean;
+  color: string;
+}
+
+export const callsSections = {
+  history: 'history',
+  callFriends: 'call-friends',
+  active: 'active',
+  missed: 'missed',
+  sceduled: 'sceduled'
+};

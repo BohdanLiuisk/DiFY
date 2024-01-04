@@ -1,6 +1,11 @@
 <div class="card">
+  <ng-container *ngIf="(loading$ | async)">
+    <p-skeleton height="5.55rem" styleClass="mb-3"></p-skeleton>
+    <p-skeleton height="5.55rem" styleClass="mb-3"></p-skeleton>
+    <p-skeleton height="5.55rem"> </p-skeleton>
+  </ng-container>
   <ng-container 
-    *ngFor="let call of callHistoryFacade.callsHistory$ | async; 
+    *ngFor="let call of callHistory$ | async; 
     let i = index; let last = last">
     <div [ngClass]="{
         'flex items-center rounded-lg p-3 cursor-pointer hover:bg-surface-hover': true,
@@ -46,12 +51,14 @@
       </div>
       <div class="flex flex-col justify-center grow">
         <span class="py-1">{{call.name}}</span>
-        <span class="py-1 flex items-center">
+        <span class="
+          py-1 flex items-center 
+          whitespace-nowrap text-ellipsis overflow-hidden">
           <i [ngClass]="['mr-1', 'pi', getCallDirectionIcon(call), getCallDirectionColor(call)]"></i>
           <span [ngClass]="getCallDirectionColor(call)">
             {{ getCallDirection(call) }}
           </span>
-          <span class="ml-1">· {{call.startDate | date: 'MMMM d \'at\' h:mm a'}}</span>
+          <span class="ml-1">· {{ call.startDate | date: 'MMMM d \'at\' h:mm a' }}</span>
         </span>
       </div>
       <div class="flex justify-center flex-end">
@@ -62,7 +69,7 @@
           [text]="true"
           pTooltip="Join with audio"
           tooltipPosition="bottom"
-          (onClick)="callHistoryFacade.joinCall(call.id)">
+          (onClick)="joinCall(call.id)">
         </p-button>
         <p-button 
           icon="pi pi-video" 
@@ -86,5 +93,8 @@
     <ng-container *ngIf="!last">
       <p-divider></p-divider>
     </ng-container>
+  </ng-container>
+  <ng-container *ngIf="!(loading$ | async) && !(callHistory$ | async).length">
+    <span>You don't have any calls yet...</span>
   </ng-container>
 </div>

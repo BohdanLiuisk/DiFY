@@ -25,6 +25,7 @@ public class CallsController : ControllerBase
     [HttpGet("getCalls")]
     public async Task<ActionResult<QueryResponse<PaginatedList<CallHistoryDto>>>> GetCalls(int pageNumber, int pageSize)
     {
+        await Task.Delay(500);
         var users = await _mediator.Send(
             new GetPaginatedCallsQuery(pageNumber, pageSize));
         return Ok(users);

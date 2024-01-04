@@ -36,6 +36,7 @@
               "src/styles.scss",
               "node_modules/primeng/resources/primeng.min.css",
               "node_modules/primeicons/primeicons.css",
+              "@angular/cdk/overlay-prebuilt.css",
               {
                 "input": "src/app/core/themes/lara-dark-indigo.scss",
                 "bundleName": "lara-dark-indigo",

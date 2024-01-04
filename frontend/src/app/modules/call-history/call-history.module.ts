@@ -1,37 +1,37 @@
 import { NgModule } from '@angular/core';
-import { CreateNewCallComponent } from './components/create-new-call/create-new-call.component';
-import { TuiModule } from '@shared/tui.module';
+import { DialogModule } from '@angular/cdk/dialog';
+import { DynamicDialogModule } from 'primeng/dynamicdialog';
+import { InputTextModule } from 'primeng/inputtext';
+import { ButtonModule } from 'primeng/button';
+import { DividerModule } from 'primeng/divider';
 import { SharedModule } from '@shared/shared.module';
-import { CallHistoryComponent } from './components/call-history/call-history.component';
-import { callHistoryFeature } from './store/call-history.reducer';
-import { CallHistoryEffects } from './store/call-history.effects';
-import { StoreModule } from '@ngrx/store';
-import { EffectsModule } from '@ngrx/effects';
-import { CallHistoryService } from './services/call-history.service';
-import { CallHistoryFacade } from './store/call-history.facade';
-import { CallHistoryRoutingModule } from './call-history-routing.module';
 import { 
   DfMultiSelectComponent 
 } from '@shared/components/df-multiselect-dropdown/df-multiselect-dropdown.component';
-import { DividerModule } from 'primeng/divider';
+import { CallHistoryComponent } from './components/base/base.component';
+import { NewCallFormComponent } from './components/new-call-form/new-call-form.component';
+import { CallHistoryRoutingModule } from './call-history-routing.module';
+import { BaseCallHistoryStore } from './store/base/base.store';
+import { CallHistoryService } from './services/call-history.service';
 
 @NgModule({
   declarations: [
     CallHistoryComponent,
-    CreateNewCallComponent
+    NewCallFormComponent
   ],
   imports: [
-    TuiModule,
     SharedModule,
     CallHistoryRoutingModule,
     DfMultiSelectComponent,
     DividerModule,
-    StoreModule.forFeature(callHistoryFeature),
-    EffectsModule.forFeature([CallHistoryEffects])
+    ButtonModule,
+    DynamicDialogModule,
+    DialogModule,
+    InputTextModule
   ],
   providers: [
     CallHistoryService,
-    CallHistoryFacade
+    BaseCallHistoryStore
   ]
 })
 export class CallHistoryModule { }
