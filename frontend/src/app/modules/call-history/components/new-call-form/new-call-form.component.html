@@ -1,0 +1,53 @@
+<div class="card">
+  <form class="p-3" [formGroup]="newCallForm" (ngSubmit)="submit()">
+    <input 
+      formControlName="callName" 
+      pInputText 
+      class="w-full mb-3"
+      placeholder="Name, description"/>
+    <df-multiselect-dropdown
+      [itemTemplate]="dropdownItemTemplate" 
+      [dropdownItems]="participantsList$" 
+      formControlName="participants"
+      (searchChanged)="searchParticipants($event)"
+      placeholder="Call participants">
+      <ng-template #dropdownItemTemplate let-item>
+        <div class="relative flex items-center mr-2">
+          <img alt="user.name" class="w-12 h-12 rounded-full" [src]="item.avatarUrl">
+          <span 
+            *ngIf="item.isOnline" 
+            class="
+              w-4 
+              h-4 
+              rounded-full
+              border-2
+              border-solid
+              border-surface-border 
+              absolute 
+              bottom-0 
+              right-0 
+              bg-green-400">
+          </span>
+        </div>
+        <span>{{ item.name }}</span>
+      </ng-template>
+    </df-multiselect-dropdown>
+    <div class="flex justify-end mt-3">
+      <p-button 
+        [outlined]="true"
+        size="small"
+        label="Cancel"
+        class="mr-3"
+        (onClick)="cancel()">
+      </p-button>
+      <p-button 
+        type="submit" 
+        size="small">
+        <div class="flex flex-row items-center">
+          <i class="pi pi-phone mr-2"></i>
+          <span>Join</span>
+        </div>
+      </p-button>
+    </div>
+  </form> 
+</div>

@@ -1,0 +1,47 @@
+<div class="flex flex-row m-3">
+  <div class="basis-4/5">
+    <div class="card flex justify-between items-center mb-3">
+      <h2 class="text-lg">New call</h2>
+      <div>
+        <p-button size="small" (onClick)="createNewCall()">
+          <div class="flex flex-row items-center">
+            <i class="pi pi-phone mr-2"></i>
+            <span>Create</span>
+          </div>
+        </p-button>
+        <p-button [outlined]="true" size="small" class="ml-2">
+          <div class="flex flex-row items-center">
+            <i class="pi pi-calendar mr-2"></i>
+            <span>Schedule</span>
+          </div>
+        </p-button>
+      </div>
+    </div>
+    <router-outlet></router-outlet>
+  </div>
+  <div class="basis-2/6 flex flex-col card ml-3 h-max sticky top-3">
+    <ng-container *ngFor="
+      let section of sections$ | async; 
+      let i = index; let last = last;">
+      <a 
+        [routerLink]="section.enabled ? section.route : null"
+        routerLinkActive="active-route"
+        [routerLinkActiveOptions]="{ exact: section.routeExact}"
+        class="section-btn"
+        [ngClass]="{
+          'mb-1.5': !last,
+          'mt-1.5': i > 0 && i % 2 === 0
+        }">
+        <div class="flex flex-row justify-between" [class]="section.color">
+          <span>{{ section.caption }}</span>
+          <i *ngIf="section.loading" class="pi pi-spin pi-spinner"></i>
+          <i 
+            *ngIf="!section.loading && section.icon" 
+            [ngClass]="'pi ' + section.icon">
+          </i>
+        </div>
+      </a>
+      <p-divider *ngIf="(i + 1) % 2 === 0 && !last"></p-divider>
+    </ng-container>
+  </div>
+</div>

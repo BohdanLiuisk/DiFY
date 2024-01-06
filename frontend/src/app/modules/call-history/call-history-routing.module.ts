@@ -1,4 +1,4 @@
-import { CallHistoryComponent } from './components/call-history/call-history.component';
+import { CallHistoryComponent } from './components/base/base.component';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { HistoryComponent } from './components/history/history.component';
