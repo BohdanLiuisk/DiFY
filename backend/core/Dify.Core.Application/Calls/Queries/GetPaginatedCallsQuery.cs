@@ -36,6 +36,8 @@ public class GetPaginatedCallsQueryHandler
                 StartDate = c.CreatedOn,
                 Direction = (int)c.Participants
                     .FirstOrDefault(p => p.ParticipantId == currentUserId).Direction,
+                Status = (int)c.Participants
+                    .FirstOrDefault(p => p.ParticipantId == currentUserId).Status,
                 Participants = c.Participants
                     .Where(p => p.ParticipantId != currentUserId)
                     .Select(p => new CallParticipantHistoryDto
@@ -45,7 +47,8 @@ public class GetPaginatedCallsQueryHandler
                         Name = p.Participant.Name,
                         AvatarUrl = p.Participant.AvatarUrl,
                         IsOnline = p.Participant.Online,
-                        CallDirection = (int)p.Direction
+                        CallDirection = (int)p.Direction,
+                        Status = (int)p.Status
                     })
             })
             .PaginatedListAsync(query.PageNumber, query.PageSize);

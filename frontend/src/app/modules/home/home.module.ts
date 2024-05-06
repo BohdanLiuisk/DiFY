@@ -12,8 +12,11 @@ import { DifyEffects } from '@modules/home/store/dify.effects';
 import { DifyFacade } from '@modules/home/store/dify.facade';
 import { DifySignalrEventsService } from './services/dify-signalr.events';
 import { ButtonModule } from 'primeng/button';
-import { ToggleButtonModule } from 'primeng/togglebutton';
 import { ThemeService } from './services/theme.service';
+import { AvatarModule } from 'primeng/avatar';
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
+import { HomeService } from './services/home.service';
 
 @NgModule({
   declarations: [
@@ -25,13 +28,16 @@ import { ThemeService } from './services/theme.service';
     SharedModule,
     StoreModule.forFeature(difyFeature),
     EffectsModule.forFeature([DifyEffects]),
+    ToastModule,
     ButtonModule,
-    ToggleButtonModule
+    AvatarModule
   ],
   providers: [
     DifyFacade,
     DifySignalrEventsService,
-    ThemeService
+    ThemeService,
+    HomeService,
+    MessageService
   ]
 })
 export class HomeModule { }

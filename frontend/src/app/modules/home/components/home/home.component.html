@@ -52,3 +52,9 @@
     <router-outlet></router-outlet>
   </main>
 </div>
+<app-incoming-call-notification 
+  [incomingCall]="incomingCallEvent"
+  (joinCall)="joinIncomingCall($event)"
+  (declineCall)="declineIncomingCall($event)">
+</app-incoming-call-notification>
+<p-toast></p-toast>

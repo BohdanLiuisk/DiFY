@@ -1,8 +1,8 @@
 ﻿namespace Dify.Common.Dto.Call;
 
 public record IncomingCallEventDto (
-    Guid CallId,
-    string CallName,
-    int CallerId,
-    string CallerName
+    Guid Id,
+    string Name,
+    CallerInfo Caller,
+    IEnumerable<CallerInfo> OtherParticipants
 );

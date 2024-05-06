@@ -58,3 +58,17 @@
 .p-overlaypanel-content	{
   padding: 0;
 }
+
+.p-toast {
+  .p-toast-message {
+    margin-bottom: 0.875rem;
+    .p-toast-message-content {
+      .p-toast-message-text {
+        margin: 0 0 0 1rem;
+      }
+      .p-toast-detail {
+        margin: 0.5rem 0 0 0;
+      }
+    }
+  }
+}

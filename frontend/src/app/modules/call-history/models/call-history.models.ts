@@ -32,11 +32,19 @@ export interface Calls {
 };
 
 export enum CallDirection {
-  Canceled,
-  Missed,
   Incoming,
-  Outgoing,
-  Declined
+  Outgoing
+}
+
+export enum CallParticipantStatus {
+  Active,
+  NotActive,
+  Completed,
+  NotAnswered,
+  Declined,
+  CanceledByCaller,
+  Missed,
+  Failed
 }
 
 export interface CallParticipant {
@@ -46,6 +54,7 @@ export interface CallParticipant {
   avatarUrl: string;
   isOnline: boolean;
   direction: CallDirection;
+  status: CallParticipantStatus
 }
 
 export interface Call {
@@ -57,6 +66,7 @@ export interface Call {
   endDate: Date;
   duration: number;
   direction: CallDirection;
+  status: CallParticipantStatus;
   participants: CallParticipant[];
 };
 

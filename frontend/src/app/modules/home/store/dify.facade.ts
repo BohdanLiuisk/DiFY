@@ -18,7 +18,7 @@ export class DifyFacade {
     this.store.dispatch(difyActions.successfullyAuthenticated());
   }
 
-  public joinIncomingCall(callId: GUID): void {
+  public joinCall(callId: GUID): void {
     this.store.dispatch(difyActions.joinIncomingCall({ callId }));
   }
 

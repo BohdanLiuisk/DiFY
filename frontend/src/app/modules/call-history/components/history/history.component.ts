@@ -2,10 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BaseComponent } from '@core/components/base.component';
 import { GUID } from '@shared/custom-types';
-import { Call, CallDirection } from '../../models/call-history.models';
+import { 
+  Call, CallDirection, CallParticipantStatus 
+} from '../../models/call-history.models';
 import { AvatarModule } from 'primeng/avatar';
 import { AvatarGroupModule } from 'primeng/avatargroup';
-import { Router, RouterModule } from '@angular/router';
+import { RouterModule } from '@angular/router';
 import { TooltipModule } from 'primeng/tooltip';
 import { OverlayPanelModule } from 'primeng/overlaypanel';
 import { ButtonModule } from 'primeng/button';
@@ -13,6 +15,7 @@ import { DividerModule } from 'primeng/divider';
 import { CallHistoryStore } from '../../store/history/history.store';
 import { Observable } from 'rxjs';
 import { SkeletonModule } from 'primeng/skeleton';
+import { DifyFacade } from '@modules/home/store/dify.facade';
 
 @Component({
   selector: 'app-history',
@@ -33,7 +36,9 @@ export class HistoryComponent extends BaseComponent implements OnInit {
     this.untilThis
   );
   
-  constructor(public readonly store: CallHistoryStore, private router: Router) {
+  constructor(
+    public readonly store: CallHistoryStore,
+    private readonly difyFacade: DifyFacade) {
     super();
   }
 
@@ -42,28 +47,26 @@ export class HistoryComponent extends BaseComponent implements OnInit {
   }
 
   public joinCall(callId: GUID): void {
-    this.router.navigate([`home/call/${callId}`]);
+    this.difyFacade.joinCall(callId);
   }
 
   public getCallDirectionColor(call: Call): string {
-    switch (call.direction) {
-      case CallDirection.Declined:
-      case CallDirection.Missed:
-      case CallDirection.Canceled:
-        return 'text-red-500';
-      case CallDirection.Incoming:
-      case CallDirection.Outgoing:
-        return 'text-green-500';
+    const direction = call.direction;
+    const status = call.status;
+    let color = '';
+    if(direction === CallDirection.Incoming && status === CallParticipantStatus.Declined) {
+      color = 'text-red-500';
     }
+    else if(direction === CallDirection.Outgoing && status === CallParticipantStatus.Declined) {
+      color = 'text-red-500';
+    }
+    return color;
   }
   
   public getCallDirectionIcon(call: Call): string {
     switch (call.direction) {
-      case CallDirection.Declined:
-      case CallDirection.Missed:
       case CallDirection.Incoming:
         return 'pi-arrow-down-left';
-      case CallDirection.Canceled:
       case CallDirection.Outgoing:
         return 'pi-arrow-up-right';
     }
