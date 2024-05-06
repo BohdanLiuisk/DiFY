@@ -65,4 +65,11 @@ public class CallsController : ControllerBase
         var response = await _mediator.Send(new SearchParticipantsForCallQuery(searchValue));
         return Ok(response);
     }
+    
+    [HttpGet("getCanJoin/{callId:guid}")]
+    public async Task<ActionResult<QueryResponse<bool>>> GetCanJoin(Guid callId)
+    {
+        var response = await _mediator.Send(new GetCanJoinCallQuery(callId));
+        return Ok(response);
+    }
 }

@@ -13,7 +13,7 @@ public record CreateNewCallCommand(
 
 public record NewCallResponse(Guid CallId);
 
-public record Participant(int Id, string ConnectionId, string Name);
+public record Participant(int Id, string ConnectionId, string Name, string AvatarUrl);
 
 public class CreateNewCallCommandHandler : IRequestHandler<CreateNewCallCommand, CommandResponse<NewCallResponse>>
 {
@@ -33,20 +33,25 @@ public class CreateNewCallCommandHandler : IRequestHandler<CreateNewCallCommand,
 
     public async Task<CommandResponse<NewCallResponse>> Handle(CreateNewCallCommand command, CancellationToken cancellationToken)
     {
-        var call = Call.CreateNew(command.Name);
+        var currentUserId = _currentUser.UserId;
+        var call = Call.CreateNew(command.Name, currentUserId, command.ParticipantIds);
         await _difyContext.Calls.AddAsync(call, cancellationToken);
         await _difyContext.SaveChangesAsync(cancellationToken);
         var participants = await _difyContext.Users.Where(
                 u => (command.ParticipantIds.Contains(u.Id) && u.Online && !string.IsNullOrEmpty(u.ConnectionId)) 
                      || u.Id == _currentUser.UserId)
-            .Select(u => new Participant(u.Id, u.ConnectionId, u.Name))
+            .Select(u => new Participant(u.Id, u.ConnectionId, u.Name, u.AvatarUrl))
             .ToListAsync(cancellationToken);
         var currentUser = participants.FirstOrDefault(p => p.Id == _currentUser.UserId);
         var participantsToCall = participants.Where(p => p.Id != _currentUser.UserId).ToList();
         foreach (var participant in participantsToCall)
         {
             await _difyNotificationService.SendIncomingCallEventAsync(new IncomingCallEventDto(
-                call.Id, call.Name, currentUser.Id, currentUser.Name), participant.ConnectionId);
+                call.Id, call.Name, 
+                new CallerInfo(currentUser.Id, currentUser.Name, currentUser.AvatarUrl),
+                null), 
+                participant.ConnectionId
+            );
         }
         return new CommandResponse<NewCallResponse>(new NewCallResponse(call.Id));
     }

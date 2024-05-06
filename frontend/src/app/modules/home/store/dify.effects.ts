@@ -6,9 +6,11 @@ import { createHub, findHub } from '@core/signalr/signalr';
 import { AuthService } from '@core/auth/services/auth.service';
 import { IHttpConnectionOptions } from '@microsoft/signalr';
 import { difyActions } from './dify.actions';
-import { IncomingCallNotification } from '../models/dify.models';
+import { IncomingCallEvent } from '../models/dify.models';
 import { DifySignalrEventsService } from '../services/dify-signalr.events';
 import { Router } from '@angular/router';
+import { HomeService } from '../services/home.service';
+import { MessageService } from 'primeng/api';
 
 const difyHub = environment.hubs.difyHub;
 
@@ -18,7 +20,9 @@ export class DifyEffects {
     private actions$: Actions,
     private authService: AuthService,
     private router: Router,
-    private difySignalrEvents: DifySignalrEventsService) { }
+    private difySignalrEvents: DifySignalrEventsService,
+    private readonly homeService: HomeService,
+    private messageService: MessageService) { }
 
   public readonly connectDifyHub = createEffect(() => {
     return this.actions$.pipe(
@@ -54,7 +58,7 @@ export class DifyEffects {
       switchMap(() => {
         const hub = findHub(difyHub);
         const incomingCall$ = hub
-          .on<IncomingCallNotification>("OnIncomingCall")
+          .on<IncomingCallEvent>("OnIncomingCall")
           .pipe(
             tap((incomingCall) => this.difySignalrEvents.incomingCallNotification.next(incomingCall)),
             map((incomingCall) => {
@@ -71,8 +75,20 @@ export class DifyEffects {
   public readonly joinIncomingCall = createEffect(() => {
     return this.actions$.pipe(
       ofType(difyActions.joinIncomingCall),
-      tap(({ callId }) => {
-        this.router.navigate([`home/call/${ callId }`]);
+      switchMap(({ callId }) => 
+        this.homeService.getCanJoinCall(callId).pipe(
+          map(response => ({ callId, response }))
+        )),
+      tap(({ callId, response }) => {
+        if(response.success) {
+          this.router.navigate([`home/call/${ callId }`]);
+        } else {
+          this.messageService.add({ 
+            severity: 'error', 
+            summary: 'Error', 
+            detail: response.errorMessage
+          });
+        }
       })
     )
   }, { dispatch: false });

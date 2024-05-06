@@ -32,15 +32,12 @@ public class LeftCallCommandHandler : IRequestHandler<LeftCallCommand, CommandRe
             throw new AggregateException("Call is already ended.");
         }
         var participant = call.Participants.FirstOrDefault(
-            p => p.ParticipantId == _currentUser.UserId && p.Active);
+            p => p.ParticipantId == _currentUser.UserId);
         if (participant is null)
         {
             throw new AggregateException("You cannot leave this call as you are not in it.");
         }
-        participant.Active = false;
-        participant.StreamId = string.Empty;
-        participant.PeerId = string.Empty;
-        participant.ConnectionId = string.Empty;
+        participant.LeftCall();
         await _difyContext.SaveChangesAsync(cancellationToken);
         return new CommandResponse<bool>(true);
     }

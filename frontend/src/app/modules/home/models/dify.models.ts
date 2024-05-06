@@ -5,11 +5,17 @@ export interface DifyState {
 	layoutConfig: LayoutConfig;
 }
 
-export interface IncomingCallNotification {
-	callId: GUID;
-	callName: string;
-	callerId: GUID;
-	callerName: string;
+export interface CallerInfo {
+	id: number;
+	name: string
+	avatarUrl: string;
+}
+
+export interface IncomingCallEvent {
+	id: GUID;
+	name: string;
+	caller: CallerInfo;
+	otherParticipants?: CallerInfo[];
 }
 
 export interface MenuItem {
@@ -24,4 +30,9 @@ export interface LayoutConfig {
 	ripple: boolean;
 	inputFilled: boolean;
 	sidebarOpened: boolean;
+}
+
+export interface CanJoinCall {
+	success: boolean;
+	errorMessage: string;
 }

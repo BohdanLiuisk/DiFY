@@ -8,4 +8,5 @@ public class CallParticipantHistoryDto
     public string AvatarUrl { get; set; }
     public bool IsOnline { get; set; }
     public int CallDirection { get; set; }
+    public int Status { get; set; }
 }

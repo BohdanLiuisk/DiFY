@@ -1,5 +1,6 @@
 ﻿using Dify.Core.Domain.Common;
 using Dify.Core.Domain.Enums;
+using Dify.Core.Domain.Events;
 
 namespace Dify.Core.Domain.Entities;
 
@@ -24,4 +25,23 @@ public class CallParticipant : BaseEntity<int>
     public string ConnectionId { get; set; }
     
     public CallDirection Direction { get; set; }
+    
+    public CallParticipantStatus Status { get; set; }
+
+    public void DeclineCall()
+    {
+        Status = CallParticipantStatus.Declined;
+        Active = false;
+        AddDomainEvent(new ParticipantDeclinedCall(CallId, ParticipantId));
+    }
+
+    public void LeftCall()
+    {
+        Active = false;
+        StreamId = string.Empty;
+        PeerId = string.Empty;
+        ConnectionId = string.Empty;
+        Status = CallParticipantStatus.NotActive;
+        AddDomainEvent(new ParticipantLeftCallEvent(this));
+    }
 }

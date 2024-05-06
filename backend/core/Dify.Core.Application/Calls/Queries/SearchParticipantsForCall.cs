@@ -12,13 +12,9 @@ public class SearchParticipantsForCallQueryHandler : IRequestHandler<SearchParti
     QueryResponse<ICollection<ParticipantForCallDto>>>
 {
     private readonly IDifyContext _difyContext;
-    
-    private readonly IMapper _mapper;
-
-    public SearchParticipantsForCallQueryHandler(IDifyContext difyContext, IMapper mapper)
+    public SearchParticipantsForCallQueryHandler(IDifyContext difyContext)
     {
         _difyContext = difyContext;
-        _mapper = mapper;
     }
 
     public async Task<QueryResponse<ICollection<ParticipantForCallDto>>> Handle(SearchParticipantsForCallQuery query, 
@@ -27,7 +23,14 @@ public class SearchParticipantsForCallQueryHandler : IRequestHandler<SearchParti
         var participants = await _difyContext.Users
             .Take(50)
             .Where(u => string.IsNullOrEmpty(query.SearchValue) || u.Name.Contains(query.SearchValue))
-            .ProjectTo<ParticipantForCallDto>(_mapper.ConfigurationProvider)
+            .Select(u => new ParticipantForCallDto 
+            {
+                Id = u.Id,
+                Username = u.Login,
+                Name = u.Name,
+                IsOnline = u.Online,
+                AvatarUrl = u.AvatarUrl
+            })
             .ToListAsync(cancellationToken);
         return new QueryResponse<ICollection<ParticipantForCallDto>>(participants);
     }

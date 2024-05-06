@@ -1,7 +1,7 @@
 ﻿using Dify.Common.Models;
 using Dify.Core.Application.Common;
 using Dify.Core.Application.Common.Exceptions;
-using Dify.Core.Domain.Entities;
+using Dify.Core.Domain.Enums;
 
 namespace Dify.Core.Application.Calls.Commands;
 
@@ -18,14 +18,11 @@ public class JoinCallCommandHandler : IRequestHandler<JoinCallCommand, CommandRe
     private readonly IDifyContext _difyContext;
 
     private readonly ICurrentUser _currentUser;
-
-    private readonly IMapper _mapper;
     
-    public JoinCallCommandHandler(IDifyContext difyContext, ICurrentUser currentUser, IMapper mapper)
+    public JoinCallCommandHandler(IDifyContext difyContext, ICurrentUser currentUser)
     {
         _difyContext = difyContext;
         _currentUser = currentUser;
-        _mapper = mapper;
     }
 
     public async Task<CommandResponse<bool>> Handle(JoinCallCommand command, CancellationToken cancellationToken)
@@ -45,22 +42,18 @@ public class JoinCallCommandHandler : IRequestHandler<JoinCallCommand, CommandRe
             .FirstOrDefault(p => p.ParticipantId == _currentUser.UserId);
         if (participant is not null)
         {
-            if (participant.Active)
+            if (participant.Status == CallParticipantStatus.Active)
             {
                 throw new AggregateException("You are already in a call.");
             }
-            participant.Active = true;
+            participant.Status = CallParticipantStatus.Active;
             participant.StreamId = command.StreamId;
             participant.PeerId = command.PeerId;
             participant.ConnectionId = command.ConnectionId;
         }
         else
         {
-            var newParticipant = _mapper.Map<CallParticipant>(command);
-            newParticipant.JoinedAt = DateTime.UtcNow;
-            newParticipant.Active = true;
-            newParticipant.ParticipantId = _currentUser.UserId;
-            call.Participants.Add(newParticipant);
+            throw new AggregateException("You are not allowed to join this call.");
         }
         await _difyContext.SaveChangesAsync(cancellationToken);
         return new CommandResponse<bool>(true);
