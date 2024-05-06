@@ -18,13 +18,10 @@ public record NewUserResponse(int UserId);
 public class CreateNewUserCommandHandler : IRequestHandler<CreateNewUserCommand, CommandResponse<NewUserResponse>> 
 {
     private readonly IDifyContext _difyContext;
-    
-    private readonly IMapper _mapper;
 
-    public CreateNewUserCommandHandler(IDifyContext difyContext, IMapper mapper)
+    public CreateNewUserCommandHandler(IDifyContext difyContext)
     {
         _difyContext = difyContext;
-        _mapper = mapper;
     }
 
     public async Task<CommandResponse<NewUserResponse>> Handle(CreateNewUserCommand command, 
@@ -34,7 +31,15 @@ public class CreateNewUserCommandHandler : IRequestHandler<CreateNewUserCommand,
         {
             throw new ArgumentException($"User with login {command.Login} already exists");
         }
-        var user = _mapper.Map<User>(command);
+        var user = new User
+        {
+            FirstName = command.FirstName,
+            LastName = command.LastName,
+            Name = $"{command.FirstName} {command.LastName}",
+            Login = command.Login,
+            Password = command.Password,
+            Email = command.Email
+        };
         var password = PasswordHashManager.HashPassword(command.Password);
         user.Password = password;
         await _difyContext.Users.AddAsync(user, cancellationToken);

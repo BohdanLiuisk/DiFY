@@ -13,12 +13,9 @@ public class GetPaginatedUsersQueryHandler : IRequestHandler<GetPaginatedUsersQu
 {
     private readonly IDifyContext _difyContext;
     
-    private readonly IMapper _mapper;
-    
-    public GetPaginatedUsersQueryHandler(IDifyContext difyContext, IMapper mapper)
+    public GetPaginatedUsersQueryHandler(IDifyContext difyContext)
     {
         _difyContext = difyContext;
-        _mapper = mapper;
     }
 
     public async Task<QueryResponse<PaginatedList<UserDto>>> Handle(GetPaginatedUsersQuery query, 
@@ -26,8 +23,19 @@ public class GetPaginatedUsersQueryHandler : IRequestHandler<GetPaginatedUsersQu
     {
         var users = await _difyContext.Users
             .OrderBy(u => u.Name)
-            .ProjectTo<UserDto>(_mapper.ConfigurationProvider)
+            .Select(u => new UserDto
+            {
+                Id = u.Id,
+                FirstName = u.FirstName,
+                LastName = u.LastName,
+                Name = u.Name,
+                Login = u.Login,
+                Email = u.Email,
+                AvatarUrl = u.AvatarUrl,
+                Online = u.Online,
+                CreatedOn = u.CreatedOn
+            })
             .PaginatedListAsync(query.PageNumber, query.PageSize);
-        return new QueryResponse<PaginatedList<UserDto>>(_mapper.Map<PaginatedList<UserDto>>(users));
+        return new QueryResponse<PaginatedList<UserDto>>(users);
     }
 }

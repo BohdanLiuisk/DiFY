@@ -20,8 +20,9 @@ public static class ConfigureServices
         services.AddDbContext<DifyContext>((sp, options) =>
         {
             options.AddInterceptors(sp.GetServices<ISaveChangesInterceptor>());
-            options.UseSqlServer(configuration.GetConnectionString("DifyCoreDb"),
-                builder => builder.MigrationsAssembly(typeof(DifyContext).Assembly.FullName));
+            options.UseNpgsql(configuration.GetConnectionString("DifyCoreDb"),
+                builder => builder.MigrationsAssembly(typeof(DifyContext).Assembly.FullName))
+                .UseSnakeCaseNamingConvention();
         });
         services.AddScoped<IDifyContext>(provider => provider.GetRequiredService<DifyContext>());
         services.AddScoped<DifyContextInitializer>();
@@ -32,8 +33,9 @@ public static class ConfigureServices
             .AddInMemoryApiScopes(IdentityServerConfig.GetApiScopes())
             .AddOperationalStore(options => 
                 options.ConfigureDbContext = b => 
-                    b.UseSqlServer(configuration.GetConnectionString("DifyCoreDb"),
-                        sql => sql.MigrationsAssembly(typeof(DifyContext).Assembly.FullName)))
+                    b.UseNpgsql(configuration.GetConnectionString("DifyCoreDb"),
+                        sql => sql.MigrationsAssembly(typeof(DifyContext).Assembly.FullName))
+                    .UseSnakeCaseNamingConvention())
             .AddProfileService<ProfileService>()
             .AddDeveloperSigningCredential();
         services.AddTransient<IResourceOwnerPasswordValidator, ResourceOwnerPasswordValidator>();
