@@ -1,0 +1,45 @@
+﻿{
+  "id": "7f6c0e75-6a81-4c39-a8c9-789b75be5f9f",
+  "code": "case",
+  "caption": "Case",
+  "columns": [
+    {
+      "id": "1661f7bc-e893-4732-b172-589b40fc088d",
+      "code": "id",
+      "caption": "Id",
+      "type": 2,
+      "isPrimaryKey": true
+    },
+    {
+      "id": "60917402-0fb6-4977-883d-d197e80b3dde",
+      "code": "number",
+      "caption": "Number",
+      "type": 8,
+      "nullable": false
+    },
+    {
+      "id": "d4e25692-f26a-4133-84d7-4d769159caa8",
+      "code": "account_id",
+      "caption": "Account",
+      "type": 2,
+      "nullable": true,
+      "foreignTable": {
+        "id": "429cde5e-fb1c-406a-aafa-f4dc41835a38",
+        "code": "account",
+        "primaryColumn": "id"
+      }
+    },
+    {
+      "id": "c0b89de8-0d16-4aee-aaba-c6bf23be8c92",
+      "code": "contact_id",
+      "caption": "Contact",
+      "type": 2,
+      "nullable": true,
+      "foreignTable": {
+        "id": "65a93638-295f-4e3a-81e2-4bb13f27edc7",
+        "code": "contact",
+        "primaryColumn": "id"
+      }
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+﻿{
+  "id": "65a93638-295f-4e3a-81e2-4bb13f27edc7",
+  "code": "contact",
+  "caption": "Contact",
+  "columns": [
+    {
+      "id": "835540ca-e156-4aab-9136-40e215360b9b",
+      "code": "id",
+      "caption": "Id",
+      "type": 2,
+      "isPrimaryKey": true
+    },
+    {
+      "id": "ec787866-d762-4622-8e80-00009fabdbca",
+      "code": "name",
+      "caption": "Name",
+      "type": 8,
+      "nullable": false
+    },
+    {
+      "id": "9f9058b4-a0ff-43d4-830d-712531277292",
+      "code": "account_id",
+      "caption": "Account",
+      "type": 2,
+      "nullable": true,
+      "foreignTable": {
+        "id": "429cde5e-fb1c-406a-aafa-f4dc41835a38",
+        "code": "account",
+        "primaryColumn": "id"
+      }
+    }
+  ]
+}

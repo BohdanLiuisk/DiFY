@@ -13,6 +13,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dify.Core.Infrastructure", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dify.Common", "Dify.Common\Dify.Common.csproj", "{73B924DC-1226-48E5-A951-F0CDAE16CDFA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dify.Entity", "Dify.Entity\Dify.Entity.csproj", "{9FD7E4A3-DDEA-403B-923A-2CEF7A3CAABF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dify.Entity.WebApi", "Dify.Entity.WebApi\Dify.Entity.WebApi.csproj", "{A02A301D-7FA4-4BAE-A520-FA40EBFD11F6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +43,14 @@ Global
 		{73B924DC-1226-48E5-A951-F0CDAE16CDFA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{73B924DC-1226-48E5-A951-F0CDAE16CDFA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{73B924DC-1226-48E5-A951-F0CDAE16CDFA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9FD7E4A3-DDEA-403B-923A-2CEF7A3CAABF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9FD7E4A3-DDEA-403B-923A-2CEF7A3CAABF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9FD7E4A3-DDEA-403B-923A-2CEF7A3CAABF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9FD7E4A3-DDEA-403B-923A-2CEF7A3CAABF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A02A301D-7FA4-4BAE-A520-FA40EBFD11F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A02A301D-7FA4-4BAE-A520-FA40EBFD11F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A02A301D-7FA4-4BAE-A520-FA40EBFD11F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A02A301D-7FA4-4BAE-A520-FA40EBFD11F6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

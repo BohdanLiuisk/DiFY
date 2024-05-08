@@ -1,0 +1,28 @@
+﻿{
+  "id": "429cde5e-fb1c-406a-aafa-f4dc41835a38",
+  "code": "account",
+  "caption": "Account",
+  "columns": [
+    {
+      "id": "4017eae7-4fe2-4bda-a358-020cb7ab6e48",
+      "code": "id",
+      "caption": "Id",
+      "type": 2,
+      "isPrimaryKey": true
+    },
+    {
+      "id": "7deb0360-8e7c-4a6d-acb2-06a9181fffc7",
+      "code": "name",
+      "caption": "Name",
+      "type": 8,
+      "nullable": false
+    },
+    {
+      "id": "c5ccf207-a87a-4396-8f44-1ecc63a8af5c",
+      "code": "email",
+      "caption": "Email",
+      "type": 8,
+      "nullable": true
+    }
+  ]
+}
