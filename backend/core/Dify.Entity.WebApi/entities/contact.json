@@ -1,0 +1,34 @@
+﻿{
+  "id": "65a93638-295f-4e3a-81e2-4bb13f27edc7",
+  "name": "contact",
+  "caption": "Contact",
+  "columns": [
+    {
+      "id": "835540ca-e156-4aab-9136-40e215360b9b",
+      "name": "id",
+      "caption": "Id",
+      "type": 11,
+      "isPrimaryKey": true
+    },
+    {
+      "id": "ec787866-d762-4622-8e80-00009fabdbca",
+      "name": "name",
+      "caption": "Name",
+      "type": 16,
+      "size": 250,
+      "isNullable": false
+    },
+    {
+      "id": "447a404a-887c-4d65-a9ba-5df115b84e6a",
+      "name": "parent_contact_id",
+      "caption": "Parent contact",
+      "type": 11,
+      "isNullable": true,
+      "foreignTable": {
+        "id": "65a93638-295f-4e3a-81e2-4bb13f27edc7",
+        "name": "contact",
+        "foreignColumn": "id"
+      }
+    }
+  ]
+}

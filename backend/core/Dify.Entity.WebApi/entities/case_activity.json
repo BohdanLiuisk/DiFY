@@ -1,0 +1,50 @@
+﻿{
+  "id": "0fc58d9f-7261-46cc-93d5-4e6a5c66291a",
+  "name": "case_activity",
+  "caption": "Case activity",
+  "columns": [
+    {
+      "id": "a8b1ee7a-22f2-44be-ae7c-81227afc0fb3",
+      "name": "id",
+      "caption": "Id",
+      "type": 11,
+      "isPrimaryKey": true
+    },
+    {
+      "id": "eec8a0ff-a5d2-4416-91d8-ae551f51563a",
+      "name": "case_id",
+      "caption": "Case",
+      "type": 9,
+      "isNullable": false,
+      "foreignTable": {
+        "id": "7f6c0e75-6a81-4c39-a8c9-789b75be5f9f",
+        "name": "case",
+        "foreignColumn": "id"
+      }
+    },
+    {
+      "id": "d4e25692-f26a-4133-84d7-4d769159caa8",
+      "name": "account_id",
+      "caption": "Account",
+      "type": 11,
+      "isNullable": true,
+      "foreignTable": {
+        "id": "429cde5e-fb1c-406a-aafa-f4dc41835a38",
+        "name": "account",
+        "foreignColumn": "id"
+      }
+    },
+    {
+      "id": "c0b89de8-0d16-4aee-aaba-c6bf23be8c92",
+      "name": "contact_id",
+      "caption": "Contact",
+      "type": 11,
+      "isNullable": true,
+      "foreignTable": {
+        "id": "65a93638-295f-4e3a-81e2-4bb13f27edc7",
+        "name": "contact",
+        "foreignColumn": "id"
+      }
+    }
+  ]
+}
