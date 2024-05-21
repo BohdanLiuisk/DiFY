@@ -1,38 +1,24 @@
-﻿using Dify.Entity.Extensions;
-using Dify.Entity.Migrations.Models;
-using Dify.Entity.Models;
+﻿using Dify.Entity.Descriptor;
+using Dify.Entity.Extensions;
 using Microsoft.Extensions.Hosting;
 
 namespace Dify.Entity.Initialization;
 
-internal class DifyEntityHostedService : IHostedService
+internal class DifyEntityHostedService(DifyEntityOptions difyEntityOptions, 
+        EntityStructureManager entityStructureManager) : IHostedService
 {
-    private readonly DifyEntityOptions _difyEntityOptions;
-
-    private readonly EntityStructureManager _entityStructureManager;
-    
-    public DifyEntityHostedService(DifyEntityOptions difyEntityOptions, EntityStructureManager entityStructureManager)
-    {
-        _difyEntityOptions = difyEntityOptions;
-        _entityStructureManager = entityStructureManager;
-    }
-    
-    public async Task StartAsync(CancellationToken cancellationToken)
-    {
+    public async Task StartAsync(CancellationToken cancellationToken) {
         IList<TableDescriptor>? tableDescriptors = null;
-        if (_difyEntityOptions.LoadTablesFromOuterStore != null)
-        {
-            tableDescriptors = (await _difyEntityOptions.LoadTablesFromOuterStore()).ToList();
+        if (difyEntityOptions.LoadTablesFromOuterStore != null) {
+            tableDescriptors = (await difyEntityOptions.LoadTablesFromOuterStore()).ToList();
         }
-        var initConfig = new EntityStructureInitConfig
-        {
+        var initConfig = new EntityStructureInitConfig {
             OuterTables = tableDescriptors
         };
-        await _entityStructureManager.InitializeAsync(initConfig);
+        await entityStructureManager.InitializeAsync(initConfig);
     }
 
-    public Task StopAsync(CancellationToken cancellationToken)
-    {
+    public Task StopAsync(CancellationToken cancellationToken) {
         return Task.CompletedTask;
     }
 }

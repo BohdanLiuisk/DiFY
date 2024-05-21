@@ -4,7 +4,7 @@
     "Dify.Core.WebApi": {
       "commandName": "Project",
       "dotnetRunMessages": true,
-      "launchBrowser": true,
+      "launchBrowser": false,
       "launchUrl": "swagger",
       "applicationUrl": "http://localhost:5067",
       "environmentVariables": {

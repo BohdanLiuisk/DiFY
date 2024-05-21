@@ -1,32 +1,33 @@
 ﻿{
   "id": "65a93638-295f-4e3a-81e2-4bb13f27edc7",
-  "code": "contact",
+  "name": "contact",
   "caption": "Contact",
   "columns": [
     {
       "id": "835540ca-e156-4aab-9136-40e215360b9b",
-      "code": "id",
+      "name": "id",
       "caption": "Id",
-      "type": 2,
+      "type": 11,
       "isPrimaryKey": true
     },
     {
       "id": "ec787866-d762-4622-8e80-00009fabdbca",
-      "code": "name",
+      "name": "name",
       "caption": "Name",
-      "type": 8,
-      "nullable": false
+      "type": 16,
+      "size": 250,
+      "isNullable": false
     },
     {
-      "id": "9f9058b4-a0ff-43d4-830d-712531277292",
-      "code": "account_id",
-      "caption": "Account",
-      "type": 2,
-      "nullable": true,
+      "id": "447a404a-887c-4d65-a9ba-5df115b84e6a",
+      "name": "parent_contact_id",
+      "caption": "Parent contact",
+      "type": 11,
+      "isNullable": true,
       "foreignTable": {
-        "id": "429cde5e-fb1c-406a-aafa-f4dc41835a38",
-        "code": "account",
-        "primaryColumn": "id"
+        "id": "65a93638-295f-4e3a-81e2-4bb13f27edc7",
+        "name": "contact",
+        "foreignColumn": "id"
       }
     }
   ]

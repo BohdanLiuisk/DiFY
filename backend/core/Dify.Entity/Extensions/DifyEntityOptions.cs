@@ -1,4 +1,4 @@
-﻿using Dify.Entity.Migrations.Models;
+﻿using Dify.Entity.Descriptor;
 using Microsoft.EntityFrameworkCore;
 
 namespace Dify.Entity.Extensions;

@@ -7,8 +7,7 @@ namespace Dify.Entity.Extensions;
 
 public static class ApplicationBuilderExtensions
 {
-    public static void UseDifyEntity(this IHost app) 
-    {
+    public static void UseDifyEntity(this IHost app) {
         using var scope = app.Services.CreateScope();
         scope.ServiceProvider.GetRequiredService<DifyEntityContext>().Database.Migrate();
     }

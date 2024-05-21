@@ -1,23 +1,26 @@
 ﻿{
-  "id": "7f6c0e75-6a81-4c39-a8c9-789b75be5f9f",
-  "name": "case",
-  "caption": "Case",
+  "id": "0fc58d9f-7261-46cc-93d5-4e6a5c66291a",
+  "name": "case_activity",
+  "caption": "Case activity",
   "columns": [
     {
-      "id": "1661f7bc-e893-4732-b172-589b40fc088d",
+      "id": "a8b1ee7a-22f2-44be-ae7c-81227afc0fb3",
       "name": "id",
       "caption": "Id",
-      "type": 9,
+      "type": 11,
       "isPrimaryKey": true
     },
     {
-      "id": "60917402-0fb6-4977-883d-d197e80b3dde",
-      "name": "number",
-      "caption": "Number",
-      "type": 16,
-      "size": 50,
+      "id": "eec8a0ff-a5d2-4416-91d8-ae551f51563a",
+      "name": "case_id",
+      "caption": "Case",
+      "type": 9,
       "isNullable": false,
-      "isUnique": true
+      "foreignTable": {
+        "id": "7f6c0e75-6a81-4c39-a8c9-789b75be5f9f",
+        "name": "case",
+        "foreignColumn": "id"
+      }
     },
     {
       "id": "d4e25692-f26a-4133-84d7-4d769159caa8",

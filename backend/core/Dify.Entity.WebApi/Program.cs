@@ -1,6 +1,6 @@
 using System.Text.Json;
+using Dify.Entity.Descriptor;
 using Dify.Entity.Extensions;
-using Dify.Entity.Migrations.Models;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -27,7 +27,7 @@ builder.Services.AddDifyEntity(options =>
         foreach (var file in Directory.GetFiles(fullPath, "*.json"))
         {
             var jsonData = await File.ReadAllTextAsync(file);
-            var tableDescriptor = JsonSerializer.Deserialize<TableDescriptor>(jsonData);
+            var tableDescriptor = TableDescriptor.DeserializeFrom(jsonData);
             if (tableDescriptor != null)
             {
                 tables.Add(tableDescriptor);
