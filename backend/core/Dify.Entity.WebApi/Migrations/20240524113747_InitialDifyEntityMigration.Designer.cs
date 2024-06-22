@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Dify.Entity.WebApi.Migrations
 {
     [DbContext(typeof(DifyEntityContext))]
-    [Migration("20240508201038_InitialDifyEntityMigration")]
+    [Migration("20240524113747_InitialDifyEntityMigration")]
     partial class InitialDifyEntityMigration
     {
         /// <inheritdoc />
@@ -25,7 +25,7 @@ namespace Dify.Entity.WebApi.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("Dify.Entity.Models.EntityDescriptor", b =>
+            modelBuilder.Entity("Dify.Entity.Structure.EntityStructure", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -38,21 +38,31 @@ namespace Dify.Entity.WebApi.Migrations
                         .HasColumnType("character varying(100)")
                         .HasColumnName("caption");
 
-                    b.Property<string>("Code")
+                    b.Property<string>("ColumnsJson")
+                        .IsRequired()
+                        .HasColumnType("json")
+                        .HasColumnName("columns");
+
+                    b.Property<string>("ForeignKeysJson")
+                        .IsRequired()
+                        .HasColumnType("json")
+                        .HasColumnName("foreign_keys");
+
+                    b.Property<string>("IndexesJson")
+                        .IsRequired()
+                        .HasColumnType("json")
+                        .HasColumnName("indexes");
+
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)")
-                        .HasColumnName("code");
-
-                    b.Property<string>("ColumnsJson")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("columns_json");
+                        .HasColumnName("name");
 
                     b.HasKey("Id")
-                        .HasName("pk_entity_descriptor");
+                        .HasName("pk_entity_structure");
 
-                    b.ToTable("entity_descriptor", (string)null);
+                    b.ToTable("entity_structure", (string)null);
                 });
 #pragma warning restore 612, 618
         }

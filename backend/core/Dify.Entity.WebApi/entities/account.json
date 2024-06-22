@@ -25,6 +25,22 @@
       "type": 16,
       "size": 100,
       "isNullable": true
+    },
+    {
+      "id": "3a0267a2-4458-4026-834c-d03fa76fee78",
+      "name": "primary_contact",
+      "caption": "Primary contact",
+      "type": 11,
+      "isNullable": true,
+      "referenceEntityId": "65a93638-295f-4e3a-81e2-4bb13f27edc7"
+    },
+    {
+      "id": "3a7bf04f-e0cb-4e82-985c-c7487a8e4077",
+      "name": "first_case",
+      "caption": "First case (test)",
+      "type": 9,
+      "isNullable": false,
+      "referenceEntityId": "7f6c0e75-6a81-4c39-a8c9-789b75be5f9f"
     }
   ]
 }

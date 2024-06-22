@@ -12,17 +12,19 @@ namespace Dify.Entity.WebApi.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "entity_descriptor",
+                name: "entity_structure",
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
-                    code = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     caption = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    columns_json = table.Column<string>(type: "text", nullable: false)
+                    columns = table.Column<string>(type: "json", nullable: false),
+                    foreign_keys = table.Column<string>(type: "json", nullable: false),
+                    indexes = table.Column<string>(type: "json", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("pk_entity_descriptor", x => x.id);
+                    table.PrimaryKey("pk_entity_structure", x => x.id);
                 });
         }
 
@@ -30,7 +32,7 @@ namespace Dify.Entity.WebApi.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "entity_descriptor");
+                name: "entity_structure");
         }
     }
 }
