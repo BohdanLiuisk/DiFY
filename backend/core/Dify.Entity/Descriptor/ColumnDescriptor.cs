@@ -4,16 +4,14 @@ namespace Dify.Entity.Descriptor;
 
 public class ColumnDescriptor
 {
-    public TableDescriptor Table { get; set; }
-    
     [JsonPropertyName("id")]
     public Guid Id { get; set; }
 
     [JsonPropertyName("name")]
-    public string Name { get; set; }
+    public string Name { get; set; } = null!;
 
     [JsonPropertyName("caption")]
-    public string Caption { get; set; }
+    public string Caption { get; set; } = null!;
 
     [JsonPropertyName("type")]
     public int Type { get; set; }
@@ -29,7 +27,7 @@ public class ColumnDescriptor
 
     [JsonPropertyName("isNullable")]
     public bool? IsNullable { get; set; }
-
-    [JsonPropertyName("foreignTable")]
-    public ForeignTableDescriptor? ForeignTable { get; set; }
+    
+    [JsonPropertyName("referenceEntityId")]
+    public Guid? ReferenceEntityId { get; set; }
 }
