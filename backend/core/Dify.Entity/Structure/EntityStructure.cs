@@ -4,11 +4,11 @@ namespace Dify.Entity.Structure;
 
 public class EntityStructure
 {
-    private readonly IList<EntityColumnStructure> _columns = new List<EntityColumnStructure>();
+    private IList<EntityColumnStructure> _columns = new List<EntityColumnStructure>();
     
-    private readonly IList<EntityForeignKeyStructure> _foreignKeys = new List<EntityForeignKeyStructure>();
+    private IList<EntityForeignKeyStructure> _foreignKeys = new List<EntityForeignKeyStructure>();
 
-    private readonly IList<EntityIndexStructure> _indexes = new List<EntityIndexStructure>();
+    private IList<EntityIndexStructure> _indexes = new List<EntityIndexStructure>();
 
     internal EntityStructure(Guid id, string name, string caption) {
         Id = id;
@@ -22,13 +22,13 @@ public class EntityStructure
     
     public string Caption { get; }
     
-    public EntityColumnStructure PrimaryColumn => _columns.Single(c => c.IsPrimaryKey);
+    public EntityColumnStructure PrimaryColumn => _columns.First(c => c.IsPrimaryKey);
     
-    public string ColumnsJson { get; private set; } = string.Empty;
+    internal string ColumnsJson { get; private set; } = "[]";
     
-    public string ForeignKeysJson { get; private set; } = string.Empty;
+    internal string ForeignKeysJson { get; private set; } = "[]";
     
-    public string IndexesJson { get; private set; } = string.Empty;
+    internal string IndexesJson { get; private set; } = "[]";
     
     public IEnumerable<EntityColumnStructure> Columns => _columns;
     
@@ -49,5 +49,48 @@ public class EntityStructure
     public void AddIndex(EntityIndexStructure indexStructure) {
         _indexes.Add(indexStructure);
         IndexesJson = JsonSerializer.Serialize(_indexes);
+    }
+
+    internal void DeserializeProperties() {
+        DeserializeColumns();
+        DeserializeForeignKeys();
+        DeserializeIndexes();
+        LinkForeignKeysToColumns();
+    }
+
+    private void DeserializeColumns() {
+        var columns = JsonSerializer.Deserialize<IEnumerable<EntityColumnStructure>>(ColumnsJson);
+        if (columns == null) return;
+        _columns = columns.ToList();
+        foreach (var column in _columns) {
+            column.EntityStructure = this;
+        }
+    }
+
+    private void DeserializeForeignKeys() {
+        var foreignKeys = JsonSerializer.Deserialize<IEnumerable<EntityForeignKeyStructure>>(ForeignKeysJson);
+        if (foreignKeys == null) return;
+        _foreignKeys = foreignKeys.ToList();
+        foreach (var foreignKey in _foreignKeys) {
+            foreignKey.PrimaryEntity = this;
+            foreignKey.PrimaryColumn = _columns.First(c => c.DbName == foreignKey.PrimaryColumnName);
+        }
+    }
+
+    private void DeserializeIndexes() {
+        var indexes = JsonSerializer.Deserialize<IEnumerable<EntityIndexStructure>>(IndexesJson);
+        if (indexes == null) return;
+        _indexes = indexes.ToList();
+        foreach (var index in _indexes) {
+            index.EntityStructure = this;
+        }
+    }
+
+    private void LinkForeignKeysToColumns() {
+        foreach (var column in _columns) {
+            if (column is { IsForeignKey: true, ForeignKeyStructureId: not null }) {
+                column.ForeignKeyStructure = _foreignKeys.First(f => f.Id == column.ForeignKeyStructureId);
+            }
+        }
     }
 }

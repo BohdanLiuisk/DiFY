@@ -16,16 +16,18 @@ public class EntityStructureManager(
 {
     internal async Task InitializeAsync(EntityStructureInitConfig? initConfig) {
         logger.LogInformation("initialization started");
-        var existingStructures = await GetAllExistingStructures();
+        var existingStructures = await GetAllEntityStructures();
         if (initConfig is { OuterTables: not null }) {
             var newTables = initConfig.OuterTables.Where(outerTable => existingStructures
                 .All(table => table.Id != outerTable.Id)).ToList();
+            if (newTables.Count == 0) return;
             var createResults = (await CreateEntityStructures(newTables)).ToList();
             if (createResults.Any(c => !c.Success)) {
                 var invalidResultsJson = JsonSerializer.Serialize(createResults);
                 throw new AggregateException($"Couldn't build entity structure. " +
                                              $"See errors in json \n {invalidResultsJson}");
             }
+            await SaveNewStructures(createResults);
         }
     }
     
@@ -42,7 +44,7 @@ public class EntityStructureManager(
             var newEntityStructure = CreateEntityStructureFromDescriptor(tableDescriptor);
             newEntityStructures.Add(newEntityStructure);
         }
-        var existingStructures = await GetAllExistingStructures();
+        var existingStructures = await GetAllEntityStructures();
         var allStructures = newEntityStructures.Union(existingStructures).ToList();
         foreach (var newStructure in newEntityStructures) {
             InitEntityRelations(newStructure, allStructures);
@@ -67,6 +69,24 @@ public class EntityStructureManager(
             ResultStructure = structure
         });
     }
+    
+    public async Task<IList<EntityStructure>> GetAllEntityStructures() {
+        var entityStructures = await dbContext.EntityStructures.AsNoTracking().ToListAsync();
+        foreach (var entityStructure in entityStructures) {
+            await ResolveEntityStructureReferences(entityStructure, entityStructures);
+        }
+        return entityStructures;
+    }
+
+    public async Task<EntityStructure> FindEntityStructureById(Guid id) {
+        var entityStructures = await GetAllEntityStructures();
+        return entityStructures.First(es => es.Id == id);
+    }
+
+    public async Task<EntityStructure> FindEntityStructureByName(string name) {
+        var entityStructures = await GetAllEntityStructures();
+        return entityStructures.First(es => es.Name == name);
+    }
 
     private EntityStructure CreateEntityStructureFromDescriptor(TableDescriptor tableDescriptor) {
         var entityStructure = new EntityStructure(tableDescriptor.Id, tableDescriptor.Name, tableDescriptor.Caption);
@@ -75,7 +95,7 @@ public class EntityStructureManager(
             if (column.ReferenceEntityId != null) {
                 var foreignKey = new EntityForeignKeyStructure(entityStructure, columnStructure,
                     column.ReferenceEntityId.Value);
-                columnStructure.SetForeignKey(foreignKey);
+                columnStructure.DefineForeignKey(foreignKey);
             }
             entityStructure.AddColumn(columnStructure);
         }
@@ -104,7 +124,7 @@ public class EntityStructureManager(
             var referenceEntityId = foreignKeyColumn.ForeignKeyStructure.ReferenceEntityId;
             var referenceEntity = allStructures.FirstOrDefault(s => s.Id == referenceEntityId);
             if (referenceEntity != null) {
-                foreignKeyColumn.ForeignKeyStructure.SetReferenceEntity(referenceEntity);
+                foreignKeyColumn.ForeignKeyStructure.LinkReferenceEntity(referenceEntity);
                 entityStructure.AddForeignKey(foreignKeyColumn.ForeignKeyStructure);
             } else {
                 throw new InvalidOperationException($"Couldn't find reference entity {referenceEntityId}.");
@@ -112,7 +132,27 @@ public class EntityStructureManager(
         }
     }
 
-    private async Task<IList<EntityStructure>> GetAllExistingStructures() {
-        return await dbContext.EntityStructures.AsNoTracking().ToListAsync();
+    private async Task SaveNewStructures(IReadOnlyCollection<CreateEntityResult> createEntityResults) {
+        if(createEntityResults.Count == 0) return;
+        foreach (var createResult in createEntityResults) {
+            if (createResult.ResultStructure != null) {
+                await dbContext.EntityStructures.AddAsync(createResult.ResultStructure);
+            }
+        }
+        await dbContext.SaveChangesAsync();
+    }
+
+    private async Task ResolveEntityStructureReferences(EntityStructure entityStructure, 
+        IList<EntityStructure>? entityStructures = null) {
+        entityStructure.DeserializeProperties();
+        entityStructures ??= await dbContext.EntityStructures.AsNoTracking().ToListAsync();
+        foreach (var foreignKey in entityStructure.ForeignKeys) {
+            var referenceEntity = entityStructures.FirstOrDefault(s => s.Id == foreignKey.ReferenceEntityId);
+            if (referenceEntity == null) {
+                var message = $"Couldn't find reference entity with id {foreignKey.ReferenceEntityId}";
+                throw new InvalidOperationException(message);
+            }
+            foreignKey.ReferenceEntityStructure = referenceEntity;
+        }
     }
 }
