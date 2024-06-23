@@ -26,6 +26,25 @@ public class EntityColumnStructure
         IsPrimaryKey = isPrimaryKey;
     }
     
+    [JsonConstructor]
+    internal EntityColumnStructure(Guid id, string caption, string name, string dbName, Guid entityId, string tableName,
+        DbType type, bool isNullable, bool isPrimaryKey, bool isUnique, int? size, bool isForeignKey, 
+        Guid? foreignKeyStructureId) {
+        Id = id;
+        Caption = caption;
+        Name = name;
+        DbName = dbName;
+        EntityId = entityId;
+        TableName = tableName;
+        Type = type;
+        IsNullable = isNullable;
+        IsPrimaryKey = isPrimaryKey;
+        IsUnique = isUnique;
+        Size = size;
+        IsForeignKey = isForeignKey;
+        ForeignKeyStructureId = foreignKeyStructureId;
+    }
+    
     [JsonPropertyName("id")]
     public Guid Id { get; }
     
@@ -59,17 +78,20 @@ public class EntityColumnStructure
     [JsonPropertyName("size")]
     public int? Size { get; }
     
-    [JsonIgnore]
-    public EntityStructure EntityStructure { get; set; }
-    
     [JsonPropertyName("isForeignKey")]
     public bool IsForeignKey { get; private set; }
     
-    [JsonPropertyName("foreignKeyStructure")]
-    public EntityForeignKeyStructure? ForeignKeyStructure { get; private set; }
+    [JsonPropertyName("foreignKeyStructureId")]
+    public Guid? ForeignKeyStructureId { get; private set; }
+    
+    [JsonIgnore]
+    public EntityStructure EntityStructure { get; internal set; }
+    
+    public EntityForeignKeyStructure? ForeignKeyStructure { get; internal set; }
 
-    internal void SetForeignKey(EntityForeignKeyStructure foreignKey) {
+    internal void DefineForeignKey(EntityForeignKeyStructure foreignKey) {
         IsForeignKey = true;
+        ForeignKeyStructureId = foreignKey.Id;
         ForeignKeyStructure = foreignKey;
     }
     

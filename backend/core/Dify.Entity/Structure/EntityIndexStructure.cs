@@ -4,10 +4,16 @@ namespace Dify.Entity.Structure;
 
 public class EntityIndexStructure
 {
-    private EntityIndexStructure() { }
+    [JsonConstructor]
+    internal EntityIndexStructure(string entityName, string name, bool isUnique, IEnumerable<string> columns) {
+        EntityName = entityName;
+        Name = name;
+        IsUnique = isUnique;
+        Columns = columns;
+    }
     
     [JsonIgnore]
-    public EntityStructure EntityStructure { get; private set; }
+    public EntityStructure EntityStructure { get; internal set; }
     
     [JsonPropertyName("entityName")]
     public string EntityName { get; private set; }
@@ -22,13 +28,12 @@ public class EntityIndexStructure
     public IEnumerable<string> Columns { get; private set; }
 
     internal static EntityIndexStructure CreateUniqueIndex(EntityStructure entityStructure, string columnName) {
-        return new EntityIndexStructure {
-            EntityStructure = entityStructure,
-            EntityName = entityStructure.Name,
-            Name = GetUniqueIndexName(entityStructure.Name, columnName),
-            IsUnique = true,
-            Columns = new [] { columnName }
+        var indexName = GetUniqueIndexName(entityStructure.Name, columnName);
+        var columns = new[] { columnName };
+        var index = new EntityIndexStructure(entityStructure.Name, indexName, isUnique: true, columns) {
+            EntityStructure = entityStructure
         };
+        return index;
     }
     
     private static string GetUniqueIndexName(string tableName, string columnName) {

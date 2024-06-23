@@ -1,0 +1,30 @@
+﻿{
+  "id": "5940819d-baf6-49c2-bfb8-7c47f4c7979a",
+  "name": "contact_address",
+  "caption": "Contact address",
+  "columns": [
+    {
+      "id": "40ea2173-0c0f-43a9-a0bd-3d4afb1ea5a7",
+      "name": "id",
+      "caption": "Id",
+      "type": 11,
+      "isPrimaryKey": true
+    },
+    {
+      "id": "a479a9e3-95e8-41a2-97be-266875adaf6c",
+      "name": "contact",
+      "caption": "Contact",
+      "type": 11,
+      "isNullable": false,
+      "referenceEntityId": "65a93638-295f-4e3a-81e2-4bb13f27edc7"
+    },
+    {
+      "id": "268b8efd-69ae-46e1-a929-cf6e16901090",
+      "name": "address",
+      "caption": "Address",
+      "type": 16,
+      "size": 50,
+      "isNullable": false
+    }
+  ]
+}
