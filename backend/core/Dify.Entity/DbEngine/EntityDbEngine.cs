@@ -1,5 +1,6 @@
 ﻿using System.Data;
 using Dify.Entity.Abstract;
+using Dify.Entity.ResultModels;
 using Dify.Entity.Structure;
 using FluentMigrator;
 using FluentMigrator.Expressions;
@@ -10,39 +11,81 @@ namespace Dify.Entity.DbEngine;
 
 public class EntityDbEngine(ILogger<EntityDbEngine> logger, IMigrationProcessor migrationProcessor) : IEntityDbEngine 
 {
-    public void CreateTablesFromEntityStructures(IEnumerable<EntityStructure> entityStructures) {
-        var createTableExpressions = new List<CreateTableExpression>();
-        var createFkExpressions = new List<CreateForeignKeyExpression>();
-        var createIndexesExpressions = new List<CreateIndexExpression>();
-        foreach (var entityStructure in entityStructures) {
-            var expression = GetCreateTableExpression(entityStructure);
-            createTableExpressions.Add(expression);
-            foreach (var foreignKey in entityStructure.ForeignKeys) {
-                var createFkExpression = GetCreateForeignKeyExpression(foreignKey);
-                createFkExpressions.Add(createFkExpression);
-            }
-            foreach (var indexStructure in entityStructure.Indexes) {
-                var createIndexExpression = GetCreateUniqueIndexExpression(indexStructure);
-                createIndexesExpressions.Add(createIndexExpression);
-            }
-        }
+    public MigrationResult MigrateNewEntityStructures(IReadOnlyList<EntityStructure> entityStructures) {
+        var operations = entityStructures.Select(GetEntityStructureOperations).ToList();
         migrationProcessor.BeginTransaction();
         try {
-            foreach (var createTableExpression in createTableExpressions) {
-                migrationProcessor.Process(createTableExpression);
+            foreach (var entityStructure in entityStructures) {
+                migrationProcessor.Process(new DeleteTableExpression {
+                    TableName = entityStructure.Name,
+                    IfExists = true
+                });
             }
-            foreach (var foreignKeyExpression in createFkExpressions) {
+            foreach (var dbOperations in operations) {
+                migrationProcessor.Process(dbOperations.CreateTableExpression);
+            }
+            foreach (var dbOperations in operations) {
+                foreach (var foreignKeyExpression in dbOperations.CreateForeignKeyExpressions) {
+                    migrationProcessor.Process(foreignKeyExpression);
+                }
+                foreach (var createIndexExpression in dbOperations.CreateIndexExpressions) {
+                    migrationProcessor.Process(createIndexExpression);
+                }
+            }
+            migrationProcessor.CommitTransaction();
+        } catch (Exception e) {
+            migrationProcessor.RollbackTransaction();
+            logger.LogError("New entities creation failed. {0}", e.Message);
+            return new MigrationResult(isSuccess: false, e);
+        }
+        return new MigrationResult(isSuccess: true);
+    }
+
+    public MigrationResult MigrateExistingEntityStructure(EntityStructure entityStructure) {
+        var operations = GetEntityStructureOperations(entityStructure);
+        migrationProcessor.BeginTransaction();
+        try {
+            migrationProcessor.Process(operations.DeleteColumnsExpression);
+            foreach (var foreignKeyExpression in operations.CreateForeignKeyExpressions) {
                 migrationProcessor.Process(foreignKeyExpression);
             }
-            foreach (var createIndexExpression in createIndexesExpressions) {
+            foreach (var createIndexExpression in operations.CreateIndexExpressions) {
                 migrationProcessor.Process(createIndexExpression);
             }
             migrationProcessor.CommitTransaction();
         } catch (Exception e) {
             migrationProcessor.RollbackTransaction();
-            logger.LogError("New entities creation failed. Message: {0}", e.Message);
-            throw;
+            logger.LogError("Entity structure migration failed. {0}", e.Message);
+            return new MigrationResult(isSuccess: false, e);
         }
+        return new MigrationResult(isSuccess: true);
+    }
+
+    private EntityStructureOperations GetEntityStructureOperations(EntityStructure entityStructure) {
+        var operations = new EntityStructureOperations();
+        var createTableExpression = GetCreateTableExpression(entityStructure);
+        operations.CreateTableExpression = createTableExpression;
+        var newForeignKeys = entityStructure.ForeignKeys.Where(f => f.State == EntityStructureElementState.New);
+        foreach (var foreignKey in newForeignKeys) {
+            var createFkExpression = GetCreateForeignKeyExpression(foreignKey);
+            operations.CreateForeignKeyExpressions.Add(createFkExpression);
+        }
+        var newIndexes = entityStructure.Indexes.Where(i => i.State == EntityStructureElementState.New);
+        foreach (var indexStructure in newIndexes) {
+            var createIndexExpression = GetCreateUniqueIndexExpression(indexStructure);
+            operations.CreateIndexExpressions.Add(createIndexExpression);
+        }
+        var deletedColumns = entityStructure.Columns
+            .Where(c => c.State == EntityStructureElementState.Deleted)
+            .Select(c => c.DbName)
+            .ToList();
+        if (deletedColumns.Count != 0) {
+            operations.DeleteColumnsExpression = new DeleteColumnExpression {
+                TableName = entityStructure.Name,
+                ColumnNames = deletedColumns
+            };
+        }
+        return operations;
     }
 
     private CreateTableExpression GetCreateTableExpression(EntityStructure entityStructure) {
@@ -51,7 +94,8 @@ public class EntityDbEngine(ILogger<EntityDbEngine> logger, IMigrationProcessor 
             TableName = tableName
         };
         var columns = new List<ColumnDefinition>();
-        foreach (var column in entityStructure.Columns) {
+        var newColumns = entityStructure.Columns.Where(c => c.State == EntityStructureElementState.New);
+        foreach (var column in newColumns) {
             var columnDefinition = GenerateColumnDefinition(column);
             columns.Add(columnDefinition);
         }

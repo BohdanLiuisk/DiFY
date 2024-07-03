@@ -1,4 +1,5 @@
-﻿using Dify.Entity.Structure;
+﻿using Dify.Entity.ResultModels;
+using Dify.Entity.Structure;
 
 namespace Dify.Entity.Validation;
 
@@ -10,7 +11,7 @@ public class EntityValidationResult
     
     public bool Success { get; private set; } = true;
     
-    public IEnumerable<EntityStructureError> Errors => _errors;
+    public IReadOnlyList<EntityStructureError> Errors => _errors;
     
     public void AddTableError(string tableName, string error) {
         Success = false;
@@ -35,8 +36,16 @@ public class EntityValidationResult
         _errors.AddRange(errors);
     }
 
-    public CreateEntityResult ToCreateEntityResult() {
-        var result = new CreateEntityResult {
+    public CreateEntityStructureResult ToCreateEntityResult() {
+        var result = new CreateEntityStructureResult {
+            EntityName = EntityName
+        };
+        result.AddErrors(_errors);
+        return result;
+    }
+    
+    public ModifyEntityStructureResult ToModifyEntityResult() {
+        var result = new ModifyEntityStructureResult {
             EntityName = EntityName
         };
         result.AddErrors(_errors);

@@ -24,6 +24,7 @@ public class EntityColumnStructure
         IsUnique = isUnique;
         Size = columnDescriptor.Size;
         IsPrimaryKey = isPrimaryKey;
+        State = EntityStructureElementState.New;
     }
     
     [JsonConstructor]
@@ -83,11 +84,15 @@ public class EntityColumnStructure
     
     [JsonPropertyName("foreignKeyStructureId")]
     public Guid? ForeignKeyStructureId { get; private set; }
+
+    [JsonIgnore] 
+    public EntityStructure EntityStructure { get; internal set; } = null!;
     
     [JsonIgnore]
-    public EntityStructure EntityStructure { get; internal set; }
-    
     public EntityForeignKeyStructure? ForeignKeyStructure { get; internal set; }
+    
+    [JsonIgnore]
+    public EntityStructureElementState State { get; internal set; }
 
     internal void DefineForeignKey(EntityForeignKeyStructure foreignKey) {
         IsForeignKey = true;
