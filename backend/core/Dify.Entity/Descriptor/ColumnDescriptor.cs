@@ -18,6 +18,9 @@ public class ColumnDescriptor
     
     [JsonPropertyName("size")]
     public int? Size { get; set; }
+    
+    [JsonPropertyName("precision")]
+    public int? Precision { get; set; }
 
     [JsonPropertyName("isPrimaryKey")]
     public bool? IsPrimaryKey { get; set; }

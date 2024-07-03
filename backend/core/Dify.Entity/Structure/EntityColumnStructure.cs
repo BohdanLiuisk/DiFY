@@ -6,6 +6,8 @@ namespace Dify.Entity.Structure;
 
 public class EntityColumnStructure
 {
+    private const int DecimalMaxSize = 19;
+    
     internal EntityColumnStructure(EntityStructure entityStructure, ColumnDescriptor columnDescriptor) {
         var columnType = (DbType)columnDescriptor.Type;
         var dbName = GetColumnDbName(columnDescriptor);
@@ -24,12 +26,16 @@ public class EntityColumnStructure
         IsUnique = isUnique;
         Size = columnDescriptor.Size;
         IsPrimaryKey = isPrimaryKey;
+        if (columnDescriptor.Precision.HasValue && columnType == DbType.Decimal) {
+            Size = DecimalMaxSize;
+            Precision = columnDescriptor.Precision;
+        }
         State = EntityStructureElementState.New;
     }
     
     [JsonConstructor]
     internal EntityColumnStructure(Guid id, string caption, string name, string dbName, Guid entityId, string tableName,
-        DbType type, bool isNullable, bool isPrimaryKey, bool isUnique, int? size, bool isForeignKey, 
+        DbType type, bool isNullable, bool isPrimaryKey, bool isUnique, int? size, int? precision, bool isForeignKey, 
         Guid? foreignKeyStructureId) {
         Id = id;
         Caption = caption;
@@ -42,6 +48,7 @@ public class EntityColumnStructure
         IsPrimaryKey = isPrimaryKey;
         IsUnique = isUnique;
         Size = size;
+        Precision = precision;
         IsForeignKey = isForeignKey;
         ForeignKeyStructureId = foreignKeyStructureId;
     }
@@ -78,6 +85,9 @@ public class EntityColumnStructure
     
     [JsonPropertyName("size")]
     public int? Size { get; }
+    
+    [JsonPropertyName("precision")]
+    public int? Precision { get; }
     
     [JsonPropertyName("isForeignKey")]
     public bool IsForeignKey { get; private set; }
