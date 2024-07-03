@@ -13,6 +13,7 @@ public class EntityForeignKeyStructure
         ReferenceEntityId = referenceEntityId;
         PrimaryColumn = columnStructure;
         PrimaryEntity = entityStructure;
+        State = EntityStructureElementState.New;
     }
     
     [JsonConstructor]
@@ -53,13 +54,16 @@ public class EntityForeignKeyStructure
     public string ForeignKeyName { get; private set; } = null!;
     
     [JsonIgnore]
-    public EntityColumnStructure PrimaryColumn { get; internal set; }
+    public EntityColumnStructure PrimaryColumn { get; internal set; } = null!;
 
     [JsonIgnore]
-    public EntityStructure PrimaryEntity { get; internal set; }
+    public EntityStructure PrimaryEntity { get; internal set; } = null!;
     
     [JsonIgnore]
     public EntityStructure ReferenceEntityStructure { get; internal set; } = null!;
+    
+    [JsonIgnore]
+    public EntityStructureElementState State { get; internal set; }
     
     internal void LinkReferenceEntity(EntityStructure referenceEntity) {
         ReferenceEntityStructure = referenceEntity;

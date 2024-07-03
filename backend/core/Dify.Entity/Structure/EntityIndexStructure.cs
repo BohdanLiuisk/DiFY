@@ -11,9 +11,9 @@ public class EntityIndexStructure
         IsUnique = isUnique;
         Columns = columns;
     }
-    
-    [JsonIgnore]
-    public EntityStructure EntityStructure { get; internal set; }
+
+    [JsonIgnore] 
+    public EntityStructure EntityStructure { get; internal set; } = null!;
     
     [JsonPropertyName("entityName")]
     public string EntityName { get; private set; }
@@ -26,12 +26,16 @@ public class EntityIndexStructure
     
     [JsonPropertyName("columns")]
     public IEnumerable<string> Columns { get; private set; }
+    
+    [JsonIgnore]
+    public EntityStructureElementState State { get; internal set; }
 
     internal static EntityIndexStructure CreateUniqueIndex(EntityStructure entityStructure, string columnName) {
         var indexName = GetUniqueIndexName(entityStructure.Name, columnName);
         var columns = new[] { columnName };
         var index = new EntityIndexStructure(entityStructure.Name, indexName, isUnique: true, columns) {
-            EntityStructure = entityStructure
+            EntityStructure = entityStructure,
+            State = EntityStructureElementState.New
         };
         return index;
     }

@@ -3,7 +3,7 @@ using Dify.Entity.Structure;
 
 namespace Dify.Entity.Validation;
 
-public class EntityStructureValidator
+public static class EntityStructureValidator
 {
     public static EntityValidationResult ValidateTableDescriptor(TableDescriptor tableDescriptor) {
         var validationResult = new EntityValidationResult {
@@ -28,11 +28,29 @@ public class EntityStructureValidator
         return validationResult;
     }
 
-    public static EntityValidationResult ValidateEntityStructure(EntityStructure entityStructure,
+    public static EntityValidationResult ValidateEntityStructure(EntityStructure entityStructure, 
         IList<EntityStructure> allStructures) {
-        var invalidStructure = new EntityValidationResult {
+        var validationResult = new EntityValidationResult {
             EntityName = entityStructure.Name
         };
+        ValidateForeignKeys(entityStructure, allStructures, validationResult);
+        ValidateDeletedColumns(entityStructure, validationResult);
+        return validationResult;
+    }
+
+    private static void ValidateDeletedColumns(EntityStructure entityStructure, 
+        EntityValidationResult validationResult) {
+        var deletedColumns = entityStructure.Columns
+            .Where(c => c.State == EntityStructureElementState.Deleted)
+            .ToList();
+        var deletedPrimaryKey = deletedColumns.FirstOrDefault(c => c.IsPrimaryKey);
+        if (deletedPrimaryKey != null) {
+            validationResult.AddColumnError(deletedPrimaryKey.Name, "Primary key column can't be deleted");
+        }
+    }
+
+    private static void ValidateForeignKeys(EntityStructure entityStructure, IList<EntityStructure> allStructures, 
+        EntityValidationResult validationResult) {
         var foreignKeyColumns = entityStructure.Columns.Where(
             c => c is { IsForeignKey: true, ForeignKeyStructure: not null });
         foreach (var foreignKeyColumn in foreignKeyColumns) {
@@ -41,17 +59,16 @@ public class EntityStructureValidator
                 s => s.Id == foreignKeyStructure!.ReferenceEntityId);
             if (referenceEntity == null) {
                 var error = $"Reference entity {foreignKeyStructure!.ReferenceEntityName} not found.";
-                invalidStructure.AddColumnError(foreignKeyColumn.Name, error);
+                validationResult.AddColumnError(foreignKeyColumn.Name, error);
             } else {
                 var refEntityPrimaryColumn = referenceEntity.Columns.FirstOrDefault(c => c.IsPrimaryKey);
                 if (foreignKeyColumn.Type != refEntityPrimaryColumn!.Type) {
                     var error = $"Column type does not match reference entity primary column type " +
                                 $"{refEntityPrimaryColumn.Type.ToString()}";
-                    invalidStructure.AddColumnError(foreignKeyColumn.Name, error);
+                    validationResult.AddColumnError(foreignKeyColumn.Name, error);
                 }
             }
         }
-        return invalidStructure;
     }
 
     private static IEnumerable<EntityStructureError> GetInvalidDescriptorColumns(TableDescriptor tableDescriptor) {

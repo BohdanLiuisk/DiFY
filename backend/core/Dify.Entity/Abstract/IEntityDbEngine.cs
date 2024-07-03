@@ -1,8 +1,11 @@
-﻿using Dify.Entity.Structure;
+﻿using Dify.Entity.ResultModels;
+using Dify.Entity.Structure;
 
 namespace Dify.Entity.Abstract;
 
 public interface IEntityDbEngine
 {
-    void CreateTablesFromEntityStructures(IEnumerable<EntityStructure> entityStructures);
+    MigrationResult MigrateNewEntityStructures(IReadOnlyList<EntityStructure> entityStructures);
+
+    MigrationResult MigrateExistingEntityStructure(EntityStructure entityStructure);
 }
