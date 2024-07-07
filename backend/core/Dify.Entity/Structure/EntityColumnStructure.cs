@@ -1,6 +1,8 @@
 ﻿using System.Data;
 using System.Text.Json.Serialization;
 using Dify.Entity.Descriptor;
+using Dify.Entity.ResultModels;
+using Dify.Entity.Utils;
 
 namespace Dify.Entity.Structure;
 
@@ -8,10 +10,11 @@ public class EntityColumnStructure
 {
     private const int DecimalMaxSize = 19;
     
+    private const int DecimalPrecision = 5;
+    
     internal EntityColumnStructure(EntityStructure entityStructure, ColumnDescriptor columnDescriptor) {
         var columnType = (DbType)columnDescriptor.Type;
         var dbName = GetColumnDbName(columnDescriptor);
-        var isNullable = columnDescriptor.IsNullable ?? false;
         var isUnique = columnDescriptor.IsUnique ?? false;
         var isPrimaryKey = columnDescriptor.IsPrimaryKey ?? false;
         Id = columnDescriptor.Id;
@@ -22,14 +25,11 @@ public class EntityColumnStructure
         Type = columnType;
         TableName = entityStructure.Name;
         DbName = dbName;
-        IsNullable = isNullable;
         IsUnique = isUnique;
         Size = columnDescriptor.Size;
+        Precision = columnDescriptor.Precision;
         IsPrimaryKey = isPrimaryKey;
-        if (columnDescriptor.Precision.HasValue && columnType == DbType.Decimal) {
-            Size = DecimalMaxSize;
-            Precision = columnDescriptor.Precision;
-        }
+        SetIsNullable(columnDescriptor.IsNullable);
         State = EntityStructureElementState.New;
     }
     
@@ -57,13 +57,13 @@ public class EntityColumnStructure
     public Guid Id { get; }
     
     [JsonPropertyName("caption")]
-    public string Caption { get; }
+    public string Caption { get; private set; }
     
     [JsonPropertyName("name")]
-    public string Name { get; }
+    public string Name { get; private set; }
     
     [JsonPropertyName("dbName")]
-    public string DbName { get; }
+    public string DbName { get; private set; }
     
     [JsonPropertyName("entityId")]
     public Guid EntityId { get; }
@@ -72,10 +72,10 @@ public class EntityColumnStructure
     public string TableName { get; }
 
     [JsonPropertyName("type")]
-    public DbType Type { get; }
+    public DbType Type { get; private set; }
     
     [JsonPropertyName("isNullable")]
-    public bool IsNullable { get; }
+    public bool IsNullable { get; private set; }
     
     [JsonPropertyName("isPrimaryKey")]
     public bool IsPrimaryKey { get; }
@@ -84,10 +84,10 @@ public class EntityColumnStructure
     public bool IsUnique { get; }
     
     [JsonPropertyName("size")]
-    public int? Size { get; }
+    public int? Size { get; private set; }
     
     [JsonPropertyName("precision")]
-    public int? Precision { get; }
+    public int? Precision { get; private set; }
     
     [JsonPropertyName("isForeignKey")]
     public bool IsForeignKey { get; private set; }
@@ -108,6 +108,73 @@ public class EntityColumnStructure
         IsForeignKey = true;
         ForeignKeyStructureId = foreignKey.Id;
         ForeignKeyStructure = foreignKey;
+    }
+    
+    internal AlterColumnResult AlterColumn(ColumnDescriptor columnDescriptor) {
+        var validationResult = ValidateColumnChange(columnDescriptor);
+        if (!validationResult.IsSuccess) {
+            return validationResult;
+        }
+        ApplyChanges(columnDescriptor);
+        var isChanged = State == EntityStructureElementState.Updated;
+        return new AlterColumnResult(this, isChanged);
+    }
+    
+    private void ApplyChanges(ColumnDescriptor columnDescriptor) {
+        if (columnDescriptor.Caption != Caption) {
+            Caption = columnDescriptor.Caption;
+            State = EntityStructureElementState.Updated;
+        }
+        if (columnDescriptor.Type != (int)Type) {
+            Type = (DbType)columnDescriptor.Type;
+            State = EntityStructureElementState.Updated;
+        }
+        if (!IsNullable && columnDescriptor.IsNullable.HasValue && columnDescriptor.IsNullable.Value && !IsPrimaryKey) {
+            IsNullable = true;
+            State = EntityStructureElementState.Updated;
+        }
+        if (columnDescriptor.Size != Size) {
+            Size = columnDescriptor.Size;
+            State = EntityStructureElementState.Updated;
+        }
+        if (columnDescriptor.Precision != Precision) {
+            Precision = columnDescriptor.Precision;
+            State = EntityStructureElementState.Updated;
+        }
+    }
+    
+    private AlterColumnResult ValidateColumnChange(ColumnDescriptor columnDescriptor) {
+        var alterResult = new AlterColumnResult(this);
+        var newType = (DbType)columnDescriptor.Type;
+        if (columnDescriptor.Name != Name) {
+            alterResult.AddError("Column name cannot be changed");
+        }
+        if (columnDescriptor.IsNullable != null && !columnDescriptor.IsNullable.Value && IsNullable) {
+            alterResult.AddError("Nullable column cannot be not nullable (for now)");
+        }
+        if (IsPrimaryKey && columnDescriptor.IsNullable.HasValue && columnDescriptor.IsNullable.Value) {
+            alterResult.AddError("Primary key cannot be nullable");
+        }
+        if (IsForeignKey && ForeignKeyStructure != null && columnDescriptor.ReferenceEntityId.HasValue &&
+            columnDescriptor.ReferenceEntityId.Value != ForeignKeyStructure.ReferenceEntityId) {
+            alterResult.AddError("Foreign entity id cannot be changed");
+        }
+        if (columnDescriptor.Precision != null && columnDescriptor.Precision != Precision && 
+            !DbTypeUtils.GetPrecisionPropertyApplicable(newType)) {
+            alterResult.AddError("Precision cannot be changed or not applicable for this type");
+        }
+        if (columnDescriptor.Size != null && columnDescriptor.Size != Size && 
+            !DbTypeUtils.GetSizePropertyApplicable(newType)) {
+            alterResult.AddError("Size cannot be changed or not applicable for this type");
+        }
+        if (newType != Type && !DbTypeUtils.GetTypeCanBeChanged(newType, Type)) {
+            alterResult.AddError($"Current type {Type.ToString()} cannot be changed to {newType.ToString()}");
+        }
+        return alterResult;
+    }
+
+    private void SetIsNullable(bool? isNullable) {
+        IsNullable = isNullable ?? true;
     }
     
     private static string GetColumnDbName(ColumnDescriptor columnDescriptor) {

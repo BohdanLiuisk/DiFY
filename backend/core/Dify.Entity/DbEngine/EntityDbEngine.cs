@@ -48,6 +48,9 @@ public class EntityDbEngine(ILogger<EntityDbEngine> logger, IMigrationProcessor 
             if (operations.DeleteColumnsExpression != null) {
                 migrationProcessor.Process(operations.DeleteColumnsExpression);
             }
+            foreach (var alterColumnExpression in operations.AlterColumnExpressions) {
+                migrationProcessor.Process(alterColumnExpression);
+            }
             foreach (var createColumnExpression in operations.CreateColumnExpressions) {
                 migrationProcessor.Process(createColumnExpression);
             }
@@ -74,6 +77,11 @@ public class EntityDbEngine(ILogger<EntityDbEngine> logger, IMigrationProcessor 
         foreach (var newColumn in newColumns) {
             var createColumnExpression = GetCreateColumnExpression(newColumn);
             operations.CreateColumnExpressions.Add(createColumnExpression);
+        }
+        var updatedColumns = entityStructure.Columns.Where(c => c.State == EntityStructureElementState.Updated);
+        foreach (var updatedColumn in updatedColumns) {
+            var alterColumnExpression = GetAlterColumnExpression(updatedColumn);
+            operations.AlterColumnExpressions.Add(alterColumnExpression);
         }
         var newForeignKeys = entityStructure.ForeignKeys.Where(f => f.State == EntityStructureElementState.New);
         foreach (var foreignKey in newForeignKeys) {
@@ -138,7 +146,16 @@ public class EntityDbEngine(ILogger<EntityDbEngine> logger, IMigrationProcessor 
         }
         return columnDefinition;
     }
-
+    
+    private AlterColumnExpression GetAlterColumnExpression(EntityColumnStructure columnStructure) {
+        var columnDefinition = GenerateColumnDefinition(columnStructure);
+        columnDefinition.ModificationType = ColumnModificationType.Alter;
+        return new AlterColumnExpression {
+            Column = columnDefinition,
+            TableName = columnStructure.EntityStructure.Name
+        };
+    }
+    
     private CreateColumnExpression GetCreateColumnExpression(EntityColumnStructure columnStructure) {
         var columnDefinition = GenerateColumnDefinition(columnStructure);
         return new CreateColumnExpression {

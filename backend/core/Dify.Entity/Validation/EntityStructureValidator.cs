@@ -1,4 +1,5 @@
 ﻿using Dify.Entity.Descriptor;
+using Dify.Entity.ResultModels;
 using Dify.Entity.Structure;
 
 namespace Dify.Entity.Validation;
@@ -13,9 +14,14 @@ public static class EntityStructureValidator
         if (columnErrors.Count != 0) {
             validationResult.AddErrors(columnErrors);
         }
-        var duplicatedColumns = GetDuplicatedColumnNames(tableDescriptor.Columns).ToList();
-        if (duplicatedColumns.Count != 0) {
-            var error = $"Found duplicated columns: {string.Join(", ", duplicatedColumns)}";
+        var duplicatedIds = GetDuplicatedColumnIds(tableDescriptor.Columns).ToList();
+        if (duplicatedIds.Count != 0) {
+            var error = $"Found duplicated column ids: {string.Join(", ", duplicatedIds)}";
+            validationResult.AddTableError(tableDescriptor.Name, error);
+        }
+        var duplicatedNames = GetDuplicatedColumnNames(tableDescriptor.Columns).ToList();
+        if (duplicatedNames.Count != 0) {
+            var error = $"Found duplicated column names: {string.Join(", ", duplicatedNames)}";
             validationResult.AddTableError(tableDescriptor.Name, error);
         }
         var primaryKeyColumnsCount = tableDescriptor.Columns.Count(c => c.IsPrimaryKey == true);
@@ -26,6 +32,13 @@ public static class EntityStructureValidator
             validationResult.AddTableError(tableDescriptor.Name, error);
         }
         return validationResult;
+    }
+    
+    public static IReadOnlyList<EntityValidationResult> ValidateTableDescriptors(
+        IEnumerable<TableDescriptor> tableDescriptors) {
+        return tableDescriptors.Select(ValidateTableDescriptor)
+            .Where(v => !v.Success)
+            .ToList();
     }
 
     public static EntityValidationResult ValidateEntityStructure(EntityStructure entityStructure, 
@@ -84,6 +97,12 @@ public static class EntityStructureValidator
             }));
         }
         return columnErrors;
+    }
+    
+    private static IEnumerable<Guid> GetDuplicatedColumnIds(IEnumerable<ColumnDescriptor> columns) {
+        return columns.GroupBy(column => column.Id)
+            .Where(group => group.Count() > 1)
+            .Select(group => group.Key);
     }
 
     private static IEnumerable<string> GetDuplicatedColumnNames(IEnumerable<ColumnDescriptor> columns) {

@@ -5,10 +5,9 @@ namespace Dify.Entity.ResultModels;
 
 public class ModifyEntityStructureResult() : EntityStructureActionResult(EntityStructureAction.Modify)
 {
-    public ModifyEntityStructureResult(EntityStructure entityStructure, bool isChanged = true) : this() {
+    public ModifyEntityStructureResult(EntityStructure entityStructure) : this() {
         ResultStructure = entityStructure;
         EntityName = entityStructure.Name;
-        IsChanged = isChanged;
     }
     
     [JsonPropertyName("changed")]

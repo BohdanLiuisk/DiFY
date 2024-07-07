@@ -1,5 +1,6 @@
 ﻿using System.Data;
 using Dify.Entity.Descriptor;
+using Dify.Entity.Utils;
 using FluentValidation;
 
 namespace Dify.Entity.Validation;
@@ -15,13 +16,25 @@ public class ColumnDescriptorValidator : AbstractValidator<ColumnDescriptor>
         RuleFor(c => c.Type)
             .Must(columnType => Enum.IsDefined(typeof(DbType), columnType))
             .WithMessage(c => $"Provided [type] { ((DbType)c.Type).ToString() } is not supported.");
+        RuleFor(c => c.IsNullable)
+            .Must((column, isNullable) => 
+                !((column.IsPrimaryKey ?? false) && (isNullable ?? false)))
+            .WithMessage("Primary key cannot be nullable.");
         RuleFor(c => c.Size)
-            .Must((column, size) => !GetSizePropertyApplicable((DbType)column.Type) || size.HasValue)
+            .Must((column, size) => !DbTypeUtils.GetSizePropertyApplicable((DbType)column.Type) || size.HasValue)
             .WithMessage(c => $"[size] is required for column with type { ((DbType)c.Type).ToString() }");
+        RuleFor(c => c.Size)
+            .Must((column, size) => {
+                if (size.HasValue && (DbType)column.Type == DbType.Decimal) {
+                    return size.Value is <= 19 and >= 1;
+                }
+                return true;
+            })
+            .WithMessage(c => $"[precision] is not applicable for column with type { ((DbType)c.Type).ToString() }");
         RuleFor(c => c.Precision)
             .Must((column, precision) => {
                 if (!precision.HasValue) {
-                    return !GetPrecisionPropertyApplicable((DbType)column.Type);
+                    return !DbTypeUtils.GetPrecisionPropertyApplicable((DbType)column.Type);
                 }
                 return true;
             })
@@ -29,7 +42,7 @@ public class ColumnDescriptorValidator : AbstractValidator<ColumnDescriptor>
         RuleFor(c => c.Precision)
             .Must((column, precision) => {
                 if (precision.HasValue) {
-                    return GetPrecisionPropertyApplicable((DbType)column.Type);
+                    return DbTypeUtils.GetPrecisionPropertyApplicable((DbType)column.Type);
                 }
                 return true;
             })
@@ -49,14 +62,5 @@ public class ColumnDescriptorValidator : AbstractValidator<ColumnDescriptor>
                 return true;
             })
             .WithMessage("[isPrimaryKey] must be integer or guid");
-    }
-    
-    private static bool GetPrecisionPropertyApplicable(DbType dbType) {
-        return dbType is DbType.Decimal;
-    }
-
-    private static bool GetSizePropertyApplicable(DbType dbType) {
-        return dbType is DbType.AnsiString or DbType.Binary or DbType.String
-            or DbType.VarNumeric or DbType.AnsiStringFixedLength or DbType.StringFixedLength;
     }
 }

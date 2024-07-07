@@ -23,16 +23,18 @@ public class EntityStructureManager(
                 .All(table => table.Id != outerTable.Id)).ToList();
             if (newTables.Count >= 1) {
                 var createResults = (await CreateEntityStructures(newTables)).ToList();
-                if (createResults.Any(c => !c.Success)) {
-                    throw new EntityStructureCreationException(createResults);
+                var failedResults = createResults.Where(c => !c.Success).ToList();
+                if (failedResults.Count != 0) {
+                    throw new EntityStructureCreationException(failedResults);
                 }
                 await SaveNewStructures(createResults);
             }
             var existingTables = initConfig.OuterTables.Where(outerTable => existingStructures
                 .Any(table => table.Id == outerTable.Id)).ToList();
-            var outerChanges = (await GetModifiedEntitiesChanges(existingTables)).ToList();
-            if (outerChanges.Any(c => !c.Success)) {
-                throw new EntityStructureModificationException(outerChanges);
+            var outerChanges = (await ApplyChangesToEntityStructures(existingTables)).ToList();
+            var failedChanges = outerChanges.Where(c => !c.Success).ToList();
+            if (failedChanges.Count != 0) {
+                throw new EntityStructureModificationException(failedChanges);
             }
             foreach (var changeEntityResult in outerChanges) {
                 if (changeEntityResult is { IsChanged: true, ResultStructure: not null }) {
@@ -99,14 +101,13 @@ public class EntityStructureManager(
         return entityStructures.First(es => es.Name == name);
     }
 
-    private async Task<IEnumerable<ModifyEntityStructureResult>> GetModifiedEntitiesChanges(
+    private async Task<IEnumerable<ModifyEntityStructureResult>> ApplyChangesToEntityStructures(
         IReadOnlyList<TableDescriptor> tableDescriptors) {
-        var existingStructures = await GetAllEntityStructures();
-        var invalidTables = tableDescriptors.Select(EntityStructureValidator.ValidateTableDescriptor)
-            .Where(v => !v.Success).ToList();
-        if (invalidTables.Count != 0) {
+        var invalidTables = EntityStructureValidator.ValidateTableDescriptors(tableDescriptors);
+        if (invalidTables.Any()) {
             return invalidTables.Select(r => r.ToModifyEntityResult());
         }
+        var existingStructures = await GetAllEntityStructures();
         var changeEntityResults = new List<ModifyEntityStructureResult>();
         foreach (var tableDescriptor in tableDescriptors) {
             var entityStructure = existingStructures.FirstOrDefault(es => es.Id == tableDescriptor.Id);
@@ -121,18 +122,23 @@ public class EntityStructureManager(
             foreach (var deletedColumn in deletedColumns) {
                 entityStructure.DeleteColumnById(deletedColumn.Id);
             }
-            var existingColumns = tableDescriptor.Columns.Where(item => originalColumnIds.Contains(item.Id)).ToList();
-            foreach (var column in existingColumns) {
-                var columnDescriptor = entityStructure.Columns.FirstOrDefault(c => c.Id == column.Id);
+            var modifyResult = new ModifyEntityStructureResult(entityStructure);
+            foreach (var columnDescriptor in tableDescriptor.Columns) {
+                var columnStructure = entityStructure.Columns.FirstOrDefault(c => c.Id == columnDescriptor.Id);
+                if (columnStructure == null) continue;
+                var result = columnStructure.AlterColumn(columnDescriptor);
+                if (!result.IsSuccess) {
+                    modifyResult.AddErrors(result.Errors.ToList());
+                }
             }
-            var validationResult = EntityStructureValidator.ValidateEntityStructure(
+            var structureValidationResult = EntityStructureValidator.ValidateEntityStructure(
                 entityStructure, existingStructures);
-            if (!validationResult.Success) {
-                changeEntityResults.Add(validationResult.ToModifyEntityResult());
-                continue;
+            if (!structureValidationResult.Success) {
+                modifyResult.AddErrors(structureValidationResult.Errors);
             }
-            if (entityStructure.IsChanged) {
-                changeEntityResults.Add(new ModifyEntityStructureResult(entityStructure));
+            if (!modifyResult.Success || entityStructure.IsChanged) {
+                modifyResult.IsChanged = entityStructure.IsChanged;
+                changeEntityResults.Add(modifyResult);
             }
         }
         return changeEntityResults;

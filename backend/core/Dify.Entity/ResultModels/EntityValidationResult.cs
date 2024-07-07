@@ -1,7 +1,6 @@
-﻿using Dify.Entity.ResultModels;
-using Dify.Entity.Structure;
+﻿using Dify.Entity.Structure;
 
-namespace Dify.Entity.Validation;
+namespace Dify.Entity.ResultModels;
 
 public class EntityValidationResult
 {
