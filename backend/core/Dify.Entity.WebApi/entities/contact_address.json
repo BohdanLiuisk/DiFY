@@ -19,11 +19,11 @@
       "referenceEntityId": "65a93638-295f-4e3a-81e2-4bb13f27edc7"
     },
     {
-      "id": "268b8efd-69ae-46e1-a929-cf6e16901090",
+      "id": "b05e6012-afe2-4f77-a06a-e97b0e229626",
       "name": "address",
       "caption": "Address",
       "type": 16,
-      "size": 50,
+      "size": 500,
       "isNullable": false
     }
   ]

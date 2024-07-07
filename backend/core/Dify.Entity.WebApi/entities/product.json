@@ -1,0 +1,44 @@
+﻿{
+  "id": "50307192-fabb-4ab8-bb1b-1d9f36f00dda",
+  "name": "product",
+  "caption": "Product",
+  "columns": [
+    {
+      "id": "6b8ff697-1937-4411-a15d-147d18185bb7",
+      "name": "id",
+      "caption": "Id",
+      "type": 11,
+      "isPrimaryKey": true
+    },
+    {
+      "id": "ef525848-ecb4-41d8-8a7e-fbc86e7886e1",
+      "name": "name",
+      "caption": "Name",
+      "type": 16,
+      "size": 250,
+      "isNullable": false
+    },
+    {
+      "id": "c07ba43e-8047-407e-8c95-9a420e21a203",
+      "name": "price",
+      "caption": "Price",
+      "type": 7,
+      "size": 19,
+      "precision": 5,
+      "isNullable": false
+    },
+    {
+      "id": "d93099fd-89ba-48b7-9b81-74b0b2990c6d",
+      "name": "discount",
+      "caption": "discount",
+      "type": 4
+    },
+    {
+      "id": "0d7244ee-4011-4f7b-8371-7b42b1c615dd",
+      "name": "description",
+      "caption": "Description",
+      "type": 16,
+      "size": 500
+    }
+  ]
+}

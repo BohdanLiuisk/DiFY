@@ -45,7 +45,15 @@ public class EntityDbEngine(ILogger<EntityDbEngine> logger, IMigrationProcessor 
         var operations = GetEntityStructureOperations(entityStructure);
         migrationProcessor.BeginTransaction();
         try {
-            migrationProcessor.Process(operations.DeleteColumnsExpression);
+            if (operations.DeleteColumnsExpression != null) {
+                migrationProcessor.Process(operations.DeleteColumnsExpression);
+            }
+            foreach (var alterColumnExpression in operations.AlterColumnExpressions) {
+                migrationProcessor.Process(alterColumnExpression);
+            }
+            foreach (var createColumnExpression in operations.CreateColumnExpressions) {
+                migrationProcessor.Process(createColumnExpression);
+            }
             foreach (var foreignKeyExpression in operations.CreateForeignKeyExpressions) {
                 migrationProcessor.Process(foreignKeyExpression);
             }
@@ -65,6 +73,16 @@ public class EntityDbEngine(ILogger<EntityDbEngine> logger, IMigrationProcessor 
         var operations = new EntityStructureOperations();
         var createTableExpression = GetCreateTableExpression(entityStructure);
         operations.CreateTableExpression = createTableExpression;
+        var newColumns = entityStructure.Columns.Where(c => c.State == EntityStructureElementState.New);
+        foreach (var newColumn in newColumns) {
+            var createColumnExpression = GetCreateColumnExpression(newColumn);
+            operations.CreateColumnExpressions.Add(createColumnExpression);
+        }
+        var updatedColumns = entityStructure.Columns.Where(c => c.State == EntityStructureElementState.Updated);
+        foreach (var updatedColumn in updatedColumns) {
+            var alterColumnExpression = GetAlterColumnExpression(updatedColumn);
+            operations.AlterColumnExpressions.Add(alterColumnExpression);
+        }
         var newForeignKeys = entityStructure.ForeignKeys.Where(f => f.State == EntityStructureElementState.New);
         foreach (var foreignKey in newForeignKeys) {
             var createFkExpression = GetCreateForeignKeyExpression(foreignKey);
@@ -111,6 +129,7 @@ public class EntityDbEngine(ILogger<EntityDbEngine> logger, IMigrationProcessor 
             Type = columnStructure.Type,
             IsPrimaryKey = columnStructure.IsPrimaryKey,
             Size = columnStructure.Size,
+            Precision = columnStructure.Precision,
             IsNullable = columnStructure.IsNullable,
             IsUnique = columnStructure.IsUnique,
             IsForeignKey = columnStructure.IsForeignKey
@@ -126,6 +145,23 @@ public class EntityDbEngine(ILogger<EntityDbEngine> logger, IMigrationProcessor 
             }
         }
         return columnDefinition;
+    }
+    
+    private AlterColumnExpression GetAlterColumnExpression(EntityColumnStructure columnStructure) {
+        var columnDefinition = GenerateColumnDefinition(columnStructure);
+        columnDefinition.ModificationType = ColumnModificationType.Alter;
+        return new AlterColumnExpression {
+            Column = columnDefinition,
+            TableName = columnStructure.EntityStructure.Name
+        };
+    }
+    
+    private CreateColumnExpression GetCreateColumnExpression(EntityColumnStructure columnStructure) {
+        var columnDefinition = GenerateColumnDefinition(columnStructure);
+        return new CreateColumnExpression {
+            Column = columnDefinition,
+            TableName = columnStructure.EntityStructure.Name
+        };
     }
     
     private CreateForeignKeyExpression GetCreateForeignKeyExpression(EntityForeignKeyStructure foreignKeyStructure) {

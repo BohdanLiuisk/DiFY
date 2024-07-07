@@ -5,6 +5,8 @@ namespace Dify.Entity.DbEngine;
 public class EntityStructureOperations
 {
     public CreateTableExpression CreateTableExpression { get; set; } = null!;
+    
+    public IList<CreateColumnExpression> CreateColumnExpressions { get; } = new List<CreateColumnExpression>();
 
     public IList<CreateForeignKeyExpression> CreateForeignKeyExpressions { get; } = 
         new List<CreateForeignKeyExpression>();
