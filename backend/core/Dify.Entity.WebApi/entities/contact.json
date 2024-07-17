@@ -19,6 +19,14 @@
       "isNullable": false
     },
     {
+      "id": "5112dc4d-0af9-435d-b4e8-4173e020ccad",
+      "name": "created_by",
+      "caption": "Create by",
+      "type": 11,
+      "isNullable": true,
+      "referenceEntityId": "65a93638-295f-4e3a-81e2-4bb13f27edc7"
+    },
+    {
       "id": "447a404a-887c-4d65-a9ba-5df115b84e6a",
       "name": "parent_contact",
       "caption": "Parent contact",
@@ -33,14 +41,6 @@
       "type": 11,
       "isNullable": true,
       "referenceEntityId": "429cde5e-fb1c-406a-aafa-f4dc41835a38"
-    },
-    {
-      "id": "d8de3a89-11b5-4e7c-b73e-50d625ad622c",
-      "name": "first_contact_case",
-      "caption": "First contact case (test)",
-      "type": 9,
-      "isNullable": true,
-      "referenceEntityId": "7f6c0e75-6a81-4c39-a8c9-789b75be5f9f"
     }
   ]
 }
