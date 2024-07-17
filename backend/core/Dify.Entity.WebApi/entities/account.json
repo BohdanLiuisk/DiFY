@@ -39,7 +39,7 @@
       "name": "first_case",
       "caption": "First case (test)",
       "type": 9,
-      "isNullable": false,
+      "isNullable": true,
       "referenceEntityId": "7f6c0e75-6a81-4c39-a8c9-789b75be5f9f"
     }
   ]

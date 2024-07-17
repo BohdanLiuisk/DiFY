@@ -131,6 +131,7 @@ public class EntityStructureManager(
                     modifyResult.AddErrors(result.Errors.ToList());
                 }
             }
+            InitEntityRelations(entityStructure, existingStructures);
             var structureValidationResult = EntityStructureValidator.ValidateEntityStructure(
                 entityStructure, existingStructures);
             if (!structureValidationResult.Success) {
@@ -164,8 +165,9 @@ public class EntityStructureManager(
     }
 
     private void InitEntityRelations(EntityStructure entityStructure, IList<EntityStructure> allStructures) {
-        var foreignKeyColumns = entityStructure.Columns.Where(
-            c => c is { IsForeignKey: true, ForeignKeyStructure: not null }).ToList();
+        var foreignKeyColumns = entityStructure.Columns.Where(c => c is { 
+            IsForeignKey: true, ForeignKeyStructure: not null, State: EntityStructureElementState.New 
+        }).ToList();
         foreach (var foreignKeyColumn in foreignKeyColumns) {
             if (foreignKeyColumn.ForeignKeyStructure == null) continue;
             var referenceEntityId = foreignKeyColumn.ForeignKeyStructure.ReferenceEntityId;
