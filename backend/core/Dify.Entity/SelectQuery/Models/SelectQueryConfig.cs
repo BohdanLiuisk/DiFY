@@ -22,6 +22,9 @@ public class SelectQueryConfig
     
     [JsonPropertyName("paginationConfig")]
     public PaginationRequest? PaginationConfig { get; set; }
+    
+    [JsonPropertyName("debug")]
+    public bool? Debug { get; set; }
 
     public bool IsPaginated => PaginationConfig != null && PaginationConfig.Page != 0 && PaginationConfig.PerPage != 0;
 }

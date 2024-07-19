@@ -41,6 +41,14 @@
       "type": 11,
       "isNullable": true,
       "referenceEntityId": "429cde5e-fb1c-406a-aafa-f4dc41835a38"
+    },
+    {
+      "id": "200247dc-1024-4213-b843-cd471df889c7",
+      "name": "email",
+      "caption": "Email",
+      "type": 16,
+      "size": 50,
+      "isNullable": true
     }
   ]
 }

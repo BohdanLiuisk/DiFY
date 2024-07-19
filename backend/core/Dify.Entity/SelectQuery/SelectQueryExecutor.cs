@@ -32,7 +32,7 @@ public class SelectQueryExecutor(EntityStructureManager structureManager, QueryF
 
     private async Task<JObject> BuildJsonResult(SelectQueryConfig selectConfig, Query rootQuery, 
         EntityStructure rootStructure) {
-        var resultBuilder = new SelectResultBuilder(selectConfig, rootStructure);
+        var resultBuilder = new SelectResultBuilder(selectConfig, rootStructure, rootQuery);
         if (selectConfig.IsPaginated) {
             var paginationResult = await queryFactory.PaginateAsync<dynamic>(rootQuery,
                 selectConfig.PaginationConfig!.Page, selectConfig.PaginationConfig!.PerPage);

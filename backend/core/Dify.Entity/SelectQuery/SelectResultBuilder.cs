@@ -2,11 +2,13 @@
 using Dify.Entity.SelectQuery.Models;
 using Dify.Entity.Structure;
 using Dify.Entity.Utils;
+using SqlKata;
+using SqlKata.Compilers;
 using SqlKata.Execution;
 
 namespace Dify.Entity.SelectQuery;
 
-public class SelectResultBuilder(SelectQueryConfig selectConfig, EntityStructure rootStructure)
+public class SelectResultBuilder(SelectQueryConfig selectConfig, EntityStructure rootStructure, Query query)
 {
     private List<string>? _errors;
     
@@ -48,6 +50,9 @@ public class SelectResultBuilder(SelectQueryConfig selectConfig, EntityStructure
         if (_errors != null && _errors.Count != 0) {
             resultObject.Add("errors", new JArray(_errors));
         }
+        if (selectConfig.Debug != null && selectConfig.Debug.Value) {
+            resultObject.Add("sql", JToken.FromObject(GetSqlText()));
+        }
         return resultObject;
     }
 
@@ -62,5 +67,11 @@ public class SelectResultBuilder(SelectQueryConfig selectConfig, EntityStructure
             resultArray.Add(CreateRowJson(row));
         }
         return resultArray;
+    }
+
+    private string GetSqlText() {
+        var compiler = new PostgresCompiler();
+        var sqlResult = compiler.Compile(query);
+        return sqlResult.Sql;
     }
 }

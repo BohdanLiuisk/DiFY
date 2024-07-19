@@ -26,7 +26,7 @@ public static class SelectQueryUtils
     }
     
     public static IEnumerable<IDictionary<string, object>> GetResultRows(IEnumerable<dynamic> rows) {
-        return rows.Select(row => (IDictionary<string, object>)row).ToList();
+        return rows.Select(row => (IDictionary<string, object>)row);
     }
     
     public static void EnsurePrimaryColumnIncluded(List<SelectExpression> columns, EntityStructure entityStructure) {
