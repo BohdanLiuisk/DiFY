@@ -25,7 +25,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<EntityStructureManager>();
         services.AddTransient<IEntityDbEngine, EntityDbEngine>();
         services.AddTransient<ISelectQueryExecutor, SelectQueryExecutor>();
-        services.AddTransient<TableAliasesStorage>();
+        services.AddTransient<TableJoinsStorage>();
         services.AddTransient<QueryFactory>(_ => {  
             var connection = new NpgsqlConnection(difyEntityOptions.ConnectionString);  
             var compiler = new PostgresCompiler();  

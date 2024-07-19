@@ -19,8 +19,8 @@ public class RelatedEntityConfig
     [JsonPropertyName("filters")]
     public List<FilterConfig> Filters { get; set; } = new();
     
-    [JsonPropertyName("columns")]
-    public List<SelectColumnConfig> Columns { get; set; } = new();
+    [JsonPropertyName("expressions")]
+    public List<SelectExpression> Expressions { get; set; } = new();
     
     [JsonPropertyName("relatedEntities")]
     public List<RelatedEntityConfig> RelatedEntities { get; set; } = new();

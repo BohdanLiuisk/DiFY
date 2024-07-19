@@ -8,8 +8,8 @@ public class SelectQueryConfig
     [JsonRequired]
     public string EntityName { get; set; } = null!;
 
-    [JsonPropertyName("columns")]
-    public List<SelectColumnConfig> Columns { get; set; } = new();
+    [JsonPropertyName("expressions")]
+    public List<SelectExpression> Expressions { get; set; } = new();
     
     [JsonPropertyName("relatedEntities")]
     public List<RelatedEntityConfig> RelatedEntities { get; set; } = new();

@@ -9,7 +9,7 @@ using SqlKata.Execution;
 namespace Dify.Entity.SelectQuery;
 
 public class SelectQueryExecutor(EntityStructureManager structureManager, QueryFactory queryFactory, 
-        TableAliasesStorage aliasesStorage) 
+        TableJoinsStorage joinsStorage) 
     : ISelectQueryExecutor
 {
     public async Task<string> ExecuteAsync(SelectQueryConfig selectConfig) {
@@ -24,34 +24,35 @@ public class SelectQueryExecutor(EntityStructureManager structureManager, QueryF
 
     private async Task<JObject> ExecuteInternal(SelectQueryConfig selectConfig) {
         var rootStructure = await structureManager.FindEntityStructureByName(selectConfig.EntityName);
-        var rootTableAlias = aliasesStorage.GetTableAlias(selectConfig.EntityName);
+        var rootTableAlias = joinsStorage.GetTableAlias(selectConfig.EntityName);
         var rootQuery = CreateRootQuery(selectConfig, rootStructure, rootTableAlias);
-        aliasesStorage.Clear();
+        joinsStorage.Clear();
         return await BuildJsonResult(selectConfig, rootQuery, rootStructure);
     }
 
     private async Task<JObject> BuildJsonResult(SelectQueryConfig selectConfig, Query rootQuery, 
         EntityStructure rootStructure) {
-        var resultBuilder = new JsonResultBuilder()
-            .WithSelectQueryConfig(selectConfig)
-            .WithRootStructure(rootStructure);
+        var resultBuilder = new SelectResultBuilder(selectConfig, rootStructure);
         if (selectConfig.IsPaginated) {
             var paginationResult = await queryFactory.PaginateAsync<dynamic>(rootQuery,
-                selectConfig.PaginationConfig!.Page, selectConfig.PaginationConfig!.Page);
-            resultBuilder.WithPaginationResult(paginationResult);
-            return resultBuilder.BuildPaginatedRowsJson();
+                selectConfig.PaginationConfig!.Page, selectConfig.PaginationConfig!.PerPage);
+            return resultBuilder.BuildPaginatedRows(paginationResult);
         }
         var resultRows = await queryFactory.GetAsync(rootQuery);
-        resultBuilder.WithResultRows(resultRows);
-        return selectConfig.Limit == 1 ? resultBuilder.BuildSingleRowJson() : resultBuilder.BuildMultipleRowsJson();
+        if (selectConfig.Limit == 1) {
+            var firstRow = resultRows.FirstOrDefault() as IDictionary<string, object>;
+            return resultBuilder.BuildSingleRowJson(firstRow);
+        }
+        return resultBuilder.BuildMultipleRowsJson(resultRows);
     }
 
     private Query CreateRootQuery(SelectQueryConfig selectConfig, EntityStructure rootStructure, string rootTableAlias) {
-        var queryColumns = new SelectColumnBuilder(selectConfig.Columns, rootStructure, rootTableAlias).Build();
+        var selectBuilder = new SelectColumnBuilder(selectConfig.Expressions, rootStructure, rootTableAlias);
+        var queryColumns = selectBuilder.BuildAliases();
         var rootQuery = new Query($"{selectConfig.EntityName} as {rootTableAlias}");
         rootQuery.Select(queryColumns);
-        var joinBuilder = new JoinBuilder(rootQuery, aliasesStorage);
-        joinBuilder.AppendLeftJoins(selectConfig.Columns, rootTableAlias, rootStructure);
+        var joinBuilder = new JoinBuilder(rootQuery, joinsStorage);
+        joinBuilder.AppendLeftJoins(selectConfig.Expressions, rootTableAlias, rootStructure);
         if (selectConfig.Limit != null && selectConfig.Limit != 0) {
             rootQuery.Limit(selectConfig.Limit.Value);
         }
