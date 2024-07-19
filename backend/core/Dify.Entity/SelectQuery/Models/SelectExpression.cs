@@ -1,0 +1,44 @@
+﻿using System.Text.Json.Serialization;
+using Dify.Entity.SelectQuery.Enums;
+
+namespace Dify.Entity.SelectQuery.Models;
+
+public class SelectExpression
+{
+    public SelectExpression(string path) {
+        Path = path;
+    }
+    
+    private SelectExpression(string path, string? alias) {
+        Type = ExpressionType.Column;
+        Path = path;
+        Alias = alias;
+    }
+    
+    [JsonConstructor]
+    public SelectExpression(string path, string alias, List<SelectExpression>? columns) {
+        Path = path;
+        Alias = alias;
+        if (columns != null) {
+            Columns = columns;
+        }
+    }
+    
+    [JsonPropertyName("type")]
+    public ExpressionType Type { get; set; } = ExpressionType.Column;
+    
+    [JsonPropertyName("path")]
+    public string Path { get; set; }
+    
+    [JsonPropertyName("alias")]
+    public string? Alias { get; set; }
+    
+    [JsonPropertyName("columns")]
+    public List<SelectExpression> Columns { get; set; } = new();
+    
+    internal string? SelectAlias { get; set; }
+    
+    public static SelectExpression Column(string path, string? alias = null) {
+        return new SelectExpression(path, alias);
+    }
+}

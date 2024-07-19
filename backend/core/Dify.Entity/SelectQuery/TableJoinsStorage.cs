@@ -1,6 +1,6 @@
 ﻿namespace Dify.Entity.SelectQuery;
 
-public class TableAliasesStorage
+public class TableJoinsStorage
 {
     private readonly Dictionary<string, int> _tableAliases = new();
     

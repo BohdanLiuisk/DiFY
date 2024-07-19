@@ -34,17 +34,17 @@ public class EntityController(EntityStructureManager entityStructureManager, ISe
     public async Task<ActionResult> SelectContact() {
         var selectRequest = new SelectQueryConfig {
             EntityName = "contact",
-            Columns = new List<SelectColumnConfig> {
-                new("id"),
+            Expressions = new List<SelectExpression> {
+                SelectExpression.Column("id"),
                 new("name"),
                 new("created_by") {
-                    Columns = new List<SelectColumnConfig> {
+                    Columns = new List<SelectExpression> {
                         new("id"),
                         new("name")
                     }
                 },
                 new("parent_contact") {
-                    Columns = new List<SelectColumnConfig> {
+                    Columns = new List<SelectExpression> {
                         new("id"),
                         new("name"),
                     }
