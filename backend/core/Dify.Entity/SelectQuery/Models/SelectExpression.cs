@@ -21,6 +21,7 @@ public class SelectExpression
         Alias = alias;
         if (columns != null) {
             Columns = columns;
+            SetParentColumn(this, columns);
         }
     }
     
@@ -38,7 +39,23 @@ public class SelectExpression
     
     internal string? SelectAlias { get; set; }
     
+    internal SelectExpression? ParentColumn { get; set; }
+    
     public static SelectExpression Column(string path, string? alias = null) {
         return new SelectExpression(path, alias);
+    }
+    
+    private void SetParentColumn(SelectExpression parent, List<SelectExpression> columns) {
+        foreach (var column in columns) {
+            column.ParentColumn = parent;
+            SetParentColumn(column, column.Columns);
+        }
+    }
+    
+    public string GetFullPath() {
+        if (ParentColumn == null) {
+            return Path;
+        }
+        return ParentColumn.GetFullPath() + "." + Path;
     }
 }
