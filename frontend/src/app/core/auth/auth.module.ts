@@ -6,7 +6,6 @@ import { EffectsModule } from '@ngrx/effects';
 import { AuthFacade } from '@core/auth/store/auth.facade';
 import { AuthService, authServiceInitProvider } from '@core/auth/services/auth.service';
 import { JWT_OPTIONS, JwtHelperService } from '@auth0/angular-jwt';
-import { JwtStorageService } from '@core/auth/services/jwt-storage.service';
 import { AuthEventsService } from './services/auth-events.service';
 
 @NgModule({
@@ -20,7 +19,6 @@ import { AuthEventsService } from './services/auth-events.service';
     AuthFacade,
     AuthService,
     JwtHelperService,
-    JwtStorageService,
     authServiceInitProvider,
     { provide: JWT_OPTIONS, useValue: JWT_OPTIONS }
   ],
