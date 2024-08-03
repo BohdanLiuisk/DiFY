@@ -14,8 +14,8 @@ public class SelectQueryConfig
     [JsonPropertyName("relatedEntities")]
     public List<RelatedEntityConfig> RelatedEntities { get; set; } = new();
     
-    [JsonPropertyName("filters")]
-    public List<FilterConfig> Filters { get; set; } = new();
+    [JsonPropertyName("filter")]
+    public SelectFilter Filter { get; set; } = new();
     
     [JsonPropertyName("limit")]
     public int? Limit { get; set; }

@@ -24,8 +24,7 @@ public class SelectQueryExecutor(EntityStructureManager structureManager, QueryF
 
     private async Task<JObject> ExecuteInternal(SelectQueryConfig selectConfig) {
         var rootStructure = await structureManager.FindEntityStructureByName(selectConfig.EntityName);
-        var rootTableAlias = joinsStorage.GetTableAlias(selectConfig.EntityName);
-        var rootQuery = CreateRootQuery(selectConfig, rootStructure, rootTableAlias);
+        var rootQuery = CreateRootQuery(selectConfig, rootStructure);
         joinsStorage.Clear();
         return await BuildJsonResult(selectConfig, rootQuery, rootStructure);
     }
@@ -46,13 +45,16 @@ public class SelectQueryExecutor(EntityStructureManager structureManager, QueryF
         return resultBuilder.BuildMultipleRowsJson(resultRows);
     }
 
-    private Query CreateRootQuery(SelectQueryConfig selectConfig, EntityStructure rootStructure, string rootTableAlias) {
+    private Query CreateRootQuery(SelectQueryConfig selectConfig, EntityStructure rootStructure) {
+        var rootTableAlias = joinsStorage.GetTableAlias(selectConfig.EntityName);
         var selectBuilder = new SelectColumnBuilder(selectConfig.Expressions, rootStructure, rootTableAlias);
         var queryColumns = selectBuilder.BuildAliases();
         var rootQuery = new Query($"{selectConfig.EntityName} as {rootTableAlias}");
         rootQuery.Select(queryColumns);
         var joinBuilder = new JoinBuilder(rootQuery, joinsStorage);
         joinBuilder.AppendLeftJoins(selectConfig.Expressions, rootTableAlias, rootStructure);
+        var filterBuilder = new FilterBuilder(rootQuery, rootTableAlias, joinsStorage, structureManager);
+        filterBuilder.AppendFilter(selectConfig.Filter);
         if (selectConfig.Limit != null && selectConfig.Limit != 0) {
             rootQuery.Limit(selectConfig.Limit.Value);
         }

@@ -6,6 +6,15 @@ namespace Dify.Entity.Utils;
 
 public static class SelectQueryUtils
 {
+    private static readonly Dictionary<string, string> _filterOperatorToSql = new() {
+        { "eq", "=" },
+        { "ne", "<>" },
+        { "gt", ">" },
+        { "gte", ">=" },
+        { "lt", "<" },
+        { "lte", "<=" }
+    };
+    
     public static string GetColumnAsSelect(string tableAlias, string path) {
         var columnAlias = GetColumnAlias(tableAlias, path);
         return $"{tableAlias}.{path} as {columnAlias}";
@@ -35,4 +44,12 @@ public static class SelectQueryUtils
             columns.Insert(0, SelectExpression.Column(primaryColumnName));
         }
     }
+
+    public static bool GetIsSqlOperator(string filterOperator) {
+        return _filterOperatorToSql.ContainsKey(filterOperator);
+    }
+
+    public static string MapFilterOperatorToSqlOperator(string filterOperator) {
+        return _filterOperatorToSql[filterOperator];
+    } 
 }

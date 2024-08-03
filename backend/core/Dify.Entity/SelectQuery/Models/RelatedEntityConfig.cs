@@ -17,7 +17,7 @@ public class RelatedEntityConfig
     public string JoinBy { get; set; } = null!;
     
     [JsonPropertyName("filters")]
-    public List<FilterConfig> Filters { get; set; } = new();
+    public List<SelectFilter> Filters { get; set; } = new();
     
     [JsonPropertyName("expressions")]
     public List<SelectExpression> Expressions { get; set; } = new();
