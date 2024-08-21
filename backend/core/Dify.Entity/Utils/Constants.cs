@@ -8,8 +8,8 @@ public static class Constants
         public static string Group = "group";
         public static string Or = "or";
         public static string And = "and";
-        public static string Exists = "exists";
-        public static string NotExists = "notExists";
-        public static string Count = "count";
+        public const string Exists = "exists";
+        public const string NotExists = "notExists";
+        public const string Count = "count";
     }
 }
