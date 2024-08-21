@@ -49,6 +49,13 @@
       "type": 16,
       "size": 50,
       "isNullable": true
+    },
+    {
+      "id": "93c69e3e-e119-4870-8049-33a5e7db8eff",
+      "name": "age",
+      "caption": "Age",
+      "type": 11,
+      "isNullable": true
     }
   ]
 }
