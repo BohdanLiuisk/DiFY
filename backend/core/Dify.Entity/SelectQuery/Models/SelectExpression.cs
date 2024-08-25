@@ -16,9 +16,8 @@ public class SelectExpression
     }
     
     [JsonConstructor]
-    public SelectExpression(string path, string alias, List<SelectExpression>? columns) {
+    public SelectExpression(string path, List<SelectExpression>? columns) {
         Path = path;
-        Alias = alias;
         if (columns != null) {
             Columns = columns;
             SetParentColumn(this, columns);
@@ -36,6 +35,18 @@ public class SelectExpression
     
     [JsonPropertyName("columns")]
     public List<SelectExpression> Columns { get; set; } = new();
+    
+    [JsonPropertyName("subEntity")]
+    public string? SubEntity { get; set; }
+    
+    [JsonPropertyName("aggrFunc")]
+    public string? AggrFunc { get; set; }
+    
+    [JsonPropertyName("filter")]
+    public SelectFilter? Filter { get; set; }
+
+    [JsonPropertyName("subQuerySorting")]
+    public List<SortConfig> SubQuerySorting { get; set; } = new();
     
     internal string? SelectAlias { get; set; }
     

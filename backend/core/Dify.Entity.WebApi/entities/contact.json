@@ -56,6 +56,15 @@
       "caption": "Age",
       "type": 11,
       "isNullable": true
+    },
+    {
+      "id": "76899918-4d9e-4163-8e71-289733172c3a",
+      "name": "max_price",
+      "caption": "Max price",
+      "type": 7,
+      "size": 19,
+      "precision": 5,
+      "isNullable": true
     }
   ]
 }

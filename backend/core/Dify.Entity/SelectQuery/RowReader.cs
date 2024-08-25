@@ -15,6 +15,10 @@ public class RowReader(IDictionary<string, object> row, EntityStructure rootStru
                 var columnValue = ReadColumn(expression, rootStructure);
                 jsonObject.Add(SelectQueryUtils.GetExpressionAlias(expression), columnValue);
             }
+            if (expression.Type == ExpressionType.SubQuery) {
+                var subQueryValue = ReadExpressionValue(expression);
+                jsonObject.Add(expression.Alias!, subQueryValue);
+            }
         }
         return jsonObject;
     }
@@ -31,8 +35,9 @@ public class RowReader(IDictionary<string, object> row, EntityStructure rootStru
         return foreignObject;
     }
     
-    private JToken ReadForeignEntity( EntityStructure entityStructure, List<SelectExpression> columns) {
-        var pkExpression = columns.FirstOrDefault(c => c.Path == entityStructure.PrimaryColumn.Name);
+    private JToken ReadForeignEntity(EntityStructure entityStructure, List<SelectExpression> columns) {
+        var pkExpression = columns.FirstOrDefault(
+            c => c.Type == ExpressionType.Column && c.Path == entityStructure.PrimaryColumn.Name);
         if (pkExpression == null) {
             return JValue.CreateNull();
         }
@@ -42,9 +47,16 @@ public class RowReader(IDictionary<string, object> row, EntityStructure rootStru
         var jsonObject = new JObject {
             { SelectQueryUtils.GetExpressionAlias(pkExpression), primaryColumnValue }
         };
-        foreach (var columnExpression in columns.Where(c => c.Path != entityStructure.PrimaryColumn.Name)) {
+        var columnExpressions = columns.Where(c => c.Type == ExpressionType.Column && 
+                                                   c.Path != entityStructure.PrimaryColumn.Name);
+        foreach (var columnExpression in columnExpressions) {
             var columnValue = ReadColumn(columnExpression, entityStructure);
             jsonObject.Add(SelectQueryUtils.GetExpressionAlias(columnExpression), columnValue);
+        }
+        var subQueryExpressions = columns.Where(c => c.Type == ExpressionType.SubQuery);
+        foreach (var subQueryExpression in subQueryExpressions) {
+            var subQueryValue = ReadExpressionValue(subQueryExpression);
+            jsonObject.Add(subQueryExpression.Alias!, subQueryValue);
         }
         return jsonObject;
     }

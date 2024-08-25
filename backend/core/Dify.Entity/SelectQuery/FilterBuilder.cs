@@ -33,7 +33,7 @@ public class FilterBuilder(Query query, string rootTableAlias, TableJoinsStorage
 
     private Query AppendClauseFilter(Query filterGroup, SelectFilter selectFilter) {
         if (string.IsNullOrEmpty(selectFilter.Path)) return filterGroup;
-        if (GetIsSubEntityFilter(selectFilter.Path)) {
+        if (SubEntityConfig.IsSubEntityFilter(selectFilter.Path)) {
             return AppendSubEntityClauseFilter(filterGroup, selectFilter);
         }
         ApplyFilterPredicates(selectFilter, filterGroup);
@@ -71,7 +71,7 @@ public class FilterBuilder(Query query, string rootTableAlias, TableJoinsStorage
     
     private Query AppendSubEntityClauseFilter(Query filterGroup, SelectFilter selectFilter) {
         if(string.IsNullOrEmpty(selectFilter.Path)) return filterGroup;
-        var subEntityConfig = GetSubEntityConfig(selectFilter.Path);
+        var subEntityConfig = SubEntityConfig.FromFilterPath(selectFilter.Path);
         var alias = joinsStorage.GetTableAlias(subEntityConfig.Name);
         switch (subEntityConfig.Operator) {
             case Constants.Select.Exists:
@@ -128,22 +128,6 @@ public class FilterBuilder(Query query, string rootTableAlias, TableJoinsStorage
                 filterGroup.Or();
             }
         }
-    }
-    
-    private static SubEntityConfig GetSubEntityConfig(string path) {
-        var regex = new Regex(SubEntityPathPattern);
-        var match = regex.Match(path);
-        return new SubEntityConfig {
-            Name = match.Groups[1].Value,
-            JoinBy = match.Groups[2].Value,
-            JoinTo = match.Groups[3].Value,
-            Operator = match.Groups[4].Value
-        };
-    }
-
-    private static bool GetIsSubEntityFilter(string path) {
-        var regex = new Regex(SubEntityPathPattern);
-        return regex.Match(path).Success;
     }
     
     private static object ConvertJsonElement(JsonElement element) {

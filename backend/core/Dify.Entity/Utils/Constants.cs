@@ -11,5 +11,11 @@ public static class Constants
         public const string Exists = "exists";
         public const string NotExists = "notExists";
         public const string Count = "count";
+        public const string Min = "min";
+        public const string Max = "max";
+        public const string Avg = "avg";
+        public const string Sum = "sum";
+        public const string Asc = "asc";
+        public const string Desc = "desc";
     }
 }
