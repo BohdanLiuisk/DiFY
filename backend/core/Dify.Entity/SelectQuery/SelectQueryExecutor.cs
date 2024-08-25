@@ -1,4 +1,5 @@
 ﻿using Dify.Entity.Abstract;
+using Dify.Entity.SelectQuery.Enums;
 using Dify.Entity.SelectQuery.Models;
 using Dify.Entity.Structure;
 using Newtonsoft.Json;
@@ -47,11 +48,15 @@ public class SelectQueryExecutor(EntityStructureManager structureManager, QueryF
 
     private Query CreateRootQuery(SelectQueryConfig selectConfig, EntityStructure rootStructure) {
         var rootTableAlias = joinsStorage.GetTableAlias(selectConfig.EntityName);
-        var selectBuilder = new SelectColumnBuilder(selectConfig.Expressions, rootStructure, rootTableAlias);
+        var columnExpressions = selectConfig.Expressions.Where(e => e.Type == ExpressionType.Column).ToList();
+        var selectBuilder = new SelectColumnBuilder(columnExpressions, rootStructure, rootTableAlias);
         var queryColumns = selectBuilder.BuildAliases();
         var rootQuery = new Query($"{selectConfig.EntityName} as {rootTableAlias}");
         rootQuery.Select(queryColumns);
-        var joinBuilder = new JoinBuilder(rootQuery, joinsStorage);
+        var subQueryExpressions = selectConfig.Expressions.Where(e => e.Type == ExpressionType.SubQuery).ToList();
+        var subQueryBuilder = new SubQueryBuilder(joinsStorage, structureManager);
+        subQueryBuilder.AppendSubQueries(rootQuery, subQueryExpressions, rootTableAlias);
+        var joinBuilder = new JoinBuilder(rootQuery, joinsStorage, structureManager);
         joinBuilder.AppendLeftJoins(selectConfig.Expressions, rootTableAlias, rootStructure);
         var filterBuilder = new FilterBuilder(rootQuery, rootTableAlias, joinsStorage, structureManager);
         filterBuilder.AppendFilter(selectConfig.Filter);

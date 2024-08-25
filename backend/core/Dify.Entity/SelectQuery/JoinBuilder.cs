@@ -1,11 +1,12 @@
-﻿using Dify.Entity.SelectQuery.Models;
+﻿using Dify.Entity.SelectQuery.Enums;
+using Dify.Entity.SelectQuery.Models;
 using Dify.Entity.Structure;
 using Dify.Entity.Utils;
 using SqlKata;
 
 namespace Dify.Entity.SelectQuery;
 
-public class JoinBuilder(Query query, TableJoinsStorage joinsStorage)
+public class JoinBuilder(Query query, TableJoinsStorage joinsStorage, EntityStructureManager structureManager)
 {
     public void AppendLeftJoins(List<SelectExpression> leftColumns, string parentTableAlias, 
         EntityStructure parentStructure) {
@@ -24,8 +25,12 @@ public class JoinBuilder(Query query, TableJoinsStorage joinsStorage)
             $"{parentTableAlias}.{referenceColumn.DbName}",
             $"{tableAlias}.{parentStructure.PrimaryColumn.Name}");
         SelectQueryUtils.EnsurePrimaryColumnIncluded(expression.Columns, refEntityStructure);
-        var queryColumns = new SelectColumnBuilder(expression.Columns, refEntityStructure, tableAlias).BuildAliases();
+        var columnExpressions = expression.Columns.Where(c => c.Type == ExpressionType.Column).ToList();
+        var queryColumns = new SelectColumnBuilder(columnExpressions, refEntityStructure, tableAlias).BuildAliases();
         query.Select(queryColumns);
+        var subQueryExpressions = expression.Columns.Where(c => c.Type == ExpressionType.SubQuery).ToList();
+        var subQueryBuilder = new SubQueryBuilder(joinsStorage, structureManager);
+        subQueryBuilder.AppendSubQueries(query, subQueryExpressions, tableAlias);
         if (expression.Columns.Count != 0) {
             AppendLeftJoins(expression.Columns, tableAlias, refEntityStructure);
         }

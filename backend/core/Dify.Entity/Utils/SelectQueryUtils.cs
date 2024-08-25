@@ -40,7 +40,7 @@ public static class SelectQueryUtils
     
     public static void EnsurePrimaryColumnIncluded(List<SelectExpression> columns, EntityStructure entityStructure) {
         var primaryColumnName = entityStructure.PrimaryColumn.Name;
-        if (!columns.Select(c => c.Path).Contains(primaryColumnName)) {
+        if (!columns.Any(c => c.Path == primaryColumnName && c.Type == ExpressionType.Column)) {
             columns.Insert(0, SelectExpression.Column(primaryColumnName));
         }
     }
