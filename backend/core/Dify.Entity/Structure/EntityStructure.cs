@@ -62,6 +62,26 @@ public class EntityStructure
     public void AddIndex(EntityIndexStructure indexStructure) {
         _indexes.Add(indexStructure);
     }
+
+    public EntityForeignKeyStructure FindForeignKeyStructure(string columnPath) {
+        var columnPaths = columnPath.Split('.').ToList();
+        var columnStructure = FindReferenceColumnStructure(columnPaths.First());
+        if (columnPaths.Count == 1) {
+            return columnStructure.ForeignKeyStructure!;
+        }
+        var referenceStructure = columnStructure.ForeignKeyStructure!.ReferenceEntityStructure;
+        var searchPath = string.Join(".", columnPaths.Skip(1));
+        return referenceStructure.FindForeignKeyStructure(searchPath);
+    }
+
+    private EntityColumnStructure FindReferenceColumnStructure(string path) {
+        var columnStructure = Columns.FirstOrDefault(c => c.Name == path) 
+                              ?? throw new InvalidOperationException($"Column by path {path} not found");
+        if (!columnStructure.IsForeignKey || columnStructure.ForeignKeyStructure == null) {
+            throw new InvalidOperationException($"Column by path {path} does not reference a structure");
+        }
+        return columnStructure;
+    }
     
     public void DeleteColumnById(Guid columnId) {
         var column = _columns.FirstOrDefault(c => c.Id == columnId);

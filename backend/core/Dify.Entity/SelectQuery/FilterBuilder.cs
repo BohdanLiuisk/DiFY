@@ -1,5 +1,4 @@
 ﻿using System.Text.Json;
-using System.Text.RegularExpressions;
 using Dify.Entity.SelectQuery.Models;
 using Dify.Entity.Structure;
 using Dify.Entity.Utils;
@@ -8,10 +7,8 @@ using SqlKata;
 namespace Dify.Entity.SelectQuery;
 
 public class FilterBuilder(Query query, string rootTableAlias, TableJoinsStorage joinsStorage, 
-    EntityStructureManager structureManager)
+    EntityStructure entityStructure, EntityStructureManager structureManager)
 {
-    private const string SubEntityPathPattern = @"\[(.*?):(.*?):(.*?)\]\.(.*)";
-    
     public void AppendFilter(SelectFilter selectFilter) {
         AppendFilterInternal(query, selectFilter);
     }
@@ -41,11 +38,54 @@ public class FilterBuilder(Query query, string rootTableAlias, TableJoinsStorage
     }
 
     private void ApplyFilterPredicates(SelectFilter selectFilter, Query filterGroup) {
-        if (selectFilter.Predicates == null || selectFilter.Predicates.Count == 0) return;
-        var columnPath = $"{rootTableAlias}.{selectFilter.Path}";
-        var predicatesList = selectFilter.Predicates.ToList();
+        if (selectFilter.Predicates == null || selectFilter.Predicates.Count == 0 
+                                            || string.IsNullOrEmpty(selectFilter.Path)) return;
+        var pathSegments = selectFilter.Path.Split('.');
+        if (pathSegments.Length > 1) {
+            var referencePath = string.Join(".", pathSegments.Take(pathSegments.Length - 1));
+            var joinMatch = joinsStorage.FindJoinPath(referencePath);
+            if (joinMatch.Join != null && string.IsNullOrEmpty(joinMatch.LeftoverPath)) {
+                ApplyDirectFilter(selectFilter, filterGroup, $"{joinMatch.Join.Alias}.{pathSegments.Last()}");
+            } else {
+                var joinAlias = (joinMatch.Join == null)
+                    ? BuildJoinPath(rootTableAlias, string.Empty, referencePath, entityStructure)
+                    : BuildJoinPath(joinMatch.Join.Alias, joinMatch.Join.JoinPath, joinMatch.LeftoverPath, 
+                        joinMatch.Join.PrimaryStructure);
+                ApplyDirectFilter(selectFilter, filterGroup, $"{joinAlias}.{pathSegments.Last()}");
+            }
+            return;
+        }
+        ApplyDirectFilter(selectFilter, filterGroup, $"{rootTableAlias}.{pathSegments.First()}");
+    }
+    
+    private void ApplyDirectFilter(SelectFilter selectFilter, Query filterGroup, string columnPath) {
+        var predicatesList = selectFilter.Predicates!.ToList();
         ApplyFilters(predicatesList, selectFilter.Logical, predicate => 
             ApplyFilterPredicate(filterGroup, columnPath, predicate), filterGroup);
+    }
+
+    private string BuildJoinPath(string parentAlias, string existingJoinPath, string fullJoinPath, 
+        EntityStructure entityStructure) {
+        var pathSegments = fullJoinPath.Split('.');
+        var accumulatedPaths = pathSegments
+            .Select((_, index) => string.Join('.', pathSegments.Take(index + 1)))
+            .ToArray();
+        var currentAlias = parentAlias;
+        foreach (var fullColumnPath in accumulatedPaths) {
+            var columnPath = fullColumnPath.Split('.').Last();
+            var foreignKeyStructure = entityStructure.FindForeignKeyStructure(fullColumnPath);
+            var refStructure = foreignKeyStructure.ReferenceEntityStructure;
+            var completeJoinPath = string.IsNullOrEmpty(existingJoinPath) ? fullColumnPath 
+                : $"{existingJoinPath}.{fullColumnPath}";
+            var tableAlias = joinsStorage.GetTableAlias(columnPath, completeJoinPath, refStructure, entityStructure);
+            query.LeftJoin(
+                $"{refStructure.Name} as {tableAlias}",
+                $"{currentAlias}.{foreignKeyStructure.PrimaryColumnName}",
+                $"{tableAlias}.{refStructure.PrimaryColumn.Name}"
+            );
+            currentAlias = tableAlias;
+        }
+        return currentAlias;
     }
 
     private static void ApplyFilterPredicate(Query filterGroup, string columnPath, FilterPredicate predicate) {
@@ -91,7 +131,10 @@ public class FilterBuilder(Query query, string rootTableAlias, TableJoinsStorage
             .As(alias)
             .WhereColumns($"{alias}.{subEntityConfig.JoinBy}", "=", $"{rootTableAlias}.{subEntityConfig.JoinTo}");
         if (selectFilter.SubFilter != null) {
-            var filterBuilder = new FilterBuilder(existsQuery, alias, new TableJoinsStorage(), structureManager);
+            var subStructure = structureManager.FindEntityStructureByName(subEntityConfig.Name)
+                .GetAwaiter().GetResult();
+            var filterBuilder = new FilterBuilder(existsQuery, alias, new TableJoinsStorage(), 
+                subStructure, structureManager);
             filterBuilder.AppendFilter(selectFilter.SubFilter);
         }
         if (subEntityConfig.Operator == Constants.Select.Exists) {
@@ -110,7 +153,10 @@ public class FilterBuilder(Query query, string rootTableAlias, TableJoinsStorage
             .WhereColumns($"{alias}.{subEntityConfig.JoinBy}", "=", $"{rootTableAlias}.{subEntityConfig.JoinTo}")
             .AsCount();
         if (selectFilter.SubFilter != null) {
-            var filterBuilder = new FilterBuilder(countQuery, alias, new TableJoinsStorage(), structureManager);
+            var subStructure = structureManager.FindEntityStructureByName(subEntityConfig.Name)
+                .GetAwaiter().GetResult();
+            var filterBuilder = new FilterBuilder(countQuery, alias, new TableJoinsStorage(), 
+                subStructure, structureManager);
             filterBuilder.AppendFilter(selectFilter.SubFilter);
         }
         var predicate = selectFilter.SubPredicate;

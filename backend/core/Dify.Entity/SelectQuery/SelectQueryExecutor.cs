@@ -58,7 +58,7 @@ public class SelectQueryExecutor(EntityStructureManager structureManager, QueryF
         subQueryBuilder.AppendSubQueries(rootQuery, subQueryExpressions, rootTableAlias);
         var joinBuilder = new JoinBuilder(rootQuery, joinsStorage, structureManager);
         joinBuilder.AppendLeftJoins(selectConfig.Expressions, rootTableAlias, rootStructure);
-        var filterBuilder = new FilterBuilder(rootQuery, rootTableAlias, joinsStorage, structureManager);
+        var filterBuilder = new FilterBuilder(rootQuery, rootTableAlias, joinsStorage, rootStructure, structureManager);
         filterBuilder.AppendFilter(selectConfig.Filter);
         if (selectConfig.Limit != null && selectConfig.Limit != 0) {
             rootQuery.Limit(selectConfig.Limit.Value);
