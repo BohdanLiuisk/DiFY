@@ -24,14 +24,17 @@ public class SubQueryBuilder(TableJoinsStorage joinsStorage, EntityStructureMana
         }
         Query subQuery;
         string subTableAlias;
+        string subEntityName;
         if (SubEntityConfig.IsSubEntityPath(selectExpression.SubEntity)) {
             var subEntity = SubEntityConfig.FromSubEntityPath(selectExpression.SubEntity);
-            subTableAlias = joinsStorage.GetTableAlias(subEntity.Name);
-            subQuery = new Query($"{subEntity.Name} as {subTableAlias}")
+            subEntityName = subEntity.Name;
+            subTableAlias = joinsStorage.GetTableAlias(subEntityName);
+            subQuery = new Query($"{subEntityName} as {subTableAlias}")
                 .WhereColumns($"{parentTableAlias}.{subEntity.JoinTo}", "=", $"{subTableAlias}.{subEntity.JoinBy}");
         } else {
-            subTableAlias = joinsStorage.GetTableAlias(selectExpression.SubEntity);
-            subQuery = new Query($"{selectExpression.SubEntity} as {subTableAlias}");
+            subEntityName = selectExpression.SubEntity;
+            subTableAlias = joinsStorage.GetTableAlias(subEntityName);
+            subQuery = new Query($"{subEntityName} as {subTableAlias}");
         }
         if (!string.IsNullOrEmpty(selectExpression.AggrFunc)) {
             ApplyAggregationFunction(subQuery, selectExpression);
@@ -42,7 +45,10 @@ public class SubQueryBuilder(TableJoinsStorage joinsStorage, EntityStructureMana
             subQuery.Limit(1);
         }
         if (selectExpression.Filter != null) {
-            var filterBuilder = new FilterBuilder(subQuery, subTableAlias, joinsStorage, structureManager);
+            var subStructure = structureManager.FindEntityStructureByName(subEntityName)
+                .GetAwaiter().GetResult();
+            var filterBuilder = new FilterBuilder(subQuery, subTableAlias, joinsStorage, 
+                subStructure, structureManager);
             filterBuilder.AppendFilter(selectExpression.Filter);
         }
         selectExpression.SelectAlias = SelectQueryUtils.GetColumnAlias(parentTableAlias, selectExpression.Alias);
