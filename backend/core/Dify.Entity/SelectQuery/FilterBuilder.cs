@@ -88,23 +88,75 @@ public class FilterBuilder(Query query, string rootTableAlias, TableJoinsStorage
         return currentAlias;
     }
 
-    private static void ApplyFilterPredicate(Query filterGroup, string columnPath, FilterPredicate predicate) {
+    private void ApplyFilterPredicate(Query filterGroup, string columnPath, FilterPredicate predicate) {
         if (string.IsNullOrEmpty(predicate.Operator)) return;
-        if (SelectQueryUtils.GetIsSqlOperator(predicate.Operator) && predicate.Value != null) {
-            var compareOperator = SelectQueryUtils.MapFilterOperatorToSqlOperator(predicate.Operator);
-            filterGroup.Where(columnPath, compareOperator, ConvertJsonElement(predicate.Value.Value));
-            return;
+        var columnName = columnPath[(columnPath.IndexOf('.') + 1)..];
+        var columnStructure = entityStructure.Columns.FirstOrDefault(c => c.DbName == columnName);
+        if (columnStructure == null) {
+            throw new InvalidOperationException($"Column {columnName} not found");
         }
-        switch (predicate) {
-            case { Operator: "in", Value: not null } 
-                when ConvertJsonElement(predicate.Value.Value) is List<object> arrayValue:
+        if (DbTypeUtils.GetIsDateTimeType(columnStructure.Type)) {
+            ApplyDateFilter(filterGroup, columnPath, predicate);
+        } else {
+            ApplyWhereFilter(filterGroup, columnPath, predicate);
+        }
+    }
+
+    private static void ApplyWhereFilter(Query filterGroup, string columnPath, FilterPredicate predicate) {
+        if (IsSqlComparison(predicate)) {
+            ApplyComparisonFilter(filterGroup, columnPath, predicate);
+        } else {
+            ApplyNonComparisonFilter(filterGroup, columnPath, predicate);
+        }
+    }
+    
+    private static void ApplyComparisonFilter(Query filterGroup, string columnPath, FilterPredicate predicate) {
+        var compareOperator = SelectQueryUtils.MapFilterOperatorToSqlOperator(predicate.Operator);
+        var convertedValue = ConvertJsonElement(predicate.Value!.Value);
+        filterGroup.Where(columnPath, compareOperator, convertedValue);
+    }
+    
+    private static void ApplyNonComparisonFilter(Query filterGroup, string columnPath, FilterPredicate predicate) {
+        switch (predicate.Operator) {
+            case Constants.Select.In when predicate.Value != null && 
+                             ConvertJsonElement(predicate.Value.Value) is List<object> arrayValue:
                 filterGroup.WhereIn(columnPath, arrayValue);
                 break;
-            case { Operator: "isNull" }:
+            case Constants.Select.IsNull:
                 filterGroup.WhereNull(columnPath);
                 break;
-            case { Operator: "isNotNull" }:
+            case Constants.Select.IsNotNull:
                 filterGroup.WhereNotNull(columnPath);
+                break;
+        }
+    }
+    
+    private static void ApplyDateFilter(Query filterGroup, string columnPath, FilterPredicate predicate) {
+        if (IsNonComparison(predicate)) {
+            ApplyNonComparisonFilter(filterGroup, columnPath, predicate);
+            return;
+        }
+        if (!IsSqlComparison(predicate)) return;
+        var compareOperator = SelectQueryUtils.MapFilterOperatorToSqlOperator(predicate.Operator);
+        var predicateValue = ConvertJsonElement(predicate.Value!.Value);
+        if (!string.IsNullOrEmpty(predicate.DatePart)) {
+            ApplyDatePartFilter(filterGroup, columnPath, compareOperator, predicateValue, predicate.DatePart);
+        } else if (DateTime.TryParse(predicateValue.ToString(), out var dateValue)) {
+            filterGroup.WhereDate(columnPath, compareOperator, dateValue);
+        } else {
+            throw new InvalidCastException($"Couldn't cast {predicateValue} to datetime");
+        }
+    }
+    
+    private static void ApplyDatePartFilter(Query filterGroup, string columnPath, string compareOperator, 
+        object predicateValue, string datePart) {
+        switch (datePart) {
+            case "time":
+                var timeSpan = TimeSpan.Parse(predicateValue.ToString() ?? string.Empty);
+                filterGroup.WhereTime(columnPath, compareOperator, timeSpan);
+                break;
+            default:
+                filterGroup.WhereDatePart(datePart, columnPath, compareOperator, predicateValue);
                 break;
         }
     }
@@ -164,6 +216,12 @@ public class FilterBuilder(Query query, string rootTableAlias, TableJoinsStorage
         filterGroup.WhereSub(countQuery, sqlOperator, ConvertJsonElement(predicate.Value.Value));
         return filterGroup;
     }
+    
+    private static bool IsSqlComparison(FilterPredicate predicate) =>
+        SelectQueryUtils.GetIsSqlComparisonOperator(predicate.Operator) && predicate.Value != null;
+    
+    private static bool IsNonComparison(FilterPredicate predicate) => 
+        predicate.Operator is Constants.Select.IsNull or Constants.Select.IsNotNull or Constants.Select.In;
     
     private static void ApplyFilters<T>(List<T> items, string logicalOp, Action<T> applyFilter, Query filterGroup) {
         for (var i = 0; i < items.Count; i++) {

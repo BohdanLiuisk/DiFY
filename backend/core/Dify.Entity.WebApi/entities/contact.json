@@ -65,6 +65,30 @@
       "size": 19,
       "precision": 5,
       "isNullable": true
+    },
+    {
+      "id": "7563e8fa-1117-4c1a-8622-dfae2ade7adb",
+      "name": "created_on_1",
+      "caption": "Created on 1",
+      "type": 5
+    },
+    {
+      "id": "3aaa2602-6c80-4274-8964-de3fee468dbd",
+      "name": "created_on_2",
+      "caption": "Created on 2",
+      "type": 6
+    },
+    {
+      "id": "c98b663d-6fd7-40dd-bdbb-96480712c0ea",
+      "name": "created_on_3",
+      "caption": "Created on 3",
+      "type": 26
+    },
+    {
+      "id": "3d89ffa5-db07-4646-9409-fba11f363c55",
+      "name": "created_on_4",
+      "caption": "Created on 4",
+      "type": 27
     }
   ]
 }

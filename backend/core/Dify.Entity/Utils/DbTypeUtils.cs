@@ -25,4 +25,8 @@ public static class DbTypeUtils
     public static bool GetSizePropertyApplicable(DbType dbType) {
         return dbType is DbType.String or DbType.StringFixedLength or DbType.Decimal;
     }
+
+    public static bool GetIsDateTimeType(DbType dbType) {
+        return dbType is DbType.Date or DbType.DateTime or DbType.DateTime2 or DbType.DateTimeOffset;
+    }
 }
