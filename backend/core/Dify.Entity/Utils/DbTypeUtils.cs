@@ -6,7 +6,7 @@ public static class DbTypeUtils
 {
     public static bool GetTypeCanBeChanged(DbType newType, DbType oldType) {
         return (GetIsNumberType(newType) && GetIsNumberType(oldType)) ||
-               (GetIsTextType(newType) && GetIsTextType(oldType));
+               (GetIsStringType(newType) && GetIsStringType(oldType));
     }
     
     public static bool GetIsNumberType(DbType dbType) {
@@ -14,7 +14,7 @@ public static class DbTypeUtils
             or DbType.Int16 or DbType.Int32 or DbType.Int64 or DbType.Single;
     }
     
-    public static bool GetIsTextType(DbType dbType) {
+    public static bool GetIsStringType(DbType dbType) {
         return dbType is DbType.String or DbType.StringFixedLength;
     }
     

@@ -20,5 +20,11 @@ public static class Constants
         public const string IsNull = "isNull";
         public const string IsNotNull = "isNotNull";
         public const string In = "in";
+        public const string Contains = "cts";
+        public const string NotContains = "ncts";
+        public const string StartsWith = "stw";
+        public const string NotStartsWith = "nstw";
+        public const string EndsWith = "edw";
+        public const string NotEndsWith = "nedw";
     }
 }

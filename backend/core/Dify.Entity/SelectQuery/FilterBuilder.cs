@@ -3,6 +3,7 @@ using Dify.Entity.SelectQuery.Models;
 using Dify.Entity.Structure;
 using Dify.Entity.Utils;
 using SqlKata;
+using static Dify.Entity.Utils.Constants;
 
 namespace Dify.Entity.SelectQuery;
 
@@ -14,10 +15,10 @@ public class FilterBuilder(Query query, string rootTableAlias, TableJoinsStorage
     }
     
     private void AppendFilterInternal(Query filterGroup, SelectFilter selectFilter) {
-        if (selectFilter.Type == Constants.Select.Clause) {
+        if (selectFilter.Type == Select.Clause) {
             filterGroup.Where(q => AppendClauseFilter(q, selectFilter));
         }
-        if (selectFilter.Type == Constants.Select.Group) {
+        if (selectFilter.Type == Select.Group) {
             filterGroup.Where(q => ApplyGroupFilter(q, selectFilter));
         }
     }
@@ -97,6 +98,8 @@ public class FilterBuilder(Query query, string rootTableAlias, TableJoinsStorage
         }
         if (DbTypeUtils.GetIsDateTimeType(columnStructure.Type)) {
             ApplyDateFilter(filterGroup, columnPath, predicate);
+        } else if (DbTypeUtils.GetIsStringType(columnStructure.Type) && IsStringComparison(predicate)) {
+            ApplyStringFilter(filterGroup, columnPath, predicate);
         } else {
             ApplyWhereFilter(filterGroup, columnPath, predicate);
         }
@@ -118,15 +121,41 @@ public class FilterBuilder(Query query, string rootTableAlias, TableJoinsStorage
     
     private static void ApplyNonComparisonFilter(Query filterGroup, string columnPath, FilterPredicate predicate) {
         switch (predicate.Operator) {
-            case Constants.Select.In when predicate.Value != null && 
+            case Select.In when predicate.Value != null && 
                              ConvertJsonElement(predicate.Value.Value) is List<object> arrayValue:
                 filterGroup.WhereIn(columnPath, arrayValue);
                 break;
-            case Constants.Select.IsNull:
+            case Select.IsNull:
                 filterGroup.WhereNull(columnPath);
                 break;
-            case Constants.Select.IsNotNull:
+            case Select.IsNotNull:
                 filterGroup.WhereNotNull(columnPath);
+                break;
+        }
+    }
+
+    private static void ApplyStringFilter(Query filterGroup, string columnPath, FilterPredicate predicate) {
+        if(predicate.Value == null) return;
+        var predicateValue = ConvertJsonElement(predicate.Value.Value);
+        var caseSensitive = predicate.CaseSensitive ?? false;
+        switch (predicate.Operator) {
+            case Select.Contains:
+                filterGroup.WhereContains(columnPath, predicateValue, caseSensitive);
+                break;
+            case Select.NotContains:
+                filterGroup.WhereNotContains(columnPath, predicateValue, caseSensitive);
+                break;
+            case Select.StartsWith:
+                filterGroup.WhereStarts(columnPath, predicateValue, caseSensitive);
+                break;
+            case Select.NotStartsWith:
+                filterGroup.WhereNotStarts(columnPath, predicateValue, caseSensitive);
+                break;
+            case Select.EndsWith:
+                filterGroup.WhereEnds(columnPath, predicateValue, caseSensitive);
+                break;
+            case Select.NotEndsWith:
+                filterGroup.WhereNotEnds(columnPath, predicateValue, caseSensitive);
                 break;
         }
     }
@@ -166,10 +195,10 @@ public class FilterBuilder(Query query, string rootTableAlias, TableJoinsStorage
         var subEntityConfig = SubEntityConfig.FromFilterPath(selectFilter.Path);
         var alias = joinsStorage.GetTableAlias(subEntityConfig.Name);
         switch (subEntityConfig.Operator) {
-            case Constants.Select.Exists:
-            case Constants.Select.NotExists:
+            case Select.Exists:
+            case Select.NotExists:
                 return AppendExistsFilter(filterGroup, selectFilter, subEntityConfig, alias);
-            case Constants.Select.Count:
+            case Select.Count:
                 return AppendCountFilter(filterGroup, selectFilter, subEntityConfig, alias);
             default:
                 throw new InvalidOperationException($"Unsupported operator: {subEntityConfig.Operator}");
@@ -189,7 +218,7 @@ public class FilterBuilder(Query query, string rootTableAlias, TableJoinsStorage
                 subStructure, structureManager);
             filterBuilder.AppendFilter(selectFilter.SubFilter);
         }
-        if (subEntityConfig.Operator == Constants.Select.Exists) {
+        if (subEntityConfig.Operator == Select.Exists) {
             filterGroup.WhereExists(existsQuery);
         } else {
             filterGroup.WhereNotExists(existsQuery);
@@ -221,13 +250,17 @@ public class FilterBuilder(Query query, string rootTableAlias, TableJoinsStorage
         SelectQueryUtils.GetIsSqlComparisonOperator(predicate.Operator) && predicate.Value != null;
     
     private static bool IsNonComparison(FilterPredicate predicate) => 
-        predicate.Operator is Constants.Select.IsNull or Constants.Select.IsNotNull or Constants.Select.In;
+        predicate.Operator is Select.IsNull or Select.IsNotNull or Select.In;
+
+    private static bool IsStringComparison(FilterPredicate predicate) =>
+        predicate.Operator is Select.Contains or Select.NotContains or Select.StartsWith
+            or Select.NotStartsWith or Select.EndsWith or Select.NotEndsWith;
     
     private static void ApplyFilters<T>(List<T> items, string logicalOp, Action<T> applyFilter, Query filterGroup) {
         for (var i = 0; i < items.Count; i++) {
             applyFilter(items[i]);
             var isNotLastItem = i != items.Count - 1;
-            var isLogicalOr = logicalOp == Constants.Select.Or;
+            var isLogicalOr = logicalOp == Select.Or;
             if (isNotLastItem && isLogicalOr) {
                 filterGroup.Or();
             }
