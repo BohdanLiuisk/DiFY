@@ -18,4 +18,7 @@ public class FilterPredicate
     
     [JsonPropertyName("datePart")]
     public string? DatePart { get; set; }
+    
+    [JsonPropertyName("caseSensitive")]
+    public bool? CaseSensitive { get; set; }
 }
