@@ -15,4 +15,7 @@ public class FilterPredicate
     
     [JsonPropertyName("value")]
     public JsonElement? Value { get; set; }
+    
+    [JsonPropertyName("datePart")]
+    public string? DatePart { get; set; }
 }

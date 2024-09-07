@@ -17,5 +17,8 @@ public static class Constants
         public const string Sum = "sum";
         public const string Asc = "asc";
         public const string Desc = "desc";
+        public const string IsNull = "isNull";
+        public const string IsNotNull = "isNotNull";
+        public const string In = "in";
     }
 }

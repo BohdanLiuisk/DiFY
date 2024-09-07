@@ -45,7 +45,7 @@ public static class SelectQueryUtils
         }
     }
 
-    public static bool GetIsSqlOperator(string filterOperator) {
+    public static bool GetIsSqlComparisonOperator(string filterOperator) {
         return _filterOperatorToSql.ContainsKey(filterOperator);
     }
 
