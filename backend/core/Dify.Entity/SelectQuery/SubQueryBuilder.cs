@@ -5,11 +5,13 @@ using SqlKata;
 
 namespace Dify.Entity.SelectQuery;
 
-public class SubQueryBuilder(TableJoinsStorage joinsStorage, EntityStructureManager structureManager)
+public class SubQueryBuilder(AliasStorage aliasStorage, EntityStructureManager structureManager)
 {
+    private readonly JoinsStorage _joinsStorage = new JoinsStorage(aliasStorage);
+    
     public void AppendSubQueries(Query query, List<SelectExpression> subQueries, string parentTableAlias) {
         foreach (var subQueryExpression in subQueries) {
-            var subQueryBuilder = new SubQueryBuilder(joinsStorage, structureManager);
+            var subQueryBuilder = new SubQueryBuilder(aliasStorage, structureManager);
             var subQuery = subQueryBuilder.BuildSubQuery(subQueryExpression, parentTableAlias);
             query.Select(subQuery, subQueryExpression.SelectAlias);
         }
@@ -28,12 +30,12 @@ public class SubQueryBuilder(TableJoinsStorage joinsStorage, EntityStructureMana
         if (SubEntityConfig.IsSubEntityPath(selectExpression.SubEntity)) {
             var subEntity = SubEntityConfig.FromSubEntityPath(selectExpression.SubEntity);
             subEntityName = subEntity.Name;
-            subTableAlias = joinsStorage.GetTableAlias(subEntityName);
+            subTableAlias = aliasStorage.GetTableAlias(subEntityName);
             subQuery = new Query($"{subEntityName} as {subTableAlias}")
                 .WhereColumns($"{parentTableAlias}.{subEntity.JoinTo}", "=", $"{subTableAlias}.{subEntity.JoinBy}");
         } else {
             subEntityName = selectExpression.SubEntity;
-            subTableAlias = joinsStorage.GetTableAlias(subEntityName);
+            subTableAlias = aliasStorage.GetTableAlias(subEntityName);
             subQuery = new Query($"{subEntityName} as {subTableAlias}");
         }
         if (!string.IsNullOrEmpty(selectExpression.AggrFunc)) {
@@ -47,7 +49,7 @@ public class SubQueryBuilder(TableJoinsStorage joinsStorage, EntityStructureMana
         if (selectExpression.Filter != null) {
             var subStructure = structureManager.FindEntityStructureByName(subEntityName)
                 .GetAwaiter().GetResult();
-            var filterBuilder = new FilterBuilder(subQuery, subTableAlias, joinsStorage, 
+            var filterBuilder = new FilterBuilder(subQuery, subTableAlias, aliasStorage, _joinsStorage,
                 subStructure, structureManager);
             filterBuilder.AppendFilter(selectExpression.Filter);
         }

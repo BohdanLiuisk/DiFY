@@ -3,38 +3,27 @@ using Dify.Entity.Structure;
 
 namespace Dify.Entity.SelectQuery;
 
-public class TableJoinsStorage
+public class JoinsStorage(AliasStorage aliasStorage)
 {
-    private readonly Dictionary<string, int> _tableAliases = new();
-
     private readonly List<JoinInfo> _joins = new();
-
+    
     public IEnumerable<JoinInfo> Joins => _joins;
     
-    public string GetTableAlias(string path, string fullPath, EntityStructure primaryStructure, EntityStructure parentStructure) {
-        var alias = GetTableAlias(path);
+    public string BuildJoinAlias(string path, string fullPath, EntityStructure primaryStructure, 
+        EntityStructure parentStructure) {
+        var alias = aliasStorage.GetTableAlias(path);
         var joinInfo = new JoinInfo(fullPath, alias, primaryStructure, parentStructure);
         _joins.Add(joinInfo);
         return alias;
     }
     
-    public string GetTableAlias(SelectExpression selectExpression, EntityStructure primaryStructure, 
+    public string BuildJoinAlias(SelectExpression selectExpression, EntityStructure primaryStructure, 
         EntityStructure parentStructure) {
-        var alias = GetTableAlias(selectExpression.Path);
+        var alias = aliasStorage.GetTableAlias(selectExpression.Path);
         var fullPath = selectExpression.GetFullPath();
         var joinInfo = new JoinInfo(fullPath, alias, primaryStructure, parentStructure);
         _joins.Add(joinInfo);
         return alias;
-    }
-    
-    public string GetTableAlias(string refColumnPath) {
-        if (_tableAliases.TryGetValue(refColumnPath, out var aliasCount)) {
-            var tableAlias = $"{refColumnPath}_{aliasCount}";
-            _tableAliases[refColumnPath] = ++aliasCount;
-            return tableAlias;
-        }
-        _tableAliases[refColumnPath] = 1;
-        return $"{refColumnPath}";
     }
     
     public JoinMatchResult FindJoinPath(string inputPath) {
@@ -48,7 +37,6 @@ public class TableJoinsStorage
     }
 
     public void Clear() {
-        _tableAliases.Clear();
         _joins.Clear();
     }
 }
