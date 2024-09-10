@@ -18,7 +18,7 @@ public class SelectFilter
     public List<SelectFilter> Items { get; set; } = new();
 
     [JsonPropertyName("predicates")]
-    public List<FilterPredicate>? Predicates { get; set; } = new();
+    public List<FilterPredicate> Predicates { get; set; } = new();
     
     [JsonPropertyName("subPredicate")]
     public FilterPredicate? SubPredicate { get; set; }

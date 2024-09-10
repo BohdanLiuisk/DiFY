@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using Dify.Entity.SelectQuery.Enums;
 using Dify.Entity.SelectQuery.Models;
 using Dify.Entity.Structure;
 using Dify.Entity.Utils;
@@ -7,7 +8,7 @@ using static Dify.Entity.Utils.Constants;
 
 namespace Dify.Entity.SelectQuery;
 
-public class FilterBuilder(Query query, string rootTableAlias, TableJoinsStorage joinsStorage, 
+public class FilterBuilder(Query query, string rootTableAlias, AliasStorage aliasStorage, JoinsStorage joinsStorage,
     EntityStructure entityStructure, EntityStructureManager structureManager)
 {
     public void AppendFilter(SelectFilter selectFilter) {
@@ -39,30 +40,34 @@ public class FilterBuilder(Query query, string rootTableAlias, TableJoinsStorage
     }
 
     private void ApplyFilterPredicates(SelectFilter selectFilter, Query filterGroup) {
-        if (selectFilter.Predicates == null || selectFilter.Predicates.Count == 0 
-                                            || string.IsNullOrEmpty(selectFilter.Path)) return;
-        var pathSegments = selectFilter.Path.Split('.');
-        if (pathSegments.Length > 1) {
-            var referencePath = string.Join(".", pathSegments.Take(pathSegments.Length - 1));
-            var joinMatch = joinsStorage.FindJoinPath(referencePath);
-            if (joinMatch.Join != null && string.IsNullOrEmpty(joinMatch.LeftoverPath)) {
-                ApplyDirectFilter(selectFilter, filterGroup, $"{joinMatch.Join.Alias}.{pathSegments.Last()}");
-            } else {
-                var joinAlias = (joinMatch.Join == null)
-                    ? BuildJoinPath(rootTableAlias, string.Empty, referencePath, entityStructure)
-                    : BuildJoinPath(joinMatch.Join.Alias, joinMatch.Join.JoinPath, joinMatch.LeftoverPath, 
-                        joinMatch.Join.PrimaryStructure);
-                ApplyDirectFilter(selectFilter, filterGroup, $"{joinAlias}.{pathSegments.Last()}");
-            }
-            return;
-        }
-        ApplyDirectFilter(selectFilter, filterGroup, $"{rootTableAlias}.{pathSegments.First()}");
+        if (selectFilter.Predicates.Count == 0 || string.IsNullOrEmpty(selectFilter.Path)) return;
+        var pathInfo = BuildColumnPathInfo(selectFilter.Path);
+        ApplyFilters(selectFilter.Predicates, selectFilter.Logical, predicate => 
+            ApplyFilterPredicate(filterGroup, pathInfo, predicate), filterGroup);
     }
-    
-    private void ApplyDirectFilter(SelectFilter selectFilter, Query filterGroup, string columnPath) {
-        var predicatesList = selectFilter.Predicates!.ToList();
-        ApplyFilters(predicatesList, selectFilter.Logical, predicate => 
-            ApplyFilterPredicate(filterGroup, columnPath, predicate), filterGroup);
+
+    private ColumnPathInfo BuildColumnPathInfo(string path) {
+        var pathSegments = path.Split('.');
+        if (pathSegments.Length <= 1) {
+            var columnPath = $"{rootTableAlias}.{path}";
+            var columnStructure = entityStructure.FindColumn(path);
+            return new ColumnPathInfo(Path: columnPath, ColumnStructure: columnStructure);
+        }
+        var referencePath = string.Join(".", pathSegments.Take(pathSegments.Length - 1));
+        var joinMatch = joinsStorage.FindJoinPath(referencePath);
+        var columnName = pathSegments.Last();
+        if (joinMatch.Join != null && string.IsNullOrEmpty(joinMatch.LeftoverPath)) {
+            var columnStructure = joinMatch.Join.PrimaryStructure.FindColumn(columnName);
+            return new ColumnPathInfo(Path: $"{joinMatch.Join.Alias}.{columnName}", ColumnStructure: columnStructure);
+        } else {
+            var joinAlias = joinMatch.Join == null
+                ? BuildJoinPath(rootTableAlias, string.Empty, referencePath, entityStructure)
+                : BuildJoinPath(joinMatch.Join.Alias, joinMatch.Join.JoinPath, joinMatch.LeftoverPath, 
+                    joinMatch.Join.PrimaryStructure);
+            var columnStructure = joinsStorage.FindJoinPath(referencePath).Join!.PrimaryStructure
+                .FindColumn(columnName);
+            return new ColumnPathInfo(Path: $"{joinAlias}.{columnName}", columnStructure);
+        }
     }
 
     private string BuildJoinPath(string parentAlias, string existingJoinPath, string fullJoinPath, 
@@ -78,7 +83,7 @@ public class FilterBuilder(Query query, string rootTableAlias, TableJoinsStorage
             var refStructure = foreignKeyStructure.ReferenceEntityStructure;
             var completeJoinPath = string.IsNullOrEmpty(existingJoinPath) ? fullColumnPath 
                 : $"{existingJoinPath}.{fullColumnPath}";
-            var tableAlias = joinsStorage.GetTableAlias(columnPath, completeJoinPath, refStructure, entityStructure);
+            var tableAlias = joinsStorage.BuildJoinAlias(columnPath, completeJoinPath, refStructure, entityStructure);
             query.LeftJoin(
                 $"{refStructure.Name} as {tableAlias}",
                 $"{currentAlias}.{foreignKeyStructure.PrimaryColumnName}",
@@ -89,24 +94,43 @@ public class FilterBuilder(Query query, string rootTableAlias, TableJoinsStorage
         return currentAlias;
     }
 
-    private void ApplyFilterPredicate(Query filterGroup, string columnPath, FilterPredicate predicate) {
-        if (string.IsNullOrEmpty(predicate.Operator)) return;
-        var columnName = columnPath[(columnPath.IndexOf('.') + 1)..];
-        var columnStructure = entityStructure.Columns.FirstOrDefault(c => c.DbName == columnName);
-        if (columnStructure == null) {
-            throw new InvalidOperationException($"Column {columnName} not found");
-        }
-        if (DbTypeUtils.GetIsDateTimeType(columnStructure.Type)) {
-            ApplyDateFilter(filterGroup, columnPath, predicate);
-        } else if (DbTypeUtils.GetIsStringType(columnStructure.Type) && IsStringComparison(predicate)) {
-            ApplyStringFilter(filterGroup, columnPath, predicate);
-        } else {
-            ApplyWhereFilter(filterGroup, columnPath, predicate);
+    private void ApplyFilterPredicate(Query filterGroup, ColumnPathInfo pathInfo, FilterPredicate predicate) {
+        switch (predicate.ValueType) {
+            case PredicateValueType.Value:
+                ApplyFilterByValue(filterGroup, pathInfo, predicate);
+                break;
+            case PredicateValueType.Column:
+                ApplyWhereColumnsFilter(filterGroup, pathInfo, predicate);
+                break;
+            case PredicateValueType.SubQuery:
+                break;
         }
     }
 
+    private static void ApplyFilterByValue(Query filterGroup, ColumnPathInfo pathInfo, FilterPredicate predicate) {
+        if (string.IsNullOrEmpty(predicate.Operator)) return;
+        if (DbTypeUtils.GetIsDateTimeType(pathInfo.ColumnStructure.Type)) {
+            ApplyDateFilter(filterGroup, pathInfo.Path, predicate);
+        } else if (DbTypeUtils.GetIsStringType(pathInfo.ColumnStructure.Type) && IsStringComparison(predicate)) {
+            ApplyStringFilter(filterGroup, pathInfo.Path, predicate);
+        } else {
+            ApplyWhereFilter(filterGroup, pathInfo.Path, predicate);
+        }
+    }
+
+    private void ApplyWhereColumnsFilter(Query filterGroup, ColumnPathInfo pathInfo, FilterPredicate predicate) {
+        if (!SelectQueryUtils.GetIsSqlComparisonOperator(predicate.Operator)) return;
+        var comparePath = ConvertJsonElement(predicate.Value).ToString();
+        if (comparePath == null) {
+            throw new ArgumentNullException(nameof(predicate.Value), "Compared column path cannot be empty");
+        }
+        var compareOperator = SelectQueryUtils.MapFilterOperatorToSqlOperator(predicate.Operator);
+        var comparePathInfo = BuildColumnPathInfo(comparePath);
+        filterGroup.WhereColumns(pathInfo.Path, compareOperator, comparePathInfo.Path);
+    }
+
     private static void ApplyWhereFilter(Query filterGroup, string columnPath, FilterPredicate predicate) {
-        if (IsSqlComparison(predicate)) {
+        if (SelectQueryUtils.GetIsSqlComparisonOperator(predicate.Operator)) {
             ApplyComparisonFilter(filterGroup, columnPath, predicate);
         } else {
             ApplyNonComparisonFilter(filterGroup, columnPath, predicate);
@@ -115,14 +139,13 @@ public class FilterBuilder(Query query, string rootTableAlias, TableJoinsStorage
     
     private static void ApplyComparisonFilter(Query filterGroup, string columnPath, FilterPredicate predicate) {
         var compareOperator = SelectQueryUtils.MapFilterOperatorToSqlOperator(predicate.Operator);
-        var convertedValue = ConvertJsonElement(predicate.Value!.Value);
+        var convertedValue = ConvertJsonElement(predicate.Value);
         filterGroup.Where(columnPath, compareOperator, convertedValue);
     }
     
     private static void ApplyNonComparisonFilter(Query filterGroup, string columnPath, FilterPredicate predicate) {
         switch (predicate.Operator) {
-            case Select.In when predicate.Value != null && 
-                             ConvertJsonElement(predicate.Value.Value) is List<object> arrayValue:
+            case Select.In when ConvertJsonElement(predicate.Value) is List<object> arrayValue:
                 filterGroup.WhereIn(columnPath, arrayValue);
                 break;
             case Select.IsNull:
@@ -136,7 +159,7 @@ public class FilterBuilder(Query query, string rootTableAlias, TableJoinsStorage
 
     private static void ApplyStringFilter(Query filterGroup, string columnPath, FilterPredicate predicate) {
         if(predicate.Value == null) return;
-        var predicateValue = ConvertJsonElement(predicate.Value.Value);
+        var predicateValue = ConvertJsonElement(predicate.Value);
         var caseSensitive = predicate.CaseSensitive ?? false;
         switch (predicate.Operator) {
             case Select.Contains:
@@ -165,9 +188,9 @@ public class FilterBuilder(Query query, string rootTableAlias, TableJoinsStorage
             ApplyNonComparisonFilter(filterGroup, columnPath, predicate);
             return;
         }
-        if (!IsSqlComparison(predicate)) return;
+        if (!SelectQueryUtils.GetIsSqlComparisonOperator(predicate.Operator)) return;
         var compareOperator = SelectQueryUtils.MapFilterOperatorToSqlOperator(predicate.Operator);
-        var predicateValue = ConvertJsonElement(predicate.Value!.Value);
+        var predicateValue = ConvertJsonElement(predicate.Value);
         if (!string.IsNullOrEmpty(predicate.DatePart)) {
             ApplyDatePartFilter(filterGroup, columnPath, compareOperator, predicateValue, predicate.DatePart);
         } else if (DateTime.TryParse(predicateValue.ToString(), out var dateValue)) {
@@ -193,7 +216,7 @@ public class FilterBuilder(Query query, string rootTableAlias, TableJoinsStorage
     private Query AppendSubEntityClauseFilter(Query filterGroup, SelectFilter selectFilter) {
         if(string.IsNullOrEmpty(selectFilter.Path)) return filterGroup;
         var subEntityConfig = SubEntityConfig.FromFilterPath(selectFilter.Path);
-        var alias = joinsStorage.GetTableAlias(subEntityConfig.Name);
+        var alias = aliasStorage.GetTableAlias(subEntityConfig.Name);
         switch (subEntityConfig.Operator) {
             case Select.Exists:
             case Select.NotExists:
@@ -214,7 +237,7 @@ public class FilterBuilder(Query query, string rootTableAlias, TableJoinsStorage
         if (selectFilter.SubFilter != null) {
             var subStructure = structureManager.FindEntityStructureByName(subEntityConfig.Name)
                 .GetAwaiter().GetResult();
-            var filterBuilder = new FilterBuilder(existsQuery, alias, new TableJoinsStorage(), 
+            var filterBuilder = new FilterBuilder(existsQuery, alias, aliasStorage, new JoinsStorage(aliasStorage), 
                 subStructure, structureManager);
             filterBuilder.AppendFilter(selectFilter.SubFilter);
         }
@@ -236,18 +259,15 @@ public class FilterBuilder(Query query, string rootTableAlias, TableJoinsStorage
         if (selectFilter.SubFilter != null) {
             var subStructure = structureManager.FindEntityStructureByName(subEntityConfig.Name)
                 .GetAwaiter().GetResult();
-            var filterBuilder = new FilterBuilder(countQuery, alias, new TableJoinsStorage(), 
+            var filterBuilder = new FilterBuilder(countQuery, alias, aliasStorage, new JoinsStorage(aliasStorage), 
                 subStructure, structureManager);
             filterBuilder.AppendFilter(selectFilter.SubFilter);
         }
         var predicate = selectFilter.SubPredicate;
         var sqlOperator = SelectQueryUtils.MapFilterOperatorToSqlOperator(predicate.Operator);
-        filterGroup.WhereSub(countQuery, sqlOperator, ConvertJsonElement(predicate.Value.Value));
+        filterGroup.WhereSub(countQuery, sqlOperator, ConvertJsonElement(predicate.Value));
         return filterGroup;
     }
-    
-    private static bool IsSqlComparison(FilterPredicate predicate) =>
-        SelectQueryUtils.GetIsSqlComparisonOperator(predicate.Operator) && predicate.Value != null;
     
     private static bool IsNonComparison(FilterPredicate predicate) => 
         predicate.Operator is Select.IsNull or Select.IsNotNull or Select.In;
@@ -267,16 +287,20 @@ public class FilterBuilder(Query query, string rootTableAlias, TableJoinsStorage
         }
     }
     
-    private static object ConvertJsonElement(JsonElement element) {
-        return element.ValueKind switch {
-            JsonValueKind.String => element.GetString() ?? string.Empty,
-            JsonValueKind.Number => element.TryGetInt32(out int intValue) ? intValue
-                : element.TryGetInt64(out long longValue) ? longValue
-                : element.TryGetDouble(out double doubleValue) ? doubleValue
+    private static object ConvertJsonElement(JsonElement? element) {
+        if (element == null) {
+            throw new ArgumentNullException(nameof(element), "Unsupported filter value");
+        }
+        var jsonElement = element.Value;
+        return jsonElement.ValueKind switch {
+            JsonValueKind.String => jsonElement.GetString() ?? string.Empty,
+            JsonValueKind.Number => jsonElement.TryGetInt32(out int intValue) ? intValue
+                : jsonElement.TryGetInt64(out long longValue) ? longValue
+                : jsonElement.TryGetDouble(out double doubleValue) ? doubleValue
                 : throw new NotSupportedException($"Unsupported JsonElement value: {element}"),
-            JsonValueKind.True or JsonValueKind.False => element.GetBoolean(),
-            JsonValueKind.Array => element.EnumerateArray().Select(ConvertJsonElement).ToList(),
-            _ => throw new NotSupportedException($"Unsupported JsonElement kind: {element.ValueKind}")
+            JsonValueKind.True or JsonValueKind.False => jsonElement.GetBoolean(),
+            JsonValueKind.Array => jsonElement.EnumerateArray().Select(e => ConvertJsonElement(e)).ToList(),
+            _ => throw new NotSupportedException($"Unsupported JsonElement kind: {jsonElement.ValueKind}")
         };
     }
 }

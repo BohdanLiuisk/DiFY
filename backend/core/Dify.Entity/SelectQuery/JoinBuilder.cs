@@ -6,7 +6,8 @@ using SqlKata;
 
 namespace Dify.Entity.SelectQuery;
 
-public class JoinBuilder(Query query, TableJoinsStorage joinsStorage, EntityStructureManager structureManager)
+public class JoinBuilder(Query query, AliasStorage aliasStorage, JoinsStorage joinsStorage, 
+    EntityStructureManager structureManager)
 {
     public void AppendLeftJoins(List<SelectExpression> leftColumns, string parentTableAlias, 
         EntityStructure parentStructure) {
@@ -19,7 +20,7 @@ public class JoinBuilder(Query query, TableJoinsStorage joinsStorage, EntityStru
         var referenceColumn = parentStructure.Columns.FirstOrDefault(c => c.Name == expression.Path);
         if(referenceColumn?.ForeignKeyStructure == null) return;
         var refEntityStructure = referenceColumn.ForeignKeyStructure.ReferenceEntityStructure;
-        var tableAlias = joinsStorage.GetTableAlias(expression, refEntityStructure, parentStructure);
+        var tableAlias = joinsStorage.BuildJoinAlias(expression, refEntityStructure, parentStructure);
         query.LeftJoin(
             $"{refEntityStructure.Name} as {tableAlias}",
             $"{parentTableAlias}.{referenceColumn.DbName}",
@@ -29,7 +30,7 @@ public class JoinBuilder(Query query, TableJoinsStorage joinsStorage, EntityStru
         var queryColumns = new SelectColumnBuilder(columnExpressions, refEntityStructure, tableAlias).BuildAliases();
         query.Select(queryColumns);
         var subQueryExpressions = expression.Columns.Where(c => c.Type == ExpressionType.SubQuery).ToList();
-        var subQueryBuilder = new SubQueryBuilder(joinsStorage, structureManager);
+        var subQueryBuilder = new SubQueryBuilder(aliasStorage, structureManager);
         subQueryBuilder.AppendSubQueries(query, subQueryExpressions, tableAlias);
         if (expression.Columns.Count != 0) {
             AppendLeftJoins(expression.Columns, tableAlias, refEntityStructure);

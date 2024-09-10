@@ -63,6 +63,14 @@ public class EntityStructure
         _indexes.Add(indexStructure);
     }
 
+    public EntityColumnStructure FindColumn(string columnName) {
+        var column = _columns.FirstOrDefault(c => c.Name == columnName);
+        if (column == null) {
+            throw new KeyNotFoundException($"Column {columnName} not found.");
+        }
+        return column;
+    }
+
     public EntityForeignKeyStructure FindForeignKeyStructure(string columnPath) {
         var columnPaths = columnPath.Split('.').ToList();
         var columnStructure = FindReferenceColumnStructure(columnPaths.First());

@@ -89,6 +89,14 @@
       "name": "created_on_4",
       "caption": "Created on 4",
       "type": 27
+    },
+    {
+      "id": "7e78c502-33b0-4a54-84cd-8a1b0cbe09c2",
+      "name": "primary_address",
+      "caption": "Primary address",
+      "type": 16,
+      "size": 300,
+      "isNullable": true
     }
   ]
 }

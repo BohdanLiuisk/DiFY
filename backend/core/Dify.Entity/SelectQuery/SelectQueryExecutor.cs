@@ -10,7 +10,7 @@ using SqlKata.Execution;
 namespace Dify.Entity.SelectQuery;
 
 public class SelectQueryExecutor(EntityStructureManager structureManager, QueryFactory queryFactory, 
-        TableJoinsStorage joinsStorage) 
+        AliasStorage aliasStorage) 
     : ISelectQueryExecutor
 {
     public async Task<string> ExecuteAsync(SelectQueryConfig selectConfig) {
@@ -26,7 +26,7 @@ public class SelectQueryExecutor(EntityStructureManager structureManager, QueryF
     private async Task<JObject> ExecuteInternal(SelectQueryConfig selectConfig) {
         var rootStructure = await structureManager.FindEntityStructureByName(selectConfig.EntityName);
         var rootQuery = CreateRootQuery(selectConfig, rootStructure);
-        joinsStorage.Clear();
+        aliasStorage.Clear();
         return await BuildJsonResult(selectConfig, rootQuery, rootStructure);
     }
 
@@ -47,18 +47,20 @@ public class SelectQueryExecutor(EntityStructureManager structureManager, QueryF
     }
 
     private Query CreateRootQuery(SelectQueryConfig selectConfig, EntityStructure rootStructure) {
-        var rootTableAlias = joinsStorage.GetTableAlias(selectConfig.EntityName);
+        var rootTableAlias = aliasStorage.GetTableAlias(selectConfig.EntityName);
         var columnExpressions = selectConfig.Expressions.Where(e => e.Type == ExpressionType.Column).ToList();
         var selectBuilder = new SelectColumnBuilder(columnExpressions, rootStructure, rootTableAlias);
         var queryColumns = selectBuilder.BuildAliases();
         var rootQuery = new Query($"{selectConfig.EntityName} as {rootTableAlias}");
         rootQuery.Select(queryColumns);
         var subQueryExpressions = selectConfig.Expressions.Where(e => e.Type == ExpressionType.SubQuery).ToList();
-        var subQueryBuilder = new SubQueryBuilder(joinsStorage, structureManager);
+        var subQueryBuilder = new SubQueryBuilder(aliasStorage, structureManager);
         subQueryBuilder.AppendSubQueries(rootQuery, subQueryExpressions, rootTableAlias);
-        var joinBuilder = new JoinBuilder(rootQuery, joinsStorage, structureManager);
+        var joinsStorage = new JoinsStorage(aliasStorage);
+        var joinBuilder = new JoinBuilder(rootQuery, aliasStorage, joinsStorage, structureManager);
         joinBuilder.AppendLeftJoins(selectConfig.Expressions, rootTableAlias, rootStructure);
-        var filterBuilder = new FilterBuilder(rootQuery, rootTableAlias, joinsStorage, rootStructure, structureManager);
+        var filterBuilder = new FilterBuilder(rootQuery, rootTableAlias, aliasStorage, joinsStorage,
+            rootStructure, structureManager);
         filterBuilder.AppendFilter(selectConfig.Filter);
         if (selectConfig.Limit != null && selectConfig.Limit != 0) {
             rootQuery.Limit(selectConfig.Limit.Value);
