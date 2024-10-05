@@ -10,12 +10,12 @@ public static class DbTypeUtils
     }
     
     public static bool GetIsNumberType(DbType dbType) {
-        return dbType is DbType.Byte or DbType.Currency or DbType.Decimal 
-            or DbType.Int16 or DbType.Int32 or DbType.Int64 or DbType.Single;
+        return dbType is DbType.Currency or DbType.Decimal 
+            or DbType.Int16 or DbType.Int32 or DbType.Int64 or DbType.Single or DbType.Double;
     }
     
     public static bool GetIsStringType(DbType dbType) {
-        return dbType is DbType.String or DbType.StringFixedLength;
+        return dbType is DbType.String;
     }
     
     public static bool GetPrecisionPropertyApplicable(DbType dbType) {
@@ -23,10 +23,10 @@ public static class DbTypeUtils
     }
 
     public static bool GetSizePropertyApplicable(DbType dbType) {
-        return dbType is DbType.String or DbType.StringFixedLength or DbType.Decimal;
+        return dbType is DbType.String or DbType.Decimal;
     }
 
     public static bool GetIsDateTimeType(DbType dbType) {
-        return dbType is DbType.Date or DbType.DateTime or DbType.DateTime2 or DbType.DateTimeOffset;
+        return dbType is DbType.Date or DbType.DateTime or DbType.DateTimeOffset;
     }
 }

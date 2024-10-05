@@ -47,23 +47,21 @@
       "name": "email",
       "caption": "Email",
       "type": 16,
-      "size": 50,
+      "size": 56,
       "isNullable": true
     },
     {
       "id": "93c69e3e-e119-4870-8049-33a5e7db8eff",
       "name": "age",
       "caption": "Age",
-      "type": 11,
+      "type": 10,
       "isNullable": true
     },
     {
       "id": "76899918-4d9e-4163-8e71-289733172c3a",
       "name": "max_price",
       "caption": "Max price",
-      "type": 7,
-      "size": 19,
-      "precision": 5,
+      "type": 4,
       "isNullable": true
     },
     {
@@ -96,6 +94,39 @@
       "caption": "Primary address",
       "type": 16,
       "size": 300,
+      "isNullable": true
+    },
+    {
+      "id": "a61418a6-5c5e-4a4a-9b6a-4541fcb39589",
+      "name": "notest",
+      "caption": "Notest",
+      "type": 16
+    },
+    {
+      "id": "a244a309-57d9-4c05-a426-41cc76b8dfc5",
+      "name": "notest2",
+      "caption": "Notest2",
+      "type": 16,
+      "size": 26,
+      "isNullable": false
+    },
+    {
+      "id": "05eb4249-f2b2-49ca-bba5-505b184f4eb8",
+      "name": "created_on_5",
+      "caption": "Created on 5",
+      "type": 17
+    },
+    {
+      "id": "813b9973-f2b7-4780-b3c0-9696303d813a",
+      "name": "file1",
+      "caption": "file1",
+      "type": 1
+    },
+    {
+      "id": "cfa69227-8baf-4a3d-8fcc-962f64fb1b8f",
+      "name": "max_price2",
+      "caption": "Max price2",
+      "type": 7,
       "isNullable": true
     }
   ]

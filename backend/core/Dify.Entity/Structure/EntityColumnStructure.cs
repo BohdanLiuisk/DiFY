@@ -8,10 +8,6 @@ namespace Dify.Entity.Structure;
 
 public class EntityColumnStructure
 {
-    private const int DecimalMaxSize = 19;
-    
-    private const int DecimalPrecision = 5;
-    
     internal EntityColumnStructure(EntityStructure entityStructure, ColumnDescriptor columnDescriptor) {
         var columnType = (DbType)columnDescriptor.Type;
         var dbName = GetColumnDbName(columnDescriptor);
@@ -26,9 +22,9 @@ public class EntityColumnStructure
         TableName = entityStructure.Name;
         DbName = dbName;
         IsUnique = isUnique;
-        Size = columnDescriptor.Size;
-        Precision = columnDescriptor.Precision;
         IsPrimaryKey = isPrimaryKey;
+        SetSize(columnDescriptor.Size);
+        SetPrecision(columnDescriptor.Precision);
         SetIsNullable(columnDescriptor.IsNullable);
         State = EntityStructureElementState.New;
     }
@@ -129,18 +125,15 @@ public class EntityColumnStructure
             Type = (DbType)columnDescriptor.Type;
             State = EntityStructureElementState.Updated;
         }
-        if (!IsNullable && columnDescriptor.IsNullable.HasValue && columnDescriptor.IsNullable.Value && !IsPrimaryKey) {
+        if (!IsNullable && columnDescriptor.IsNullable == true && !IsPrimaryKey) {
             IsNullable = true;
             State = EntityStructureElementState.Updated;
         }
-        if (columnDescriptor.Size != Size) {
-            Size = columnDescriptor.Size;
-            State = EntityStructureElementState.Updated;
-        }
         if (columnDescriptor.Precision != Precision) {
-            Precision = columnDescriptor.Precision;
+            SetPrecision(columnDescriptor.Precision);
             State = EntityStructureElementState.Updated;
         }
+        UpdateSize(columnDescriptor.Size);
     }
     
     private AlterColumnResult ValidateColumnChange(ColumnDescriptor columnDescriptor) {
@@ -149,7 +142,7 @@ public class EntityColumnStructure
         if (columnDescriptor.Name != Name) {
             alterResult.AddError("Column name cannot be changed");
         }
-        if (columnDescriptor.IsNullable != null && !columnDescriptor.IsNullable.Value && IsNullable) {
+        if (columnDescriptor.IsNullable == false && IsNullable) {
             alterResult.AddError("Nullable column cannot be not nullable (for now)");
         }
         if (IsPrimaryKey && columnDescriptor.IsNullable.HasValue && columnDescriptor.IsNullable.Value) {
@@ -167,10 +160,47 @@ public class EntityColumnStructure
             !DbTypeUtils.GetSizePropertyApplicable(newType)) {
             alterResult.AddError("Size cannot be changed or not applicable for this type");
         }
+        if (columnDescriptor.Size != null && columnDescriptor.Size < Size) {
+            alterResult.AddError("Size cannot be changed to smaller value");
+        }
+        if (columnDescriptor.Size != null && Size == null && Type == DbType.String) {
+            alterResult.AddError("Size cannot be changed on unlimited text type");
+        }
         if (newType != Type && !DbTypeUtils.GetTypeCanBeChanged(newType, Type)) {
             alterResult.AddError($"Current type {Type.ToString()} cannot be changed to {newType.ToString()}");
         }
         return alterResult;
+    }
+
+    private void UpdateSize(int? size) {
+        if (size != Size) {
+            SetSize(size);
+            State = EntityStructureElementState.Updated;
+            return;
+        }
+        if (Type == DbType.Decimal && size == null && Size != Constants.DecimalDefaultSize) {
+            SetSize(size);
+            State = EntityStructureElementState.Updated;
+        }
+    }
+
+    private void SetSize(int? size) {
+        if (!DbTypeUtils.GetSizePropertyApplicable(Type)) {
+            Size = null;
+            return;
+        }
+        Size = Type switch {
+            DbType.Decimal => size ?? Constants.DecimalDefaultSize,
+            _ => size
+        };
+    }
+
+    private void SetPrecision(int? precision) {
+        if (!DbTypeUtils.GetPrecisionPropertyApplicable(Type)) {
+            Precision = null;
+            return;
+        }
+        Precision = precision ?? Constants.DecimalDefaultPrecision;
     }
 
     private void SetIsNullable(bool? isNullable) {

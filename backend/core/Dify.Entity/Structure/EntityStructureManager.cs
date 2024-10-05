@@ -126,6 +126,7 @@ public class EntityStructureManager(
             foreach (var columnDescriptor in tableDescriptor.Columns) {
                 var columnStructure = entityStructure.Columns.FirstOrDefault(c => c.Id == columnDescriptor.Id);
                 if (columnStructure == null) continue;
+                if (newColumns.Any(c => c.Id == columnStructure.Id)) continue;
                 var result = columnStructure.AlterColumn(columnDescriptor);
                 if (!result.IsSuccess) {
                     modifyResult.AddErrors(result.Errors.ToList());
