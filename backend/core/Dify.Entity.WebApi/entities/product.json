@@ -39,6 +39,24 @@
       "caption": "Description",
       "type": 16,
       "size": 500
+    },
+    {
+      "id": "936fb8c8-fe08-4085-b6b9-d7c4abf40420",
+      "name": "price3",
+      "caption": "Price3",
+      "type": 8
+    },
+    {
+      "id": "7d066796-702d-4a76-8ad8-1ba760f01033",
+      "name": "price4",
+      "caption": "Price4",
+      "type": 15
+    },
+    {
+      "id": "cb308697-4b70-443f-8c41-6bb670f29cca",
+      "name": "exists",
+      "caption": "Exists",
+      "type": 3
     }
   ]
 }

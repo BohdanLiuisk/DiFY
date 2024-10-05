@@ -2,6 +2,10 @@
 
 public static class Constants
 {
+    public const int DecimalMaxCapacity = 1000;
+    public const int DecimalDefaultSize = 19;
+    public const int DecimalDefaultPrecision = 5;
+    
     public static class Select
     {
         public const string Clause = "clause";
