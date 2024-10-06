@@ -129,11 +129,8 @@ public class EntityColumnStructure
             IsNullable = true;
             State = EntityStructureElementState.Updated;
         }
-        if (columnDescriptor.Precision != Precision) {
-            SetPrecision(columnDescriptor.Precision);
-            State = EntityStructureElementState.Updated;
-        }
         UpdateSize(columnDescriptor.Size);
+        UpdatePrecision(columnDescriptor.Precision);
     }
     
     private AlterColumnResult ValidateColumnChange(ColumnDescriptor columnDescriptor) {
@@ -163,6 +160,9 @@ public class EntityColumnStructure
         if (columnDescriptor.Size != null && columnDescriptor.Size < Size) {
             alterResult.AddError("Size cannot be changed to smaller value");
         }
+        if (columnDescriptor.Size == null && newType == DbType.Decimal && Size > Constants.DecimalDefaultSize ) {
+            alterResult.AddError($"Previous size {Size} is greater than default {Constants.DecimalDefaultSize}");
+        }
         if (columnDescriptor.Size != null && Size == null && Type == DbType.String) {
             alterResult.AddError("Size cannot be changed on unlimited text type");
         }
@@ -172,27 +172,28 @@ public class EntityColumnStructure
         return alterResult;
     }
 
-    private void UpdateSize(int? size) {
-        if (size != Size) {
-            SetSize(size);
-            State = EntityStructureElementState.Updated;
+    private void UpdatePrecision(int? newPrecision) {
+        if (!DbTypeUtils.GetPrecisionPropertyApplicable(Type)) {
+            SetPrecision(null);
             return;
         }
-        if (Type == DbType.Decimal && size == null && Size != Constants.DecimalDefaultSize) {
-            SetSize(size);
+        var oldPrecision = Precision;
+        SetPrecision(newPrecision);
+        if (Precision != oldPrecision) {
             State = EntityStructureElementState.Updated;
         }
     }
 
-    private void SetSize(int? size) {
+    private void UpdateSize(int? newSize) {
         if (!DbTypeUtils.GetSizePropertyApplicable(Type)) {
-            Size = null;
+            SetSize(null);
             return;
         }
-        Size = Type switch {
-            DbType.Decimal => size ?? Constants.DecimalDefaultSize,
-            _ => size
-        };
+        var oldSize = Size;
+        SetSize(newSize);
+        if (Size != oldSize) {
+            State = EntityStructureElementState.Updated;
+        }
     }
 
     private void SetPrecision(int? precision) {
@@ -200,7 +201,15 @@ public class EntityColumnStructure
             Precision = null;
             return;
         }
-        Precision = precision ?? Constants.DecimalDefaultPrecision;
+        Precision = precision ?? (Type == DbType.Decimal ? Constants.DecimalDefaultPrecision : null);
+    }
+
+    private void SetSize(int? size) {
+        if (!DbTypeUtils.GetSizePropertyApplicable(Type)) {
+            Size = null;
+            return;
+        }
+        Size = size ?? (Type == DbType.Decimal ? Constants.DecimalDefaultSize : null);
     }
 
     private void SetIsNullable(bool? isNullable) {
