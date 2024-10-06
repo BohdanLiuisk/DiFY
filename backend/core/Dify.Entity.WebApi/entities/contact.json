@@ -61,7 +61,8 @@
       "id": "76899918-4d9e-4163-8e71-289733172c3a",
       "name": "max_price",
       "caption": "Max price",
-      "type": 4,
+      "type": 7,
+      "precision": 4,
       "isNullable": true
     },
     {
@@ -106,9 +107,7 @@
       "id": "a244a309-57d9-4c05-a426-41cc76b8dfc5",
       "name": "notest2",
       "caption": "Notest2",
-      "type": 16,
-      "size": 26,
-      "isNullable": false
+      "type": 16
     },
     {
       "id": "05eb4249-f2b2-49ca-bba5-505b184f4eb8",
@@ -127,7 +126,16 @@
       "name": "max_price2",
       "caption": "Max price2",
       "type": 7,
+      "size": 20,
+      "precision": 3,
       "isNullable": true
+    },
+    {
+      "id": "a244a309-57d9-4c05-a426-41cc76b8dfc4",
+      "name": "notest3",
+      "caption": "Notest3",
+      "type": 16,
+      "size": 455
     }
   ]
 }

@@ -21,4 +21,7 @@ public class FilterPredicate
     
     [JsonPropertyName("caseSensitive")]
     public bool? CaseSensitive { get; set; }
+    
+    [JsonPropertyName("subQuery")]
+    public SelectExpression? SubQuery { get; set; }
 }

@@ -103,6 +103,7 @@ public class FilterBuilder(Query query, string rootTableAlias, AliasStorage alia
                 ApplyWhereColumnsFilter(filterGroup, pathInfo, predicate);
                 break;
             case PredicateValueType.SubQuery:
+                ApplySubQueryFilter(filterGroup, pathInfo, predicate);
                 break;
         }
     }
@@ -127,6 +128,15 @@ public class FilterBuilder(Query query, string rootTableAlias, AliasStorage alia
         var compareOperator = SelectQueryUtils.MapFilterOperatorToSqlOperator(predicate.Operator);
         var comparePathInfo = BuildColumnPathInfo(comparePath);
         filterGroup.WhereColumns(pathInfo.Path, compareOperator, comparePathInfo.Path);
+    }
+
+    private void ApplySubQueryFilter(Query filterGroup, ColumnPathInfo pathInfo, FilterPredicate predicate) {
+        if (predicate.SubQuery == null) return;
+        if (!SelectQueryUtils.GetIsSqlComparisonOperator(predicate.Operator)) return;
+        var subQueryBuilder = new SubQueryBuilder(aliasStorage, structureManager);
+        var subQuery = subQueryBuilder.BuildSubQuery(predicate.SubQuery, rootTableAlias);
+        var compareOperator = SelectQueryUtils.MapFilterOperatorToSqlOperator(predicate.Operator);
+        filterGroup.Where(pathInfo.Path, compareOperator, subQuery);
     }
 
     private static void ApplyWhereFilter(Query filterGroup, string columnPath, FilterPredicate predicate) {
