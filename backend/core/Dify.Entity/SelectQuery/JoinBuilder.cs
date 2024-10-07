@@ -17,8 +17,8 @@ public class JoinBuilder(Query query, AliasStorage aliasStorage, JoinsStorage jo
     }
 
     private void AppendLeftJoin(SelectExpression expression, string parentTableAlias, EntityStructure parentStructure) {
-        var referenceColumn = parentStructure.Columns.FirstOrDefault(c => c.Name == expression.Path);
-        if(referenceColumn?.ForeignKeyStructure == null) return;
+        var referenceColumn = parentStructure.FindColumn(expression.Path);
+        if (referenceColumn.ForeignKeyStructure == null) return;
         var refEntityStructure = referenceColumn.ForeignKeyStructure.ReferenceEntityStructure;
         var tableAlias = joinsStorage.BuildJoinAlias(expression, refEntityStructure, parentStructure);
         query.LeftJoin(
@@ -40,8 +40,8 @@ public class JoinBuilder(Query query, AliasStorage aliasStorage, JoinsStorage jo
     public ColumnPathInfo BuildColumnPathInfo(string path) {
         var pathSegments = path.Split('.');
         if (pathSegments.Length <= 1) {
-            var columnPath = $"{joinsStorage.StructureAlias}.{path}";
             var columnStructure = joinsStorage.EntityStructure.FindColumn(path);
+            var columnPath = $"{joinsStorage.StructureAlias}.{columnStructure.DbName}";
             return new ColumnPathInfo(Path: columnPath, ColumnStructure: columnStructure);
         }
         var referencePath = string.Join(".", pathSegments.Take(pathSegments.Length - 1));
@@ -49,7 +49,9 @@ public class JoinBuilder(Query query, AliasStorage aliasStorage, JoinsStorage jo
         var columnName = pathSegments.Last();
         if (joinMatch.Join != null && string.IsNullOrEmpty(joinMatch.LeftoverPath)) {
             var columnStructure = joinMatch.Join.PrimaryStructure.FindColumn(columnName);
-            return new ColumnPathInfo(Path: $"{joinMatch.Join.Alias}.{columnName}", ColumnStructure: columnStructure);
+            return new ColumnPathInfo(
+                Path: $"{joinMatch.Join.Alias}.{columnStructure.DbName}", 
+                ColumnStructure: columnStructure);
         } else {
             var joinAlias = joinMatch.Join == null
                 ? BuildJoinPath(joinsStorage.StructureAlias, string.Empty, referencePath, joinsStorage.EntityStructure)
@@ -57,7 +59,7 @@ public class JoinBuilder(Query query, AliasStorage aliasStorage, JoinsStorage jo
                     joinMatch.Join.PrimaryStructure);
             var columnStructure = joinsStorage.FindJoinPath(referencePath).Join!.PrimaryStructure
                 .FindColumn(columnName);
-            return new ColumnPathInfo(Path: $"{joinAlias}.{columnName}", columnStructure);
+            return new ColumnPathInfo(Path: $"{joinAlias}.{columnStructure.DbName}", columnStructure);
         }
     }
 
