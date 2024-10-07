@@ -7,22 +7,22 @@ namespace Dify.Entity.SelectQuery;
 
 public class SubQueryBuilder(AliasStorage aliasStorage, EntityStructureManager structureManager)
 {
-    private readonly JoinsStorage _joinsStorage = new(aliasStorage);
-    
-    public void AppendSubQueries(Query query, List<SelectExpression> subQueries, string parentTableAlias) {
+    public void AppendSubQueries(Query query, List<SelectExpression> subQueries, string parentTableAlias, 
+        EntityStructure parentStructure) {
         foreach (var subQueryExpression in subQueries) {
             var alias = subQueryExpression.Alias;
             if (string.IsNullOrEmpty(alias)) {
                 throw new ArgumentException("alias is required for sub query");
             }
             var subQueryBuilder = new SubQueryBuilder(aliasStorage, structureManager);
-            var subQuery = subQueryBuilder.BuildSubQuery(subQueryExpression, parentTableAlias);
+            var subQuery = subQueryBuilder.BuildSubQuery(subQueryExpression, parentTableAlias, parentStructure);
             subQueryExpression.SelectAlias = SelectQueryUtils.GetColumnAlias(parentTableAlias, alias);
             query.Select(subQuery, subQueryExpression.SelectAlias);
         }
     }
     
-    public Query BuildSubQuery(SelectExpression selectExpression, string parentTableAlias) {
+    public Query BuildSubQuery(SelectExpression selectExpression, string parentTableAlias, 
+        EntityStructure parentStructure) {
         if (string.IsNullOrEmpty(selectExpression.SubEntity)) {
             throw new ArgumentException("subEntity is required for sub query");
         }
@@ -51,8 +51,10 @@ public class SubQueryBuilder(AliasStorage aliasStorage, EntityStructureManager s
         if (selectExpression.Filter == null) return subQuery;
         var subStructure = structureManager.FindEntityStructureByName(subEntityName)
             .GetAwaiter().GetResult();
-        var filterBuilder = new FilterBuilder(subQuery, subTableAlias, aliasStorage, _joinsStorage,
-            subStructure, structureManager);
+        var newJoinsStorage = new JoinsStorage(aliasStorage, subTableAlias, subStructure);
+        var parentJoinsStorage = new JoinsStorage(aliasStorage, parentTableAlias, parentStructure);
+        var filterBuilder = new FilterBuilder(subQuery, aliasStorage, newJoinsStorage, structureManager, 
+            parentJoinsStorage);
         filterBuilder.AppendFilter(selectExpression.Filter);
         return subQuery;
     }

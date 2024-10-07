@@ -3,11 +3,15 @@ using Dify.Entity.Structure;
 
 namespace Dify.Entity.SelectQuery;
 
-public class JoinsStorage(AliasStorage aliasStorage)
+public class JoinsStorage(AliasStorage aliasStorage, string structureAlias, EntityStructure entityStructure)
 {
     private readonly List<JoinInfo> _joins = new();
     
     public IEnumerable<JoinInfo> Joins => _joins;
+
+    public readonly string StructureAlias = structureAlias;
+
+    public readonly EntityStructure EntityStructure = entityStructure;
     
     public string BuildJoinAlias(string path, string fullPath, EntityStructure primaryStructure, 
         EntityStructure parentStructure) {
