@@ -193,7 +193,8 @@ public class FilterBuilder(Query query, AliasStorage aliasStorage, JoinsStorage 
         var existsQuery = new Query()
             .From($"{subEntityConfig.Name} as {alias}")
             .As(alias)
-            .WhereColumns($"{alias}.{subEntityConfig.JoinBy}", "=", $"{joinsStorage.StructureAlias}.{subEntityConfig.JoinTo}");
+            .WhereColumns($"{alias}.{subEntityConfig.JoinBy}", "=", 
+                $"{joinsStorage.StructureAlias}.{subEntityConfig.JoinTo}");
         if (selectFilter.SubFilter != null) {
             var subStructure = structureManager.FindEntityStructureByName(subEntityConfig.Name)
                 .GetAwaiter().GetResult();
