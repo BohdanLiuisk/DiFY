@@ -17,8 +17,8 @@ public class JoinBuilder(Query query, AliasStorage aliasStorage, JoinsStorage jo
     }
 
     private void AppendLeftJoin(SelectExpression expression, string parentTableAlias, EntityStructure parentStructure) {
-        var referenceColumn = parentStructure.FindColumn(expression.Path);
-        if (referenceColumn.ForeignKeyStructure == null) return;
+        var referenceColumn = parentStructure.Columns.FirstOrDefault(c => c.Name == expression.Path);
+        if (referenceColumn?.ForeignKeyStructure == null) return;
         var refEntityStructure = referenceColumn.ForeignKeyStructure.ReferenceEntityStructure;
         var tableAlias = joinsStorage.BuildJoinAlias(expression, refEntityStructure, parentStructure);
         query.LeftJoin(

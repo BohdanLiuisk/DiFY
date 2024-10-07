@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SqlKata;
 using SqlKata.Execution;
+using SqlKata.Compilers;
 
 namespace Dify.Entity.SelectQuery;
 
@@ -53,12 +54,12 @@ public class SelectQueryExecutor(EntityStructureManager structureManager, QueryF
         var queryColumns = selectBuilder.BuildAliases();
         var rootQuery = new Query($"{selectConfig.EntityName} as {rootTableAlias}");
         rootQuery.Select(queryColumns);
-        var subQueryExpressions = selectConfig.Expressions.Where(e => e.Type == ExpressionType.SubQuery).ToList();
-        var subQueryBuilder = new SubQueryBuilder(aliasStorage, structureManager);
-        subQueryBuilder.AppendSubQueries(rootQuery, subQueryExpressions, rootTableAlias, rootStructure);
         var joinsStorage = new JoinsStorage(aliasStorage, rootTableAlias, rootStructure);
         var joinBuilder = new JoinBuilder(rootQuery, aliasStorage, joinsStorage, structureManager);
         joinBuilder.AppendLeftJoins(selectConfig.Expressions, rootTableAlias, rootStructure);
+        var subQueryExpressions = selectConfig.Expressions.Where(e => e.Type == ExpressionType.SubQuery).ToList();
+        var subQueryBuilder = new SubQueryBuilder(aliasStorage, structureManager);
+        subQueryBuilder.AppendSubQueries(rootQuery, subQueryExpressions, rootTableAlias, rootStructure);
         var filterBuilder = new FilterBuilder(rootQuery, aliasStorage, joinsStorage, structureManager, joinsStorage);
         filterBuilder.AppendFilter(selectConfig.Filter);
         if (selectConfig.Limit != null && selectConfig.Limit != 0) {
