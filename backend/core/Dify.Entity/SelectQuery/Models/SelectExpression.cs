@@ -44,7 +44,11 @@ public class SelectExpression
     
     [JsonPropertyName("filter")]
     public SelectFilter? Filter { get; set; }
-
+    
+    public string? OrderBy { get; set; }
+    
+    public int? OrderPosition { get; set; }
+    
     [JsonPropertyName("subQuerySorting")]
     public List<SortConfig> SubQuerySorting { get; set; } = new();
     

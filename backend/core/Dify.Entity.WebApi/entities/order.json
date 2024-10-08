@@ -28,6 +28,13 @@
       "referenceEntityId": "65a93638-295f-4e3a-81e2-4bb13f27edc7"
     },
     {
+      "id": "6951a097-2477-4093-9f72-ca3efcc9cad4",
+      "name": "company",
+      "caption": "Company",
+      "type": 11,
+      "referenceEntityId": "429cde5e-fb1c-406a-aafa-f4dc41835a38"
+    },
+    {
       "id": "67a949cb-39c3-4cee-9d8b-5b19c7f9127b",
       "name": "product",
       "caption": "Product",
