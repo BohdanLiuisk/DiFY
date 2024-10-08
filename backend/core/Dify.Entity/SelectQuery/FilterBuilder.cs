@@ -190,11 +190,11 @@ public class FilterBuilder(Query query, AliasStorage aliasStorage, JoinsStorage 
     
     private Query AppendExistsFilter(Query filterGroup, SelectFilter selectFilter, 
         SubEntityConfig subEntityConfig, string alias) {
-        var existsQuery = new Query()
-            .From($"{subEntityConfig.Name} as {alias}")
-            .As(alias)
-            .WhereColumns($"{alias}.{subEntityConfig.JoinBy}", "=", 
+        var existsQuery = new Query().From($"{subEntityConfig.Name} as {alias}").As(alias);
+        if (!string.IsNullOrEmpty(subEntityConfig.JoinBy) && !string.IsNullOrEmpty(subEntityConfig.JoinTo)) {
+            existsQuery.WhereColumns($"{alias}.{subEntityConfig.JoinBy}", "=", 
                 $"{joinsStorage.StructureAlias}.{subEntityConfig.JoinTo}");
+        }
         if (selectFilter.SubFilter != null) {
             var subStructure = structureManager.FindEntityStructureByName(subEntityConfig.Name)
                 .GetAwaiter().GetResult();
@@ -214,11 +214,11 @@ public class FilterBuilder(Query query, AliasStorage aliasStorage, JoinsStorage 
     private Query AppendCountFilter(Query filterGroup, SelectFilter selectFilter, 
         SubEntityConfig subEntityConfig, string alias) {
         if(selectFilter.SubPredicate == null || selectFilter.SubPredicate.Value == null) return filterGroup;
-        var countQuery = new Query()
-            .From($"{subEntityConfig.Name} as {alias}")
-            .WhereColumns($"{alias}.{subEntityConfig.JoinBy}", "=", 
-                $"{joinsStorage.StructureAlias}.{subEntityConfig.JoinTo}")
-            .AsCount();
+        var countQuery = new Query().From($"{subEntityConfig.Name} as {alias}").AsCount();
+        if (!string.IsNullOrEmpty(subEntityConfig.JoinBy) && !string.IsNullOrEmpty(subEntityConfig.JoinTo)) {
+            countQuery.WhereColumns($"{alias}.{subEntityConfig.JoinBy}", "=", 
+                $"{joinsStorage.StructureAlias}.{subEntityConfig.JoinTo}");
+        }
         if (selectFilter.SubFilter != null) {
             var subStructure = structureManager.FindEntityStructureByName(subEntityConfig.Name)
                 .GetAwaiter().GetResult();

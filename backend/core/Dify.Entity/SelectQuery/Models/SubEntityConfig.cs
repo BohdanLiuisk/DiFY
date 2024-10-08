@@ -19,30 +19,30 @@ public class SubEntityConfig
         Operator = operatorValue;
     }
 
-    private static readonly string subEntityFilterPattern = @"\[(.*?):(.*?):(.*?)\]\.(.*)";
-    private static readonly string subEntityPathPattern = @"\[(.*?):(.*?):(.*?)\]";
-    
+    private const string SubEntityFilterPattern = @"\[(.*?)(?::(.*?)(?::(.*?))?)?\]\.(.*)";
+    private const string SubEntityPathPattern = @"\[(.*?):(.*?):(.*?)\]";
+
     public static bool IsSubEntityFilter(string path) {
-        return Regex.IsMatch(path, subEntityFilterPattern);
+        return Regex.IsMatch(path, SubEntityFilterPattern);
     }
 
     public static bool IsSubEntityPath(string path) {
-        return Regex.IsMatch(path, subEntityPathPattern);
+        return Regex.IsMatch(path, SubEntityPathPattern);
     }
 
     public static SubEntityConfig FromFilterPath(string path) {
-        var match = Regex.Match(path, subEntityFilterPattern);
+        var match = Regex.Match(path, SubEntityFilterPattern);
         if (!match.Success) throw new ArgumentException("Invalid filter path format", nameof(path));
         return new SubEntityConfig(
             name: match.Groups[1].Value,
-            joinBy: match.Groups[2].Value,
-            joinTo: match.Groups[3].Value,
+            joinBy: string.IsNullOrEmpty(match.Groups[2].Value) ? string.Empty : match.Groups[2].Value,
+            joinTo: string.IsNullOrEmpty(match.Groups[3].Value) ? string.Empty : match.Groups[3].Value,
             operatorValue: match.Groups[4].Value
         );
     }
 
     public static SubEntityConfig FromSubEntityPath(string path) {
-        var match = Regex.Match(path, subEntityPathPattern);
+        var match = Regex.Match(path, SubEntityPathPattern);
         if (!match.Success) throw new ArgumentException("Invalid sub-entity path format", nameof(path));
         return new SubEntityConfig(
             name: match.Groups[1].Value,
