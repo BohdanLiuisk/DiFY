@@ -49,6 +49,9 @@ public class SelectQueryExecutor(EntityStructureManager structureManager, QueryF
 
     private Query CreateRootQuery(SelectQueryConfig selectConfig, EntityStructure rootStructure) {
         var rootTableAlias = aliasStorage.GetTableAlias(selectConfig.EntityName);
+        if (selectConfig.AllColumns == true) {
+            selectConfig.AddAllColumns(rootStructure);
+        }
         var columnExpressions = selectConfig.Expressions.Where(e => e.Type == ExpressionType.Column).ToList();
         var selectBuilder = new SelectColumnBuilder(columnExpressions, rootStructure, rootTableAlias);
         var queryColumns = selectBuilder.BuildAliases();
