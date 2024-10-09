@@ -35,6 +35,22 @@ public class SortBuilder(Query query, AliasStorage aliasStorage, JoinsStorage jo
         }
     }
 
+    public void AppendSubQuerySorting(SelectExpression selectExpression) {
+        if (selectExpression.SubQuerySorting.Count == 0) return;
+        var joinBuilder = new JoinBuilder(query, aliasStorage, joinsStorage, structureManager);
+        foreach (var sortConfig in selectExpression.SubQuerySorting.OrderBy(s => s.OrderPosition)) {
+            var (joinPath, orderByColumn) = SplitPathAtLastDot(sortConfig.OrderBy);
+            string orderByExpression;
+            if (!string.IsNullOrEmpty(joinPath)) {
+                var joinAlias = joinBuilder.BuildJoinAlias(joinPath);
+                orderByExpression = $"{joinAlias}.{orderByColumn}";
+            } else {
+                orderByExpression = $"{joinsStorage.StructureAlias}.{orderByColumn}";
+            }
+            ApplyOrderBy(sortConfig, orderByExpression);
+        }
+    }
+
     private void ApplyOrderBy(SortConfig sortConfig, string orderByExpression) {
         if (sortConfig.OrderDirection == Constants.Select.Asc) {
             query.OrderBy(orderByExpression);

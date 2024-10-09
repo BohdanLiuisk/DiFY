@@ -53,13 +53,16 @@ public class SubQueryBuilder(AliasStorage aliasStorage, EntityStructureManager s
                 ? pathInfo.Path
                 : $"{pathInfo.Path} as {selectExpression.Alias}";
             subQuery.Select(selectPath);
-            ApplySorting(subQuery, subTableAlias, selectExpression);
-            subQuery.Limit(1);
         }
         if (selectExpression.Filter == null) return subQuery;
         var filterBuilder = new FilterBuilder(subQuery, aliasStorage, joinsStorage, structureManager, 
             new JoinsStorage(aliasStorage, parentAlias, parentStructure));
         filterBuilder.AppendFilter(selectExpression.Filter);
+        if (string.IsNullOrEmpty(selectExpression.AggrFunc)) {
+            var sortBuilder = new SortBuilder(subQuery, aliasStorage, joinsStorage, structureManager);
+            sortBuilder.AppendSubQuerySorting(selectExpression);
+            subQuery.Limit(1);
+        }
         return subQuery;
     }
     
