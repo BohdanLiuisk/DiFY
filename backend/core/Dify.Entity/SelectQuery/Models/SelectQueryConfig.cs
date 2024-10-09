@@ -1,4 +1,6 @@
 ﻿using System.Text.Json.Serialization;
+using Dify.Entity.SelectQuery.Enums;
+using Dify.Entity.Structure;
 
 namespace Dify.Entity.SelectQuery.Models;
 
@@ -7,6 +9,9 @@ public class SelectQueryConfig
     [JsonPropertyName("entityName")] 
     [JsonRequired]
     public string EntityName { get; set; } = null!;
+    
+    [JsonPropertyName("allColumns")]
+    public bool? AllColumns { get; set; } = false;
 
     [JsonPropertyName("expressions")]
     public List<SelectExpression> Expressions { get; set; } = new();
@@ -30,6 +35,12 @@ public class SelectQueryConfig
     public bool? Debug { get; set; }
 
     public bool IsPaginated => PaginationConfig != null && PaginationConfig.Page != 0 && PaginationConfig.PerPage != 0;
+    
+    public void AddAllColumns(EntityStructure entityStructure) {
+        Expressions.RemoveAll(e => e.Type == ExpressionType.Column);
+        Expressions.AddRange(entityStructure.Columns.Select(column => 
+            new SelectExpression(path: column.Name)));
+    }
     
     public SelectExpression? FindExpressionByPath(string fullPath) {
         return Expressions
