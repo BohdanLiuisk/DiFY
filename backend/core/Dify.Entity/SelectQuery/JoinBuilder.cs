@@ -36,6 +36,18 @@ public class JoinBuilder(Query query, AliasStorage aliasStorage, JoinsStorage jo
             AppendLeftJoins(expression.Columns, tableAlias, refEntityStructure);
         }
     }
+
+    public string BuildJoinAlias(string referencePath) {
+        var joinMatch = joinsStorage.FindJoinPath(referencePath);
+        if (joinMatch.Join != null && string.IsNullOrEmpty(joinMatch.LeftoverPath)) {
+            return joinMatch.Join.Alias;
+        }
+        var joinAlias = joinMatch.Join == null
+            ? BuildJoinPath(joinsStorage.StructureAlias, string.Empty, referencePath, joinsStorage.EntityStructure)
+            : BuildJoinPath(joinMatch.Join.Alias, joinMatch.Join.JoinPath, joinMatch.LeftoverPath, 
+                joinMatch.Join.PrimaryStructure);
+        return joinAlias;
+    }
     
     public ColumnPathInfo BuildColumnPathInfo(string path) {
         var pathSegments = path.Split('.');
