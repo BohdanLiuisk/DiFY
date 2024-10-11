@@ -6,7 +6,6 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SqlKata;
 using SqlKata.Execution;
-using SqlKata.Compilers;
 
 namespace Dify.Entity.SelectQuery;
 
@@ -25,37 +24,40 @@ public class SelectQueryExecutor(EntityStructureManager structureManager, QueryF
     }
 
     private async Task<JObject> ExecuteInternal(SelectQueryConfig selectConfig) {
-        var rootStructure = await structureManager.FindEntityStructureByName(selectConfig.EntityName);
-        var rootQuery = CreateRootQuery(selectConfig, rootStructure);
-        aliasStorage.Clear();
-        return await BuildJsonResult(selectConfig, rootQuery, rootStructure);
+        var rootQuery = new Query();
+        try {
+            var rootStructure = await structureManager.FindEntityStructureByName(selectConfig.EntityName);
+            selectConfig.RootStructure = rootStructure;
+            BuildRootQuery(rootQuery, selectConfig, rootStructure);
+            return await BuildJsonResult(selectConfig, rootQuery);
+        } catch (Exception e) {
+            return new SelectResultBuilder(selectConfig)
+                .WithQuery(rootQuery).WithError(e.Message).Build();
+        } finally {
+            aliasStorage.Clear();
+        }
     }
 
-    private async Task<JObject> BuildJsonResult(SelectQueryConfig selectConfig, Query rootQuery, 
-        EntityStructure rootStructure) {
-        var resultBuilder = new SelectResultBuilder(selectConfig, rootStructure, rootQuery);
+    private async Task<JObject> BuildJsonResult(SelectQueryConfig selectConfig, Query rootQuery) {
+        var resultBuilder = new SelectResultBuilder(selectConfig).WithQuery(rootQuery);
         if (selectConfig.IsPaginated) {
             var paginationResult = await queryFactory.PaginateAsync<dynamic>(rootQuery,
                 selectConfig.PaginationConfig!.Page, selectConfig.PaginationConfig!.PerPage);
-            return resultBuilder.BuildPaginatedRows(paginationResult);
+            return resultBuilder.WithPagination(paginationResult).WithRows(paginationResult.List).Build();
         }
-        var resultRows = await queryFactory.GetAsync(rootQuery);
-        if (selectConfig.Limit == 1) {
-            var firstRow = resultRows.FirstOrDefault() as IDictionary<string, object>;
-            return resultBuilder.BuildSingleRowJson(firstRow);
-        }
-        return resultBuilder.BuildMultipleRowsJson(resultRows);
+        var rows = await queryFactory.GetAsync(rootQuery);
+        return resultBuilder.WithRows(rows).Build();
     }
 
-    private Query CreateRootQuery(SelectQueryConfig selectConfig, EntityStructure rootStructure) {
+    private Query BuildRootQuery(Query query, SelectQueryConfig selectConfig, EntityStructure rootStructure) {
         var rootTableAlias = aliasStorage.GetTableAlias(selectConfig.EntityName);
+        var rootQuery = query.From($"{selectConfig.EntityName} as {rootTableAlias}");
         if (selectConfig.AllColumns == true) {
             selectConfig.AddAllColumns(rootStructure);
         }
         var columnExpressions = selectConfig.Expressions.Where(e => e.Type == ExpressionType.Column).ToList();
         var selectBuilder = new SelectColumnBuilder(columnExpressions, rootStructure, rootTableAlias);
         var queryColumns = selectBuilder.BuildAliases();
-        var rootQuery = new Query($"{selectConfig.EntityName} as {rootTableAlias}");
         rootQuery.Select(queryColumns);
         var joinsStorage = new JoinsStorage(aliasStorage, rootTableAlias, rootStructure);
         var joinBuilder = new JoinBuilder(rootQuery, aliasStorage, joinsStorage, structureManager);
