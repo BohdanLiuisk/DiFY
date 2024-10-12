@@ -55,13 +55,17 @@ public class SelectQueryExecutor(EntityStructureManager structureManager, QueryF
         if (selectConfig.AllColumns == true) {
             selectConfig.AddAllColumns(rootStructure);
         }
-        var columnExpressions = selectConfig.Expressions.Where(e => e.Type == ExpressionType.Column).ToList();
-        var selectBuilder = new SelectColumnBuilder(columnExpressions, rootStructure, rootTableAlias);
-        var queryColumns = selectBuilder.BuildAliases();
-        rootQuery.Select(queryColumns);
         var joinsStorage = new JoinsStorage(aliasStorage, rootTableAlias, rootStructure);
         var joinBuilder = new JoinBuilder(rootQuery, aliasStorage, joinsStorage, structureManager);
-        joinBuilder.AppendLeftJoins(selectConfig.Expressions, rootTableAlias, rootStructure);
+        if (selectConfig.Expressions.All(e => e.Type != ExpressionType.Function)) {
+            var columnExpressions = selectConfig.Expressions.Where(e => e.Type == ExpressionType.Column).ToList();
+            var selectBuilder = new SelectColumnBuilder(columnExpressions, rootStructure, rootTableAlias);
+            var queryColumns = selectBuilder.BuildAliases();
+            rootQuery.Select(queryColumns);
+            joinBuilder.AppendLeftJoins(selectConfig.Expressions, rootTableAlias, rootStructure);
+        } else {
+            new AggrFuncBuilder(query, joinBuilder).AppendAggrFunctions(selectConfig.Expressions);
+        }
         var subQueryExpressions = selectConfig.Expressions.Where(e => e.Type == ExpressionType.SubQuery).ToList();
         var subQueryBuilder = new SubQueryBuilder(aliasStorage, structureManager);
         subQueryBuilder.AppendSubQueries(rootQuery, subQueryExpressions, rootTableAlias, rootStructure);
