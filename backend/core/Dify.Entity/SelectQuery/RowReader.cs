@@ -15,7 +15,7 @@ public class RowReader(IDictionary<string, object> row, EntityStructure rootStru
                 var columnValue = ReadColumn(expression, rootStructure);
                 jsonObject.Add(SelectQueryUtils.GetExpressionAlias(expression), columnValue);
             }
-            if (expression.Type == ExpressionType.SubQuery) {
+            if (expression.Type == ExpressionType.SubQuery || expression.Type == ExpressionType.Function) {
                 var subQueryValue = ReadExpressionValue(expression);
                 jsonObject.Add(expression.Alias!, subQueryValue);
             }

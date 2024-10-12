@@ -6,7 +6,7 @@ namespace Dify.Entity.Utils;
 
 public static class SelectQueryUtils
 {
-    private static readonly Dictionary<string, string> _filterOperatorToSql = new() {
+    private static readonly Dictionary<string, string> FilterOperatorToSql = new() {
         { "eq", "=" },
         { "ne", "<>" },
         { "gt", ">" },
@@ -46,10 +46,10 @@ public static class SelectQueryUtils
     }
 
     public static bool GetIsSqlComparisonOperator(string filterOperator) {
-        return _filterOperatorToSql.ContainsKey(filterOperator);
+        return FilterOperatorToSql.ContainsKey(filterOperator);
     }
 
     public static string MapFilterOperatorToSqlOperator(string filterOperator) {
-        return _filterOperatorToSql[filterOperator];
-    } 
+        return FilterOperatorToSql[filterOperator];
+    }
 }
