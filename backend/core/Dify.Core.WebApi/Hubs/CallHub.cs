@@ -45,7 +45,7 @@ public class CallHub : Hub
             .SendAsync("OnParticipantJoined", participant);
     }
     
-    public override async Task OnDisconnectedAsync(Exception? exception)
+    public override async Task OnDisconnectedAsync(Exception exception)
     {
         var callId = _connectionToCall[Context.ConnectionId];
         _connectionToCall.Remove(Context.ConnectionId);
